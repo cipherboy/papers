@@ -1,0 +1,504 @@
+% TEMPLATE for Usenix papers, specifically to meet requirements of
+%  USENIX '05
+% originally a template for producing IEEE-format articles using LaTeX.
+%   written by Matthew Ward, CS Department, Worcester Polytechnic Institute.
+% adapted by David Beazley for his excellent SWIG paper in Proceedings,
+%   Tcl 96
+% turned into a smartass generic template by De Clarke, with thanks to
+%   both the above pioneers
+% use at your own risk.  Complaints to /dev/null.
+% make it two column with no page numbering, default is 10 point
+
+% Munged by Fred Douglis <douglis@research.att.com> 10/97 to separate
+% the .sty file from the LaTeX source template, so that people can
+% more easily include the .sty file into an existing document.  Also
+% changed to more closely follow the style guidelines as represented
+% by the Word sample file.
+
+% Note that since 2010, USENIX does not require endnotes. If you want
+% foot of page notes, don't include the endnotes package in the
+% usepackage command, below.
+
+\documentclass[letterpaper,twocolumn,10pt]{article}
+\usepackage{usenix,epsfig,endnotes,listings,amsmath,xcolor,courier,float}
+\usepackage{hyperref,supertabular}
+
+\lstset{
+  basicstyle=\ttfamily,
+  columns=fullflexible,
+  frame=single,
+  breaklines=true,
+  postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
+}
+
+\begin{document}
+
+%don't want date printed
+\date{}
+
+%make title bold and 14 pt font (Latex default is non-bold, 16 pt)
+\title{\Large \bf Motivating a Constraint-Based Approach to Colliding Hash Functions }
+
+\author{
+{\rm Alexander Scheel}\\
+\href{mailto:alexander.m.scheel@gmail.com}{alexander.m.scheel@gmail.com} \\
+Iowa State University
+\and
+{\rm Eric Rozier}\\
+\href{mailto:erozier@iastate.edu}{erozier@iastate.edu} \\
+Iowa State University
+}
+
+\maketitle
+
+% Use the following at camera-ready time to suppress page numbers.
+% Comment it out when you first submit the paper for review.
+% \thispagestyle{empty}
+
+
+\subsection*{Abstract}
+
+TODO
+
+\section{Introduction}
+\subsection{History of SAT in Cryptography}
+
+\begin{itemize}
+    \item CryptoSAT
+    \item cryptominisat
+    \item SHA-1
+\end{itemize}
+
+\subsection{Motivating Logical Cryptanalysis on Hash Functions}
+
+We wish to provide the motivations driving our work. To begin, while collisions
+in cryptographic hash functions have a wide reach beyond the academic community,
+most of the discovered collisions are driven by academics. As such, most papers
+begin by introducing a single hash function, the author's preferred notation,
+the methods used in whole or part used to discover the collision, the constraints
+on the differential and the differential path, and usually end with an example of a
+found collision. However, while community's goal is to improve techniques by
+better differentials as measured by higher likelihoods of occurrence, little work
+is done to determine the utility of the collision. We seek to push the
+community in a new direction, towards measuring, and later improving, the utility
+of collisions.
+
+Thus we seek to answer the following questions: What does the input space of
+a collision look like? Are blocks only of high entropy, likely reflecting
+complex dependencies on bits of the input? Or, can fixed strings be required at
+positions of an input? Can these blocks be constrained to only inputs of ASCII
+or other character sets? Is the collision fixed to a single input differential,
+or can many different input differentials be used? Are there constraints on
+possible starting states?
+
+By answering these questions, we begin to develop a sense of utility of
+collisions. We can see whether they work well at the beginning or end of
+longer messages; we can see how much flexibility we have to fit existing
+data (towards second-preimage attacks matching existing collisions); and, we
+can see how much structure we can enforce for members of a collision. However,
+what we cannot answer are the relationships between these facets of utility,
+and whether there are more facets we are overlooking.
+
+Ultimately, we seek to develop a framework for pushing collisions from an
+academic exercise to a practical exercise in a constrained environment. The
+use is two fold: to develop better hash functions with highly-fractured collision
+spaces, and to allow users of hash functions to understand the weaknesses
+better. Our belief is that, while there should be an abundance of possible
+collisions, hash functions can be designed so that possible collisions do not
+pose security risks in all use cases. Further, we seek to demonstrate the
+usefulness of discussing collisions in a common language of SAT. This will
+allow properties of collisions to be easily verified, and find collision
+examples targeting a specific use cases.
+
+We leave it as an open challenge to find a set of collisions which lie outside
+of our proposed methodology but which can be demonstrated to have high utility.
+
+\subsection{Terminology of Utility}
+
+We seek to extend the literature about the utility of collisions and thus
+propose the following new terminology.
+
+The \textbf{constraints} of a collision are the necessary and/or sufficient
+boolean formulas for generating a collision, typically as a function of the
+state blocks.
+
+A \textbf{state transition constraint} is a constraint on the intermediate
+state variables, i.e., round variables. A constraint is \textbf{weak} if
+it is a any difference, and a constraint is \textbf{strong} if it is a
+signed difference. A equality constraint can either be weak or strong. This
+is roughly equivalent to a differential path.
+
+\textbf{Input block constraints}, \textbf{input state constraints}, and
+\textbf{output state constraints} are all analogously defined as state
+transition constraints.
+
+A \textbf{property} of a collision is any constraint placed upon the
+input block which exists independent from the constraints of a collision.
+
+An attack is \textbf{constraint-based} if there exists a SAT encoding of the
+attack which can generate multiple collisions.
+
+A collision is \textbf{extensible} if one example of a collision will lead to
+other examples under the same differential and weak state transition constraints.
+Note that an extensible collision is inherently constraint-based.
+
+A collision is \textbf{differential-independent} if there are multiple
+differentials which satisfy the intermediate state constr
+A collision is \textbf{malleable} if collisions can be found with different
+properties such as ASCII or JSON input blocks, or with fixed internal text.
+
+A collision is \textbf{state-independent} if there exist alternative
+starting states which produce collisions. A state-independent collision
+is termed strong if one collision can collide under two or more starting
+states.
+
+Thus, a collision is said to have \textbf{high utility} if it is
+differential-independent, malleable, and state-independent.
+
+\subsection{Common Notation for Constraint-Based Collisions}
+A SAT model, $S = (E, A)$, is an ordered tuple consisting of a set, $E$, of
+boolean equations of the form $var := expression$, and a set, $A$, of expressions
+which must be asserted to true. It should be obvious that this is equivalent
+to $3-CNF-SAT$. This notation is used as it is most similar to the ``circuits''
+language \cite{circuits}; further, unline $3-CNF-SAT$, this notation is composable
+in the sense that adding new constraints does not impact other existing constraints.
+
+We now introduce a series of notations to ease construction of cryptographic
+SAT models. $b := AND_{i = 0}^{32}(a)$. Needs to be
+
+Discuss encodings of hash functions? No, leave to section in
+
+Use notation in other sections. Use Overview subsection to discuss
+the particular quirks of encoding of hash function into SAT.
+
+\section{MD4}
+\subsection{Brief History and Overview}
+
+The MD4 hashing algorithm was developed by Ron Rivest and first released as RFC 1186
+in 1990 \cite{rfc1186}. This was later superseded by RFC 1320 in 1992 because the
+reference implementation was ``more portable'' \cite{rfc1320}. As early as 2004,
+Wang et al, demonstrated the first full collision in MD4 and MD5 \cite{cryptoeprint:2004:199}.
+However, it wasn't until 2005 that details of the differential and constraints
+were published \cite{Wang2005}. It is believed by some that these differentials
+and constraints were found "by hand" \cite{cryptoeprint:2007:206}. Others thus
+strove to automate these attacks with algorithmic approaches \cite{Schlaffer2006}
+\cite{cryptoeprint:2007:206}, and \cite{Sasaki2007}.
+
+In this section, we will analyze Wang's 2005 and Sasaki's 2007 differentials to MD4.
+
+\subsection{SAT Model of MD4}
+Base model.
+
+\subsection{Wang's MD4 Collisions}
+\subsubsection{Overview and Motivation}
+While many have studied Wang's attack from the point of view of improving the
+probability of collision or validating constraints, we seek to extend Wang's work
+by showing properties about colliding blocks. In particular, we wish to show that
+Wang's attack is constraint-based, extensible, highly malleable,
+differential-independent, and state-independent. Thus, we venture that Wang's
+attack is a strong attack against MD4, and that MD4 has no remaining collision
+resistance.
+
+\subsubsection{Extensible}
+We note that Wang's attack is extensible. With a loose fitting on the original
+example as referenced by `md4-wang-extensible', we generated an additional
+40,000 new collisions. We note that, while not fully explored, the loose
+fitting on the original hash produces valid collisions satisfying the closer
+reconstruction of the original constraints; that is, no further differential
+paths were discovered. By analyzing the new collisions for fixed properties,
+an alternative construction of Wang's constraints can be created. Further,
+by then negating individual constraints and testing for UNSAT, we can validate
+that they are indeed necessary. See table \ref{table:1} for the set of differential
+path constraints and table \ref{table:2} for the set of fixed-value constraints.
+Together these form an equivalent constraint set as what is seen in \cite{Wang2005}.
+
+
+\subsubsection{Constraint-Based}
+\begin{itemize}
+    \item Simple encoding
+    \item Advanced constraints
+    \item Time difference
+\end{itemize}
+testing
+\subsubsection{Differential-Independent}
+\subsubsection{State-Independent}
+\subsubsection{Malleable}
+\begin{itemize}
+    \item ASCII
+    \item JSON
+    \item substring
+\end{itemize}
+Testing
+\subsubsection{Additional Notes}
+
+\subsection{Sasaki's MD4 Collisions}
+\subsubsection{Overview and Motivation}
+We study Sasaki's collisions as a means of analyzing a more complete attack,
+and as a point of comparison to Wang's \cite{Sasaki2007}. In particular, Sasaki boasts
+of substantial speed improvement over Wang's and an increased probability of
+collision. The latter should thus translate to improved results with respect to
+malleability.
+
+\subsubsection{Extensible}
+We note that Sasaki's MD4 Collisions is an extensible collision. With a loose
+fitting on the original example as referenced by `md4-sasaki-extensible',
+we generated an additional 40,000 new collisions. Further, the constraints
+published on page 16, while sufficient, are not necessary; many of the negated
+forms have valid collisions as well \cite{Sasaki2007}.
+
+
+\subsubsection{Differential-Independent}
+We note that Sasaki's MD4 collisions are differential independent, finding
+examples of all 64 theoretical differentials.
+
+\section{MD5}
+\subsection{Brief History and Overview}
+\subsection{Wang's MD5 Collisions}
+\subsection{Stevens's MD5 Collisions}
+\subsection{Xie's MD5 Collisions}
+
+\section{SHA1}
+\subsection{Brief History and Overview}
+\subsection{Wang's SHA1 Partial Collision}
+\subsection{Stevens's SHA1 Full Collision}
+
+\newpage
+\section{Collisions}
+\subsection{Notation}
+We propose the convention of using both a hexadecimal and binary representation.
+Hex in a "standard order", i.e.,
+\begin{lstlisting}
+echo ``<hex>'' | xxd -r -p | openssl md4
+\end{lstlisting}
+
+\subsection{MD4}
+\subsubsection{Wang's Collisions}
+
+\newpage
+\section{Tables}
+\subsection{Notation}
+Tabular notation notes go here.
+Meaning of +, -, T, F, and *.
+Note that missing numbers are replaced
+with ... when all the same.
+
+\subsection{MD4}
+\subsubsection{Wang's Collision}
+
+\begin{table}[H]
+\centering
+\begin{tiny}
+\texttt{
+\begin{tabular}{|c c|}
+\hline
+h1i & constraints \\
+\hline
+0 & ................................ \\
+1 & .........................+...... \\
+2 & .....................+..-....... \\
+3 & ......+......................... \\
+4 & ................................ \\
+5 & ..................+............. \\
+6 & ..........+-++.................. \\
+7 & .................+--............ \\
+8 & ...............+................ \\
+9 & ......-..+--+................... \\
+10 & ..-............................. \\
+11 & +............................... \\
+12 & ......+..+...................... \\
+13 & ..+-.-.......................... \\
+14 & ................................ \\
+15 & .............+.................. \\
+16 & -..-.+-......................... \\
+17 & ................................ \\
+18 & ................................ \\
+19 & +.-............................. \\
+20 & -.+-............................ \\
+21 & ................................ \\
+... & ................................ \\
+47 & ................................ \\
+\hline
+\end{tabular}
+}
+\end{tiny}
+\caption{Discovered differential path constraints in MD4 under Wang's Attack}
+\label{table:1}
+\end{table}
+
+
+\begin{table}[H]
+\centering
+\begin{tiny}
+\texttt{
+\begin{tabular}{|c c|}
+\hline
+h1i & constraints \\
+\hline
+0 & .........................F...... \\
+1 & .........................F...... \\
+2 & .....................F..TT...... \\
+3 & ......F..............F..FT...... \\
+4 & ......F..............T..T....... \\
+5 & ......T...........F............. \\
+6 & ..........FTFF....F............. \\
+7 & ..........FFFF...FTT............ \\
+8 & ..........TFFF.F.TTT............ \\
+9 & ......T..FTTF..F.TTT............ \\
+10 & ..T...F..FFFF..T................ \\
+11 & F.F...T..FTTF................... \\
+12 & F.T...F..F...................... \\
+13 & T.FT.TF..F...................... \\
+14 & ..FF.FT..T...................... \\
+15 & ..FT.TT......F.................. \\
+16 & T..T.FT......................... \\
+17 & ...T.TT......................... \\
+18 & ...T.TT......................... \\
+19 & F.TT............................ \\
+20 & T.FT............................ \\
+21 & ...T............................ \\
+22 & ...T............................ \\
+23 & ................................ \\
+... & ................................ \\
+34 & ................................ \\
+35 & T............................... \\
+36 & T............................... \\
+37 & ................................ \\
+... & ................................ \\
+47 & ................................ \\
+\hline
+\end{tabular}
+}
+\end{tiny}
+\caption{Discovered fixed-value constraints in MD4 under Wang's Attack}
+\label{table:2}
+\end{table}
+
+\subsubsection{Sasaki's Collision}
+
+\begin{table}[H]
+\centering
+\begin{tiny}
+\texttt{
+\begin{tabular}{|c c|}
+\hline
+h1i & constraints \\
+\hline
+0 & -.............................+- \\
+0 & +.............................-+ \\
+1 & ......................-.+....... \\
+1 & ......................+.-....... \\
+2 & ....................-........... \\
+2 & ....................+........... \\
+3 & ..........-++................... \\
+3 & ..........+--................... \\
+4 & .......-+-............-++++++... \\
+4 & .......-++............-++++++... \\
+4 & .......+--............+------... \\
+4 & .......+-+............+------... \\
+5 & -..........-++.................. \\
+5 & -..........+--.................. \\
+5 & +..........-++.................. \\
+5 & +..........+--.................. \\
+6 & -......-++............-++++++++. \\
+6 & -......-++............+--------. \\
+6 & -......+--............-++++++++. \\
+6 & -......+--............+--------. \\
+6 & +......-++............-++++++++. \\
+6 & +......-++............+--------. \\
+6 & +......+--............-++++++++. \\
+6 & +......+--............+--------. \\
+7 & ................................ \\
+8 & ......-.-+...................... \\
+8 & ......-.+-...................... \\
+8 & ......+.-+...................... \\
+8 & ......+.+-...................... \\
+9 & ---.+--............-............ \\
+9 & -++.-++............+............ \\
+9 & -++.+--............+............ \\
+9 & +--.-++............-............ \\
+9 & +--.+--............-............ \\
+9 & +++.-++............+............ \\
+10 & ...................-............ \\
+10 & ...................+............ \\
+11 & ...................-............ \\
+11 & ...................+............ \\
+12 & ..-+..-......................... \\
+12 & ..-+..+......................... \\
+12 & ..+-..-......................... \\
+12 & ..+-..+......................... \\
+13 & ................................ \\
+14 & ................................ \\
+15 & -............................... \\
+15 & +............................... \\
+16 & ...-............................ \\
+16 & ...+............................ \\
+17 & ................................ \\
+18 & ................................ \\
+19 & ................................ \\
+20 & -............................... \\
+20 & +............................... \\
+21 & ................................ \\
+... & ................................ \\
+31 & ................................ \\
+32 & -............................... \\
+32 & +............................... \\
+33 & ................................ \\
+... & ................................ \\
+47 & ................................ \\
+\hline
+\end{tabular}
+}
+\end{tiny}
+\caption{Discovered differential paths' constraints in MD4 under Sasaki's Attack.
+Includes duplicate paths.}
+\label{table:3}
+\end{table}
+
+
+\begin{table}[H]
+\centering
+\begin{tiny}
+\texttt{
+\begin{tabular}{|c c|}
+\hline
+h1i & constraints \\
+\hline
+0 & ......................T.T....... \\
+1 & T..............................T \\
+2 & T.....................F.F......F \\
+3 & ....................F.T.T....... \\
+4 & ..........FFF.......F........... \\
+5 & .........T............FFFFFFF... \\
+6 & ...........FTF.................. \\
+7 & T......F.F.TFT.....F..FFFFFFTFF. \\
+8 & F..................F..TTTTFTTTT. \\
+9 & ........TT...................... \\
+10 & FFF..TF.TT...................... \\
+11 & FTT..FT......................... \\
+12 & ...................F............ \\
+13 & ..FF..F............F............ \\
+14 & ..TT..T......................... \\
+15 & ...T............................ \\
+16 & ................................ \\
+17 & ...T............................ \\
+18 & ...T............................ \\
+19 & ................................ \\
+... & ................................ \\
+47 & ................................ \\
+\hline
+\end{tabular}
+}
+\end{tiny}
+\caption{Discovered fixed-value constraints in MD4 under Sasaki's Attack}
+\label{table:4}
+\end{table}
+
+
+{\footnotesize \bibliographystyle{acm}
+
+\bibliography{thesis}}
+
+
+% \theendnotes
+
+\end{document}
