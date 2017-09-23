@@ -1,0 +1,243 @@
+% TEMPLATE for Usenix papers, specifically to meet requirements of
+%  USENIX '05
+% originally a template for producing IEEE-format articles using LaTeX.
+%   written by Matthew Ward, CS Department, Worcester Polytechnic Institute.
+% adapted by David Beazley for his excellent SWIG paper in Proceedings,
+%   Tcl 96
+% turned into a smartass generic template by De Clarke, with thanks to
+%   both the above pioneers
+% use at your own risk.  Complaints to /dev/null.
+% make it two column with no page numbering, default is 10 point
+
+% Munged by Fred Douglis <douglis@research.att.com> 10/97 to separate
+% the .sty file from the LaTeX source template, so that people can
+% more easily include the .sty file into an existing document.  Also
+% changed to more closely follow the style guidelines as represented
+% by the Word sample file.
+
+% Note that since 2010, USENIX does not require endnotes. If you want
+% foot of page notes, don't include the endnotes package in the
+% usepackage command, below.
+
+\documentclass[letterpaper,twocolumn,10pt]{article}
+\usepackage{usenix,epsfig,endnotes,listings,amsmath,xcolor,courier,float}
+\usepackage{hyperref,supertabular,amssymb}
+
+\providecommand{\lxor}{\oplus}
+
+\lstset{
+  basicstyle=\ttfamily,
+  columns=fullflexible,
+  frame=single,
+  breaklines=true,
+  postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
+}
+
+\begin{document}
+
+%don't want date printed
+\date{}
+
+%make title bold and 14 pt font (Latex default is non-bold, 16 pt)
+\title{\Large \bf The Neighborhood of a MD4 Collision }
+
+\author{
+{\rm Alexander Scheel}\\
+\href{mailto:alexander.m.scheel@gmail.com}{alexander.m.scheel@gmail.com} \\
+Iowa State University
+\and
+{\rm Eric Rozier}\\
+\href{mailto:erozier@iastate.edu}{erozier@iastate.edu} \\
+Iowa State University
+}
+
+\maketitle
+
+% Use the following at camera-ready time to suppress page numbers.
+% Comment it out when you first submit the paper for review.
+% \thispagestyle{empty}
+
+
+\subsection*{Abstract}
+
+In 2005, Wang et al. published the details of a collision attack against the
+MD4 hash function. We extend their work by showing that not
+only is the attack state independent and differential independent, but also
+that the neighborhood of the attack is populated with other classes of
+collisions. We describe an efficient encoding of this problem into SAT,
+and present example classes in the neighborhood of Wang's.
+
+\section{Introduction}
+The MD4 algorithm was developed by Ron Rivest around 1990 and is standardized
+in RFC 1320 \cite{rfc1320}. While largely known to be insecure, and thus
+having fallen out of use, its simple construction leads to fast implementations
+and easy encoding as a SAT problem. An attack against a chosen-state MD4 was
+published by Dobbertin in 1998 \cite{Dobbertin1998}. In 2004, Wang et al.
+demonstrated a collision attack against the full MD4
+\cite{cryptoeprint:2004:199}, before publishing the details in 2005
+\cite{Wang2005}. With reduced time complexity compared to Dobbertin, this
+class of collision went on to inspire other attacks such as Sasaki et al.,
+which pushed the complexity of collisions to less than two MD4 evaluations
+\cite{Sasaki2007}.
+
+Outside of work published in 2006 by Mironov and Zhang \cite{Mironov2006},
+the authors have found little evidence of the application of SAT solvers
+to hash function collisions and MD4 specifically. The Mironov and Zhang work
+was focused on the feasibility of such an encoding and the time for finding
+new examples of collisions in the Wang et al. class.
+
+We present the following four improvements in collisions.
+\begin{enumerate}
+    \itemsep0em
+    \item Wang et al.'s attack is differential independent.
+    \item Wang et al.'s attack is state independent.
+    \item Wang et al.'s attack is highly malleable.
+    \item The neighborhood of Wang et al.'s attack contains other collision classes.
+\end{enumerate}
+
+\section{Terminology}
+We first begin by giving a brief set of terminology:
+
+A \textbf{differential} is the signed XOR difference between two input blocks
+to a hash function.
+
+The \textbf{differential path} is the set of state transition constraints
+which produce a full or partial collision.
+
+The \textbf{constraints} of a collision are the necessary and/or sufficient
+boolean formulas for generating a collision, typically as a function of the
+state blocks.
+
+A \textbf{state transition constraint} is a constraint on the intermediate
+state variables, i.e., round variables. A constraint is \textbf{weak} if
+it is a any difference, and a constraint is \textbf{strong} if it is a
+signed difference. A equality constraint can either be weak or strong. This
+is roughly equivalent to a differential path.
+
+\textbf{Input block constraints}, \textbf{input state constraints}, and
+\textbf{output state constraints} are all analogously defined as state
+transition constraints.
+
+A \textbf{property} of a collision is any constraint placed upon the
+input block which exists independent from the constraints of a collision.
+
+An attack is \textbf{constraint-based} if there exists a SAT encoding of the
+attack which can generate multiple collisions.
+
+A collision is \textbf{differential-independent} if there are multiple
+input block differentials which satisfy the state transition constraints.
+
+A collision is \textbf{malleable} if collisions can be found with different
+properties such as ASCII or JSON input blocks, or with fixed internal text.
+
+A collision is \textbf{state-independent} if there exist alternative
+starting states which produce collisions. A state-independent collision
+is termed \textbf{strong} if one block can collide under two or more starting
+states.
+
+A \textbf{collision class} is defined by the differential path and optionally
+differential. The \textbf{neighborhood of a collision class} is a set of
+alternative differential paths with low distance between differences.
+For example, consider the differential path with $\Delta(I_{0 ... 48}) = 0$;
+then the differential path with $\Delta(I_0) = 1$ has low distance to
+$\Delta(I_0) = 0$, and hence is said to be in the neighborhood of
+$\Delta(I_{0 ... 48})$.
+
+
+\section{Notation}
+
+As we are not concerned with the theoretical underpinnings of the SAT models,
+nor will we use the model to provide general proofs, we use the following
+notations. This notation is heavily influenced by our use of the $bc2cnf$
+utility by Junttila \cite{circuits}.
+
+A constraint, $c = (n, e)$ is a mapping between a name, $n$, and an equation,
+$e$, of boolean clauses. These equations can be simple ($a \land b$) or complex
+($a \lxor (c \land d) \lxor (a \lor b)$). A model, $S = (C, A)$, is an ordered
+pair of a set, $C$, of constraints and a set, $A$, a set of names which must
+evaluate to true. Note that input variables are implicit and thus left
+unspecified.
+
+We construct the base model for MD4 as follows. Let $s_{0} .. s_{127}$ be the
+input state variables. Let $b_{0} .. b_{511}$ be the input block. We define
+$i_0 .. i_{1535}$ as the bits of the intermediate state variables generated
+via MD4, per RFC 1320 \cite{rfc1320}, and $o_{0} .. o_{128}$ as the resulting
+output state. With the $s$'s and $b$'s left unspecified, the model for MD4
+is thus $C_{MD4} = \{(i_0, e(i_0)), ..., (o_{128}, e(o_{128})) \}$. As we
+are interested in collisions, we use $C_{MD4, h_1}$ to denote the construction
+of MD4 with variables $i$, $o$, $s$, and $b$ prefixed with $h_1$.
+
+We then define $I_{md4}$ to be the set of initial state values, with
+$I_{md4, h_1}$ to be those state values with names prefixed by $h_1$. We also
+define $C_{collision, h_1, h_2}$ to be the two-way collision between
+$h_1$ and $h_2$; that is, all output bits are equal.
+
+\section{Differential Independent}
+
+We note that Wang et al.'s attack on MD4 is differential independent. Let
+$C_{wangs, h_1, h_2}$ be the set of the state transition constraints on page 15
+and sufficient constraints on page 16 \cite{Wang2005}. Let
+$\bar{\Delta}_{wangs}$ be the negation of the specified differential on page 7
+\cite{Wang2005}. Then we claim that
+\begin{align*}
+S = ( \{ C_{MD4, h_1} \cup C_{MD4, h_2} \cup C_{wangs, h_1, h_2} \cup
+\bar{\Delta}_{wangs} \cup C_{collision, h_1, h_2} \cup I_{md4, h_1} \cup
+I_{md4, h_2} \}, \{ C_{wangs}, \bar{\Delta}_{wangs},
+C_{collision h_1, h_2} \})
+\end{align*}
+ is a model which encodes a collision between $h_1$
+and $h_2$ satisfying the conditions of Wang's attack but with a diffferent
+differential.
+
+Claim: the model $S$ above is satisfiable. We give the following examples
+as proof. 
+
+
+
+By negating each found differential and re-running we can find all possible
+differentials. This is a total of 238 differentials. We note the signed
+block differences below. 
+
+
+
+\section{State Independent}
+
+We note that Wang et al.'s is strongly state independent. We construct a model
+$S$ with four instances of MD4, $h_1$, $h_2$, $h_3$, $h_4$, which share an input
+block and have a non-zero input state delta. 
+
+We thus claim that
+\begin{align*}
+S = ( \{ C_{MD4, h_1}, C_{MD4, h_2}, C_{MD4, h_3}, C_{MD4, h_4},
+C_{wangs, h_1, h_2}, C_{wangs, h_3, h_4}, \Delta_{wangs, h_1, h_2},
+\Delta_{wangs, h_3, h_4}, C_{collision, h_1, h_2}, C_{collision, h_3, h_4},
+\Delta_{any, h_1s, h_2s} \}, \{
+C_{wangs, h_1, h_2}, C_{wangs, h_3, h_4}, \Delta_{wangs, h_1, h_2},
+\Delta_{wangs, h_3, h_4}, C_{collision, h_1, h_2}, C_{collision, h_3, h_4},
+\Delta_{any, h_1s, h_2s} \} )
+\end{align*}
+encodes the above properties and is satisifable. We reproduce several
+examples below.
+
+
+
+
+\section{Highly Malleable}
+In the above style above, we note that Wang et al.'s is malleable, and highly
+malleable under alternative differentials. We produce the following examples;
+though we note that it is not possible with SAT prove that the attack is
+fully malleable and can produce collisions with any property.
+
+
+\section{Neighborhood}
+
+
+
+{\footnotesize \bibliographystyle{acm}
+
+\bibliography{thesis}}
+
+
+% \theendnotes
+
+\end{document}
