@@ -321,7 +321,7 @@
 % not capitalized unless they are the first or last word of the title.
 % Linebreaks \\ can be used within to get better formatting as desired.
 % Do not put math or special symbols in the title.
-\title{Measuring the Utility of a Collision:\\ The Neighborhood of MD4 Collisions}
+\title{Measuring Hash Trustworthiness via Collision Utility Metrics: Logical Cryptanalysis of MD4}
 
 
 % author names and affiliations
@@ -374,13 +374,18 @@ Email: erozier@iastate.edu}}
 % As a general rule, do not put math, special symbols or citations
 % in the abstract
 \begin{abstract}
-We propose a series of metrics for evaluating the utility of collision classes
-and develop a set of techniques for generating new collision classes in hash
-functions utilizing a logical cryptanalaysis framework. We demonstrate the
-effectiveness of this framework on the hash function MD4 and show that the
-existing attacks are of high utility, but do not allow for second preimage
-attacks under an expansive neighborhood. We partially analyze over 35,000 new
-collision classes for their utility under these methods.
+The discovery of fast collision attacks in cryptographic hash functions has
+traditionally resulted in the immediate deprecation of that hash function.
+In this paper we propose five scalable and practical metrics for evaluating
+the utility of collision classes based on boolean constraints and show that
+the published attacks by X. Wang, Y. Sasaki, P. Kasselman, H. Dobbertin, and
+M. Schlaffer in MD4 have high utility. We expand on existing attacks by
+developing a series of techniques based on logical cryptanalysis to find
+over 35,000 collisions in MD4 based on existing collisions, through the novel
+definition of a collision neighborhood. We demonstrate new techniques for
+inductively building full collisions from reduced round variants of MD4. We
+propose these techniques as a mechanism for measuring hash trustworthiness and
+discuss potential applications to real-world systems.
 \end{abstract}
 
 
@@ -455,6 +460,9 @@ MD4 hash function due to the ease of generating new classes of collisions.
 
 \textbf{TODO}.
 
+$\mathcal{C}$ for collision class. Ordered tuple.
+$\mathcal{F}$ for family of collision classes. Set.
+$I$ is an indexing function.
 
 
 
@@ -534,43 +542,75 @@ In the following sections, we use the collisions of X. Wang \cite{Wang2005},
 Y. Sasaki \cite{Sasaki2007}, M. Schlaffer \cite{Schlaffer2006}, H. Dobbertin
 \cite{Dobbertin1998}, and P. Kasselman \cite{KasselmanMD4} for examples.
 
-\subsection{Distance Metric}
 
-We introduce a distance function between collision classes by the number of
-differences in intermediate rounds deltas. We find justification for this
-metric in the existing literature on MD4: H. Dobbertin's \cite{Dobbertin1998}
-and P. Kasselman's \cite{KasselmanMD4} classes have distance $1$ under this
-metric.
+\subsection{Distance Metrics}
 
+We introduce a distance function, $\delta$ between collision classes by the
+number of differences in intermediate rounds deltas. That is, given two
+collision classes, $C_1, C_2 \in \mathcal{C}$:
+\begin{align}
+    \delta(C_1, C_2) = \big| \{ i : I(C_1, i) \neq I(C_2, i) \} \big|
+\end{align}
+We find justification for this metric in the existing literature on MD4:
+H. Dobbertin's \cite{Dobbertin1998} and P. Kasselman's \cite{KasselmanMD4}
+collision classes have distance $1$ under this metric.
+
+Please refer to Table \ref{table:distance} for the distances between existing
+collisions in MD4.
+
+\begin{table}
+    \caption{Distance between Existing Collision Classes}
+    \label{table:distance}
+    \begin{tabular}{c c c c c c}
+        & X. W. & Y. S. & P. K. & H. D. & M. S. \\
+        X. Wang's & 0 & 21 & 26 & 27 & 12 \\
+        Y. Sasaki's & & 0 & 25 & 26 & 2 \\
+        P. Kasselman's &  &  & 0 & 1 & 25 \\
+        H. Dobbertin's &  &  &  & 0 & 26 \\
+        M. Schlaffer's &  &  &  &  & 0 \\
+    \end{tabular}
+\end{table}
+
+
+We can define a similar distance function, $\Delta$, between families of
+collision classes by cardinality of the symmetric difference in the two
+collision families. That is, given two families of collision classes,
+$F_1, F_2 \in \mathcal{F}$:
+\begin{align}
+    \Delta(F_1, F_2) = \big| (F_1 \cup F_2) \setminus (F_1 \cap F_2) \big|
+\end{align}
+This is convenient for when the specifics of the differential path do not
+matter, merely that there exist at least one collision class of the specified
+form.
+
+
+\subsection{Neighborhoods}
+
+We define the neighborhood of a collision class, $C \in \mathcal{C}$, to be the
+set of all other collisions at a fixed distance, $d \in \mathbb{N}$, from $C$.
 That is:
 \begin{align}
-    \delta(C_1, C_2) = \| \{ i : I(C_1, i) \neq I(C_2, i) \} \|
+    N(C, d) & = \{ C_j : \delta(C, C_j) = d \} \\
+    N(C) & = N(C, 1)
 \end{align}
+For instance, $C_{Wang} \in N(C_{Sasaki}, 21)$. The distance parameter, $d$,
+may optionally be ommited, in which case the unit distance is implied. Thus,
+$C_{Kasselman} \in N(C_{Dobbertin})$.
 
-For the example collisions, below are distances under this metric:
-\textbf{TODO}.
+The implications of neighborhoods are discussed further in section
+\ref{empirical:neighborhood}.
 
+We can similarly define the neighborhood of a family of collision classes,
+$F \in \mathcal{F}$, to be the set of all other families of collision classes
+at a fixed distance, $d \in \mathbb{N}$, from $F$.
 
-\subsection{Neighborhood}
-
-We define the neighborhood of a collision class to be all other collisions
-which have a distance of one.
-
-That is:
-\begin{align}
-    N(C) = \{ C_j : \delta(C, C_j) = 1 \}
-\end{align}
-
-
-For the example collisions, below are sizes of the neighborhoods:
-\textbf{TODO}.
 
 \subsection{Reduced Rounds}
 \subsubsection{Abstract}
 
-\textbf{TODO} - Describe technique applied to tags
+\textbf{TODO} - Describe technique applied to tags.
 
-Give some reasoning for why it works, example graphs.
+
 
 
 \subsubsection{Neighborhood}
@@ -590,18 +630,39 @@ Give some reasoning for why it works, example graphs.
 \subsection{Unique Differentials}
 
 \textbf{TODO}
+Please refer to Table \ref{table:differentials} for the number of differential
+paths...
 
-Include graphic of count of unique differentials for all 35k collision classes
+\begin{table}
+    \caption{Number of Differentials for Existing Collision Classes}
+    \label{table:differentials}
+    \begin{tabular}{c c c c}
+        \textbf{Attack} & \textbf{Size} & \textbf{Attack} & \textbf{Size} \\
+        X. Wang's & 64 & Y. Sasaki's & 4 \\
+        H. Dobbertin's & 32 & P. Kasselman's & 32 \\
+        M. Schlaffer's & 64 & & \\
+    \end{tabular}
+\end{table}
 
-Separate table for known attacks as data points. Examples in appendix?
-
-\subsection{Unit-Step Neighborhood}
+\subsection{Unit-Step Neighborhood} \label{empirical:neighborhood}
 
 \textbf{TODO}
 
-Include graphic of count of number of neighbors for all 35k collision classes
+Please refer to Table \ref{table:neighborhood} for the sizes of neighborhoods
+of existing collisions. In particular, note that Y. Sasaki's attack--which
+claimed to improve upon X. Wang's attack--has a larger neighborhood size, and
+likewise with P. Kasselman's attack which improved upon H. Dobbertin's attack.
 
-Separate table for known attacks as data points.
+\begin{table}
+    \caption{Neighborhood Sizes for Existing Collision Classes}
+    \label{table:neighborhood}
+    \begin{tabular}{c c c c}
+        \textbf{Attack} & \textbf{Size} & \textbf{Attack} & \textbf{Size} \\
+        X. Wang's & 54 & Y. Sasaki's & 157 \\
+        H. Dobbertin's & 55 & P. Kasselman's & 60 \\
+        M. Schlaffer's & 100 & & \\
+    \end{tabular}
+\end{table}
 
 
 \subsection{Zeroes \& Ones}
@@ -630,10 +691,24 @@ Separate table for known attacks as data points. Examples as appendix.
 
 Include table detailing how many have ASCII blocks and how many don't.
 
-Separate table for known attacks as data points. Examples as appendix.
+See Table \ref{table:ascii} for results. Note that the validation of
+P. Kasselman's and H. Dobbertin's results do not hold for the latter attacks
+by X. Wang, Y. Sasaki, or M. Schlaffer. Thus, while the latter attacks have
+been viewed as being of better quality, under this particular metric,
+P. Kasselman's and H. Dobbertin's collision classes are better.
 
-
-
+\begin{table}
+    \caption{ASCII Blocks in Existing Collision Classes}
+    \label{table:ascii}
+    \begin{tabular}{c c c}
+        \textbf{Attack} & \textbf{Single Block} & \textbf{Both Blocks} \\
+        X. Wang's & true & false \\
+        Y. Sasaki's & true & false \\
+        P. Kasselman's & true & \textbf{true} \\
+        H. Dobbertin's & true & \textbf{true} \\
+        M. Schlaffer's & true & false \\
+    \end{tabular}
+\end{table}
 
 
 
