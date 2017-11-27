@@ -160,7 +160,7 @@
 
 % *** MATH PACKAGES ***
 %
-%\usepackage{amsmath}
+\usepackage{amsmath}
 % A popular package from the American Mathematical Society that provides
 % many useful and powerful commands for dealing with mathematics.
 %
@@ -178,7 +178,7 @@
 
 % *** SPECIALIZED LIST PACKAGES ***
 %
-%\usepackage{algorithmic}
+\usepackage{algorithmic}
 % algorithmic.sty was written by Peter Williams and Rogerio Brito.
 % This package provides an algorithmic environment fo describing algorithms.
 % You can use the algorithmic environment in-text or within a figure
@@ -383,6 +383,11 @@ attacks under an expansive neighborhood. We partially analyze over 35,000 new
 collision classes for their utility under these methods.
 \end{abstract}
 
+
+
+
+
+
 % no keywords
 % For peer review papers, you can put extra information on the cover
 % page as needed:
@@ -442,9 +447,18 @@ Furthermore, we demonstrate new techniques for working with collisions under
 a logical cryptanalysis framework. Throughout this paper, we make use of the
 MD4 hash function due to the ease of generating new classes of collisions.
 
+
+
+
+
 \section{Terminology \& Notation}
 
 \textbf{TODO}.
+
+
+
+
+
 
 \section{The Utility of a Collision}
 
@@ -504,6 +518,130 @@ however, a collision class does not satisfy these properties, it impact is
 likely severely limited in scope, and may not provide useful information to
 find other collision classes which have higher utility.
 
+
+
+
+
+
+\section{Techniques for Logical Cryptanalysis}
+
+The following techniques have been extensively tested on MD4 and partially
+tested on MD5 and believe to apply fully to MD5. They may or may not apply
+to any later hash function, such as SHA-1, SHA-2, or SHA-3, and have not been
+tested yet.
+
+In the following sections, we use the collisions of X. Wang \cite{Wang2005},
+Y. Sasaki \cite{Sasaki2007}, M. Schlaffer \cite{Schlaffer2006}, H. Dobbertin
+\cite{Dobbertin1998}, and P. Kasselman \cite{KasselmanMD4} for examples.
+
+\subsection{Distance Metric}
+
+We introduce a distance function between collision classes by the number of
+differences in intermediate rounds deltas. We find justification for this
+metric in the existing literature on MD4: H. Dobbertin's \cite{Dobbertin1998}
+and P. Kasselman's \cite{KasselmanMD4} classes have distance $1$ under this
+metric.
+
+That is:
+\begin{align}
+    \delta(C_1, C_2) = \| \{ i : I(C_1, i) \neq I(C_2, i) \} \|
+\end{align}
+
+For the example collisions, below are distances under this metric:
+\textbf{TODO}.
+
+
+\subsection{Neighborhood}
+
+We define the neighborhood of a collision class to be all other collisions
+which have a distance of one.
+
+That is:
+\begin{align}
+    N(C) = \{ C_j : \delta(C, C_j) = 1 \}
+\end{align}
+
+
+For the example collisions, below are sizes of the neighborhoods:
+\textbf{TODO}.
+
+\subsection{Reduced Rounds}
+\subsubsection{Abstract}
+
+\textbf{TODO} - Describe technique applied to tags
+
+Give some reasoning for why it works, example graphs.
+
+
+\subsubsection{Neighborhood}
+
+\textbf{TODO} - Describe technique applied neighborhood extensions
+
+Give some reasoning for why it works, example graphs.
+
+
+
+
+
+
+
+
+\section{Empirical Results}
+\subsection{Unique Differentials}
+
+\textbf{TODO}
+
+Include graphic of count of unique differentials for all 35k collision classes
+
+Separate table for known attacks as data points. Examples in appendix?
+
+\subsection{Unit-Step Neighborhood}
+
+\textbf{TODO}
+
+Include graphic of count of number of neighbors for all 35k collision classes
+
+Separate table for known attacks as data points.
+
+
+\subsection{Zeroes \& Ones}
+
+\textbf{TODO}
+
+Include graphic of count of max number of zeros/ones for all 35k collision
+classes.
+
+Separate table for known attacks as data points. Examples as appendix.
+
+
+\subsection{Multicollisions}
+
+\textbf{TODO}
+
+Include table detailing how many have multicollisions and how many don't.
+Hypothesis: all do since all existing datapoints do.
+
+Separate table for known attacks as data points. Examples as appendix.
+
+
+\subsection{ASCII Blocks}
+
+\textbf{TODO}
+
+Include table detailing how many have ASCII blocks and how many don't.
+
+Separate table for known attacks as data points. Examples as appendix.
+
+
+
+
+
+
+
+\section{Open Research}
+
+The framework can be seen here \textbf{TODO}. Complete data set available
+upon request.
 
 
 % An example of a floating figure using the graphicx package.
@@ -604,7 +742,10 @@ find other collision classes which have higher utility.
 
 
 \section{Conclusion}
+
+
 The conclusion goes here.
+
 
 
 
@@ -617,7 +758,7 @@ The conclusion goes here.
 
 
 The authors would like to thank the Department of Electrical and Computer
-Engineering.
+Engineering and Nathan Mulbrook for providing hardware.
 
 
 
