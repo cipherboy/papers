@@ -328,16 +328,10 @@
 % author names and affiliations
 % use a multiple column layout for up to three different
 % affiliations
-\author{\IEEEauthorblockN{Alexander M. Scheel}
-\IEEEauthorblockA{Iowa State University\\
-Ames, IA, USA \\
-Email: alexander.m.scheel@gmail.com}
-\and
-\IEEEauthorblockN{Eric W. D. Rozier}
-\IEEEauthorblockA{Iowa State University\\
-Ames, IA, USA \\
-Email: erozier@iastate.edu}}
-
+\author{\IEEEauthorblockN{Alexander M. Scheel, Eric W. D. Rozier}
+\IEEEauthorblockA{Department of Computer Science\\Iowa State University of Science and Technology\\
+Ames, Iowa, USA 50011\\
+Email: \texttt{alexander.m.scheel@gmail.com, erozier@iastate.edu}}}
 % conference papers do not typically use \thanks and this command
 % is locked out in conference mode. If really needed, such as for
 % the acknowledgment of grants, issue a \IEEEoverridecommandlockouts
@@ -445,6 +439,12 @@ February of 2017 \cite{cryptoeprint:2017:190}. However, this attack had a bound
 of $2^{63.1}$ -- faster than the theoretical $2^{80}$ but still requiring
 significant investment in compute resources.
 
+\textbf{The contributions of this paper are...}
+
+\begin{itemize}
+\item We...
+\end{itemize}
+
 We define a series of criteria for analyzing the utility of a collision class.
 Collision classes of high utility are closer to a second preimage attack in the
 amount of flexibility they provide to an attacker, whereas classes of low
@@ -453,11 +453,20 @@ Furthermore, we demonstrate new techniques for working with collisions under
 a logical cryptanalysis framework. Throughout this paper, we make use of the
 MD4 hash function due to the ease of generating new classes of collisions.
 
+The remainder of this paper is organized as follows... In Section
+\ref{Sec:Terminology} we...
 
+\section{Related Work}
+\label{Sec:Related}
 
+Broad context... intersection... subsection introductions.
 
+\subsection{Differential Cryptanalysis}
+
+\subsection{Satisfiability Solving}
 
 \section{Terminology \& Notation}
+\label{Sec:Terminology}
 
 \textbf{TODO}.
 
@@ -465,10 +474,6 @@ $\mathcal{C}$ for collision class. Ordered tuple, indexable.
 $\mathcal{F}$ for family of collision classes. Ordered set, indexable.
 $[i]$ is an indexing function.
 $R$ is number of rounds of $F$ or $C$.
-
-
-
-
 
 \section{Measuring the Utility of a Collision}
 
@@ -757,17 +762,9 @@ P. Kasselman's and H. Dobbertin's collision classes are better.
 \section{New Collision}
 
 
-\section{Broader Impacts}
+\section{Discussion}
 
 \textbf{TODO} - Discuss impacts on real-world systems like MD5, SHA-1, etc.
-
-
-
-\section{Open Research}
-
-The framework can be seen here \textbf{TODO}. Complete data set available
-upon request.
-
 
 % An example of a floating figure using the graphicx package.
 % Note that \label must occur AFTER (or within) \caption.
@@ -872,6 +869,10 @@ upon request.
 The conclusion goes here.
 
 
+\section{Future Work}
+
+The framework can be seen here \textbf{TODO}. Complete data set available
+upon request.
 
 
 
@@ -880,7 +881,6 @@ The conclusion goes here.
 
 % use section* for acknowledgment
 \section*{Acknowledgment}
-
 
 The authors would like to thank the Department of Electrical and Computer
 Engineering and Nathan Mulbrook for providing hardware.
