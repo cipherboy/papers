@@ -93,7 +93,8 @@
 % *** CITATION PACKAGES ***
 %
 \usepackage{cite}
-\usepackage{hyperref,supertabular,amssymb}
+\usepackage[hidelinks]{hyperref}
+\usepackage{supertabular,amssymb}
 % cite.sty was written by Donald Arseneau
 % V1.6 and later of IEEEtran pre-defines the format of the cite.sty package
 % \cite{} output to follow that of the IEEE. Loading the cite package will
@@ -460,15 +461,16 @@ MD4 hash function due to the ease of generating new classes of collisions.
 
 \textbf{TODO}.
 
-$\mathcal{C}$ for collision class. Ordered tuple.
-$\mathcal{F}$ for family of collision classes. Set.
-$I$ is an indexing function.
+$\mathcal{C}$ for collision class. Ordered tuple, indexable.
+$\mathcal{F}$ for family of collision classes. Ordered set, indexable.
+$[i]$ is an indexing function.
+$R$ is number of rounds of $F$ or $C$.
 
 
 
 
 
-\section{The Utility of a Collision}
+\section{Measuring the Utility of a Collision}
 
 We propose the following metrics for evaluating the utility of a collision
 class:
@@ -549,13 +551,13 @@ We introduce a distance function, $\delta$ between collision classes by the
 number of differences in intermediate rounds deltas. That is, given two
 collision classes, $C_1, C_2 \in \mathcal{C}$:
 \begin{align}
-    \delta(C_1, C_2) = \big| \{ i : I(C_1, i) \neq I(C_2, i) \} \big|
+    \delta(C_1, C_2) = \big| \{ i : C_1[i] \neq C_2[i] \} \big|
 \end{align}
 We find justification for this metric in the existing literature on MD4:
 H. Dobbertin's \cite{Dobbertin1998} and P. Kasselman's \cite{KasselmanMD4}
 collision classes have distance $1$ under this metric.
 
-Please refer to Table \ref{table:distance} for the distances between existing
+Refer to Table \ref{table:distance} for the distances between existing
 collisions in MD4.
 
 \begin{table}
@@ -590,37 +592,78 @@ We define the neighborhood of a collision class, $C \in \mathcal{C}$, to be the
 set of all other collisions at a fixed distance, $d \in \mathbb{N}$, from $C$.
 That is:
 \begin{align}
-    N(C, d) & = \{ C_j : \delta(C, C_j) = d \} \\
+    N(C, d) & = \{ C_j \in \mathcal{C} : \delta(C, C_j) = d \} \\
     N(C) & = N(C, 1)
 \end{align}
 For instance, $C_{Wang} \in N(C_{Sasaki}, 21)$. The distance parameter, $d$,
-may optionally be ommited, in which case the unit distance is implied. Thus,
+may optionally be omitted, in which case the unit distance is implied. Thus,
 $C_{Kasselman} \in N(C_{Dobbertin})$.
 
-The implications of neighborhoods are discussed further in section
-\ref{empirical:neighborhood}.
+The implications of collision class neighborhoods are discussed further in
+section \ref{empirical:neighborhood}.
 
 We can similarly define the neighborhood of a family of collision classes,
 $F \in \mathcal{F}$, to be the set of all other families of collision classes
-at a fixed distance, $d \in \mathbb{N}$, from $F$.
+at a fixed distance, $d \in \mathbb{N}$, from $F$. That is:
+\begin{align}
+    \mathcal{N}(F, d) & = \{ F_j \in \mathcal{F} : \delta(F, F_j) = d \} \\
+    \mathcal{N}(F) & = N(F, 1)
+\end{align}
+The distance parameter, $d$, may optionally be omitted, in which case the unit
+distance is implied.
+
+Neighborhoods can be classified into three types: \textit{expansion},
+\textit{internal}, and \textit{mixed}. Let $d$ be fixed. An \textit{expansion}
+neighborhood of a collision class, $C \in \mathcal{C}$, is the neighborhood
+restricted only to those collision classes which only differ in rounds external
+to the collision family of $C$. An \textit{internal} neighborhood of $C$ is the
+neighborhood restricted only to those collision classes which differ in rounds
+internal to the collision family of $C$. An \textit{mixed} neighborhood of $C$
+is the neighborhood restricted only to collisions which differ in a round
+internal and a round external to the collision family of $C$. That is:
+\begin{align*}
+    N_{exp}(C, d) = \{ & C_{j} \in N(C, d) : \forall i \in F(C), C_j[i] = C[i] \} \\
+    N_{int}(C, d) = \{ & C_{j} \in N(C, d) : \forall i \not\in F(C), C_j[i] = C[i] \} \\
+    N_{mix}(C, d) = \{ & C_{j} \in N(C, d) : \exists i \in F(C), C_j[i] \neq C[i] \\
+        & \text{ and } \exists k \not\in F(C), C_j[k] \neq C[k] \}
+\end{align*}
 
 
-\subsection{Reduced Rounds}
-\subsubsection{Abstract}
+\subsection{Family Similarity}
+We define a relation among families of collisions across rounds. Let $F_1$ and
+$F_2$ be two different families of collisions. Then we say that $F_1$ and $F_2$
+are \textit{similar}, and notate it $F_1 \lesssim F_2$, if $R(F_1) \leq R(F_2)$
+and $F_1 \subseteq F_2$. Note that, when $R(F_1) = R(F_2)$, this is equivalent
+to saying that $F_2$ is in some expansion neighborhood of $F_1$. Further, when
+$R(F_1) < R(F_2)$ and $F_1 = F_2$, then we say that $F_2$ is the
+\textit{trivial extension} of $F_1$.
 
-\textbf{TODO} - Describe technique applied to tags.
+We claim that the following statements are true:
+\begin{enumerate}
+    \item For every $F \in \mathcal{F}$, there exists $F'$ such that
+        $F' \lesssim F$ and $R(F') + 4 = R(F)$.
+    \item For every $F \in \mathcal{F}$, there exists $F'$ such that
+        $F \lesssim F'$.
+\end{enumerate}
+
+\textbf{TODO} - Describe justification? Later sections?
 
 
+\subsection{Class Similarity}
 
-
-\subsubsection{Neighborhood}
+We claim that the aforementioned statements hold when considering individual
+collision classes instead of families of collision classes, but with less
+likelihood.
 
 \textbf{TODO} - Describe technique applied neighborhood extensions
 
 Give some reasoning for why it works, example graphs.
 
 
+\subsection{Miscellaneous}
 
+\textbf{TODO} - Describe chosen prefix, second preimage, ASCII, and other
+tips and tricks for faster model runs.
 
 
 
@@ -630,7 +673,7 @@ Give some reasoning for why it works, example graphs.
 \subsection{Unique Differentials}
 
 \textbf{TODO}
-Please refer to Table \ref{table:differentials} for the number of differential
+Refer to Table \ref{table:differentials} for the number of differential
 paths...
 
 \begin{table}
@@ -648,7 +691,7 @@ paths...
 
 \textbf{TODO}
 
-Please refer to Table \ref{table:neighborhood} for the sizes of neighborhoods
+Refer to Table \ref{table:neighborhood} for the sizes of neighborhoods
 of existing collisions. In particular, note that Y. Sasaki's attack--which
 claimed to improve upon X. Wang's attack--has a larger neighborhood size, and
 likewise with P. Kasselman's attack which improved upon H. Dobbertin's attack.
@@ -710,6 +753,13 @@ P. Kasselman's and H. Dobbertin's collision classes are better.
     \end{tabular}
 \end{table}
 
+
+\section{New Collision}
+
+
+\section{Broader Impacts}
+
+\textbf{TODO} - Discuss impacts on real-world systems like MD5, SHA-1, etc.
 
 
 
