@@ -423,7 +423,7 @@ From an attacker's perspective, finding a preimage or second preimage has been
 difficult. To the author's knowledge, the current bound for a preimage attack
 in MD5 is $2^{123.4}$ by Y. Sasaki and K. Aoki \cite{SasakiPreimage}. Further,
 while J. Kelsey and B. Schneier proposed a method for finding second preimages
-in less than $2^n$, we note that this requires rather rather long messages
+in less than $2^n$, we note that this requires rather long messages
 \cite{SchneierSecondPreimage}. However, collision attacks are well within reach
 for adversaries, and well past only theoretical attacks. The work of
 H. Dobbertin \cite{Dobbertin1998}, X. Wang \cite{cryptoeprint:2004:199},
@@ -492,9 +492,9 @@ analyze collisions in hash functions.
 This paper draws upon the public cryptanalysis of MD4, the wide availability of
 high quality SAT solvers, and previous work in logical cryptanalysis.
 
-\subsection{Differential Cryptanalysis}
+\subsection{On Differential Cryptanalysis}
 
-\textbf{TODO}
+\textbf{TODO - expand?}
 
 Differential Cryptanalysis has been the major technique behind the discovery
 of collisions in cryptographic hash functions. Its importance can be seen
@@ -516,16 +516,38 @@ these attacks by hand to be difficult, and note that message modification
 techniques may affect the chosen prefix.
 
 
-\subsection{Logical Cryptanalysis}
+\subsection{On Logical Cryptanalysis}
 
-\textbf{TODO}
+\textbf{TODO - expand?}
 
 Logical Cryptanalysis and its encoding as SAT likely started under the work of
-F. Massacci in early 2000 with his paper titled ``Logical Cryptanalysis as a
-SAT Problem: Encoding and Analysis of the U.S. Data Encryption Standard''.
+F. Massacci in 1999 with his paper titled ``Using walk-SAT and rel-sat for
+cryptographic key search''. \cite{Massacci:1999:UWR:1624218.1624261}. However,
+much of the early work by F. Massacci was focused on symmetric and asymmetric
+ciphers (in \cite{Massacci:1999:UWR:1624218.1624261},
+\cite{MASSACCI2000LogicalCA}, and \cite{FIORINI2003101}). It wasn't until the
+work of D. Jovanovi{\'{c}} and P. Jani{\v{c}}i{\'{c}} in \cite{LogicalAnalysis}
+that exploring collisions in the context of SAT was introduced, and until
+the work of I. Mironov and L. Zhang in \cite{Mironov2006} that this was
+studied for a X. Wang's collision class.
+
+We make use of the \textit{bc2cnf} utility by T. Junttila (available here
+\cite{circuits}) as the basis for our models. This allows us to encode hash
+functions as generic structures in the circuit description language and
+ease the algorithmic creation of models which build on top of them. We then
+use CryptoMiniSat5 by M. Soos (\cite{CryptoMiniSat5}) to run the models and
+check for a satisfying witness, often an example collision.
+
+With the exception of the work by I. Mironov, the authors find that much of
+the previous work in the field has been focused on evaluating the performance
+of various SAT solvers. We deviate from this by instead focusing on evaluating
+the properties of the hash function--not the SAT solver. We have developed new
+techniques for using a SAT solver to inductively build full collisions in MD4
+from collisions in reduced-round MD4 and to build addition examples of
+collision classes from a single instance of a collision in MD4.
 
 
-\subsection{Trustworthy Computing}
+\subsection{On Trustworthy Computing}
 
 \textbf{TODO - Assigned @erozier}
 
@@ -544,6 +566,8 @@ $[i]$ is an indexing function.
 $R$ is number of rounds of $F$ or $C$.
 
 \section{Intuition on the Utility of a Collision} \label{Sec:Intuition}
+
+\textbf{TODO - introductory paragraph}
 
 We propose the following metrics for evaluating the utility of a collision
 class:
