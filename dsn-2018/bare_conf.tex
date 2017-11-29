@@ -731,9 +731,41 @@ internal and a round external to the collision family of $C$. That is:
 
 \section{Intuition on the Utility of a Collision} \label{Sec:Intuition}
 
-\textbf{TODO - introductory paragraph}
+\textbf{TODO - audit introductory paragraphs}
 
-We propose the following metrics for evaluating the utility of a collision
+We seek to build new intuition about collisions in hash functions,
+specifically, collisions in MD4. By developing techniques from logical
+cryptanalysis, we seek to complement and extend the results from
+differential cryptanalysis. In particular, we wish to use logical cryptanalysis
+to discuss the impacts of collisions in real-world systems. In this paper,
+we introduce and give justification for general techniques, and present some
+results of these techniques.
+
+To begin, real world systems are most vulnerable to two attacks: the preimage
+and second preimage. For systems relying on e.g., password validation via
+comparing two hashes, preimage attacks would allow inverting the hash,
+increasing the risk associated with losing a database of hashed passwords.
+On the other hand, systems relying on message validation, such as signature
+checks or file integrity checks would be easily broken with fast second
+preimage techniques. Both of these attacks are intractable, thus protecting
+real-world systems. However, much research has been devoted to collision
+attacks, producing efficient results.
+
+Thus, we seek to evaluate the relative difference between a collision
+attack and second preimage attacks, to give some measure of distance between
+them. Several high profile attacks against hash function usage have been
+made, including \textbf{TODO -- cite}, with MD5, cloning a CA certificate
+and creating malicious executables, and with SHA-1, a pair of PDFs with the
+same hash. However, many of these techniques exploit not the hash, but the
+flexibility of the file format, relying instead on embedding arbitrary,
+collidable data and later checking for the presence of one of the matching
+blocks. This is especially obvious in the MD5 executable and SHA-1 PDF attacks.
+In some cases, such as trying to produce a rogue CA certificate that matches
+an existing root, this is not possible and thus relies on searching a wide
+enough set of objects for a possible match to the collision.
+
+Seeing the need to evaluate how much flexibility exists in a collision,
+we propose the following metrics for evaluating the utility of a collision
 class:
 \begin{enumerate}
     \item The number of unique differentials a collision class has.
@@ -1013,6 +1045,9 @@ We present the following new differentials as part of our work:
 
 
 
+
+
+
 \section{Discussion of Impacts} \label{Sec:Impacts}
 
 \textbf{TODO} - Recap impacts on real-world systems like MD5, SHA-1, etc.
@@ -1115,8 +1150,8 @@ We present the following new differentials as part of our work:
 
 
 \section{Conclusion} \label{Sec:Conclusion}
-
 The conclusion goes here.
+
 
 
 \section{Future Work}
