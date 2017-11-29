@@ -404,20 +404,20 @@ discuss potential applications to real-world systems.
 Cryptographic hash functions form the core of many protocols. From file
 integrity checks to verify long term storage of data, to cache invalidation
 techniques, and use as a building block in network protocols such as Kerberos
-and TLS, this class of functions necessarily has some strong guarantees about
-the properties of these functions. There are three basic properties hash
+and TLS, this class of functions necessarily has strong guarantees about
+properties of its members. There are three basic properties hash
 functions must have to be considered cryptographically secure:
 \begin{itemize}
-    \item Preimage Resistance: It should be computationally hard to find
+    \item \textbf{Preimage Resistance}: It should be computationally hard to find
         the inverse of a hash function.
-    \item Second Preimage Resistance: Given an input block, it should be
+    \item \textbf{Second Preimage Resistance}: Given an input block, it should be
         computationally hard to find a second block which hashes to the
         same value as the first block.
-    \item Collision Resistance: It should be computationally hard to find two
+    \item \textbf{Collision Resistance}: It should be computationally hard to find two
         blocks which hash to the same value.
 \end{itemize}
 Note that a second preimage is necessarily a collision and is also a stronger
-result.
+result in practice.
 
 From an attacker's perspective, finding a preimage or second preimage has been
 difficult. To the author's knowledge, the current bound for a preimage attack
@@ -434,39 +434,107 @@ From a cryptographic perspective, the existence of a feasible collision attack
 breaks the requisite properties, thus deprecating the function's use. In some
 instances however, there continues to be widespread use of deprecated hash
 functions. One widespread example is the continued use by Git of SHA-1, despite
-M. Stevens et al. having published the first known full SHA-1 collision in
-February of 2017 \cite{cryptoeprint:2017:190}. However, this attack had a bound
-of $2^{63.1}$ -- faster than the theoretical $2^{80}$ but still requiring
-significant investment in compute resources.
+M. Stevens et al. publishing a full SHA-1 collision in February of 2017
+\cite{cryptoeprint:2017:190}. However, this attack had a bound of $2^{63.1}$ --
+faster than the theoretical $2^{80}$ but still requiring significant compute
+resources.
 
-\textbf{The contributions of this paper are...}
-
+We seek to address the problem of evaluating the use cases for a collision,
+to determine--or partially determine--whether or not a collision affects
+a particular system. This paper contributes several novel techniques to
+logical cryptanalysis and uses these techniques to derive metrics of the
+trustworthiness of hash functions. We claim the following results are novel
+in the field:
 \begin{itemize}
-\item We...
+    \item We define the neighborhood of a class of collisions and show that
+        it is frequently non-empty.
+    \item We discuss techniques for finding useful collisions within a
+        class of collisions.
+    \item We propose additional techniques for building new classes of
+        collisions and show that collisions in MD4 can be found inductively.
+    \item We propose five universal metrics for evaluating the utility of
+        a class of collisions.
 \end{itemize}
 
-We define a series of criteria for analyzing the utility of a collision class.
-Collision classes of high utility are closer to a second preimage attack in the
-amount of flexibility they provide to an attacker, whereas classes of low
-utility may not affect all systems which use a particular hash function.
-Furthermore, we demonstrate new techniques for working with collisions under
-a logical cryptanalysis framework. Throughout this paper, we make use of the
-MD4 hash function due to the ease of generating new classes of collisions.
 
-The remainder of this paper is organized as follows... In Section
-\ref{Sec:Terminology} we...
 
-\section{Related Work}
-\label{Sec:Related}
 
-Broad context... intersection... subsection introductions.
+\textbf{TODO - Transition}
+
+We propose that collision classes of high utility are closer to a second
+preimage attack in the amount of flexibility they provide to an attacker,
+whereas classes of low utility may not affect all systems which use a
+particular hash function. Furthermore, we demonstrate new techniques for
+working with collisions under a logical cryptanalysis framework. Throughout
+this paper, we make use of the MD4 hash function due to the ease of generating
+new classes of collisions.
+
+\textbf{TODO - Finish Organization}
+
+The remainder of this paper is organized as follows. In Section
+\ref{Sec:Related} we discuss previous results and show how our research
+expands upon prior work. In Section \ref{Sec:Terminology}, we discuss the
+terminology and notations we use throughout the remainder of the paper.
+In Section \ref{Sec:Intuition}, we give the intuition between measuring
+the utility of a collision and motivate why it is useful. In Section
+\ref{Sec:Logical}, we present new techniques in logical cryptanalysis to
+analyze collisions in hash functions.
+
+
+
+
+
+
+\section{Related Work} \label{Sec:Related}
+
+\textbf{Broad context... intersection... subsection introductions.}
+
+This paper draws upon the public cryptanalysis of MD4, the wide availability of
+high quality SAT solvers, and previous work in logical cryptanalysis.
 
 \subsection{Differential Cryptanalysis}
 
-\subsection{Satisfiability Solving}
+\textbf{TODO}
 
-\section{Terminology \& Notation}
-\label{Sec:Terminology}
+Differential Cryptanalysis has been the major technique behind the discovery
+of collisions in cryptographic hash functions. Its importance can be seen
+everywhere from X. Wang's attacks on MD4 \cite{Wang2005} to more recent
+cryptanalysis of general purpose hash functions such as Murmur3 by
+J. Aumasson, D. Bernstein, and M. Bo{\ss}let \cite{murmur3DC}. However, while
+differential cryptanalysis plays an important role, techniques for automated
+analysis of hash functions are still an emerging area. In
+\cite{cryptoeprint:2004:199}, X. Wang claimed to have found the MD4 collision
+``with hand calculation'', though in \cite{Wang2005}, she specifies message
+modification techniques which can be implemented in code.
+
+Our work removes the need for finding message modification techniques by
+specifying the differential path as part of the SAT formula and letting the
+solver find a pair of satisfying messages which follow the differential path
+and produce a collision. Further constraints can then be placed upon this
+model, such as a chosen prefix or desired start state. We believe performing
+these attacks by hand to be difficult, and note that message modification
+techniques may affect the chosen prefix.
+
+
+\subsection{Logical Cryptanalysis}
+
+\textbf{TODO}
+
+Logical Cryptanalysis and its encoding as SAT likely started under the work of
+F. Massacci in early 2000 with his paper titled ``Logical Cryptanalysis as a
+SAT Problem: Encoding and Analysis of the U.S. Data Encryption Standard''.
+
+
+\subsection{Trustworthy Computing}
+
+\textbf{TODO - Assigned @erozier}
+
+
+
+
+
+
+\section{Terminology \& Notation}  \label{Sec:Terminology}
 
 \textbf{TODO}.
 
@@ -475,7 +543,7 @@ $\mathcal{F}$ for family of collision classes. Ordered set, indexable.
 $[i]$ is an indexing function.
 $R$ is number of rounds of $F$ or $C$.
 
-\section{Measuring the Utility of a Collision}
+\section{Intuition on the Utility of a Collision} \label{Sec:Intuition}
 
 We propose the following metrics for evaluating the utility of a collision
 class:
@@ -538,7 +606,9 @@ find other collision classes which have higher utility.
 
 
 
-\section{Techniques for Logical Cryptanalysis}
+
+
+\section{Techniques for Logical Cryptanalysis} \label{Sec:Logical}
 
 The following techniques have been extensively tested on MD4 and partially
 tested on MD5 and believe to apply fully to MD5. They may or may not apply
@@ -560,7 +630,9 @@ collision classes, $C_1, C_2 \in \mathcal{C}$:
 \end{align}
 We find justification for this metric in the existing literature on MD4:
 H. Dobbertin's \cite{Dobbertin1998} and P. Kasselman's \cite{KasselmanMD4}
-collision classes have distance $1$ under this metric.
+collision classes have distance $1$ under this metric. We extend this distance
+function to include an \textit{absolute} distance, measuring the number of
+intermediate rounds with non-zero differences. We denote this as $\delta(C_1)$.
 
 Refer to Table \ref{table:distance} for the distances between existing
 collisions in MD4.
@@ -568,13 +640,13 @@ collisions in MD4.
 \begin{table}
     \caption{Distance between Existing Collision Classes}
     \label{table:distance}
-    \begin{tabular}{c c c c c c}
-        & X. W. & Y. S. & P. K. & H. D. & M. S. \\
-        X. Wang's & 0 & 21 & 26 & 27 & 12 \\
-        Y. Sasaki's & & 0 & 25 & 26 & 2 \\
-        P. Kasselman's &  &  & 0 & 1 & 25 \\
-        H. Dobbertin's &  &  &  & 0 & 26 \\
-        M. Schlaffer's &  &  &  &  & 0 \\
+    \begin{tabular}{c c c c c c c}
+        & X. W. & Y. S. & P. K. & H. D. & M. S. & Absolute \\
+        X. Wang's & 0 & 21 & 26 & 27 & 12 & 18 \\
+        Y. Sasaki's & & 0 & 25 & 26 & 2 & 16 \\
+        P. Kasselman's &  &  & 0 & 1 & 25 & 11 \\
+        H. Dobbertin's &  &  &  & 0 & 26 & 12 \\
+        M. Schlaffer's &  &  &  &  & 0 & 17 \\
     \end{tabular}
 \end{table}
 
@@ -759,10 +831,10 @@ P. Kasselman's and H. Dobbertin's collision classes are better.
 \end{table}
 
 
-\section{New Collision}
+\section{New Collision} \label{Sec:Collision}
 
 
-\section{Discussion}
+\section{Discussion of Impacts} \label{Sec:Impacts}
 
 \textbf{TODO} - Discuss impacts on real-world systems like MD5, SHA-1, etc.
 
@@ -863,8 +935,7 @@ P. Kasselman's and H. Dobbertin's collision classes are better.
 
 
 
-\section{Conclusion}
-
+\section{Conclusion} \label{Sec:Conclusion}
 
 The conclusion goes here.
 
@@ -880,10 +951,10 @@ upon request.
 
 
 % use section* for acknowledgment
-\section*{Acknowledgment}
+\section*{Acknowledgments}
 
 The authors would like to thank the Department of Electrical and Computer
-Engineering and Nathan Mulbrook for providing hardware.
+Engineering and XXXXX XXXXX for providing hardware.
 
 
 

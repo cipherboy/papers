@@ -1,4 +1,4 @@
-TEX=pdflatex
+TEX=pdflatex -halt-on-error
 BIB=bibtex
 BIDX=thesis.bib
 TARGET=bare_conf
