@@ -964,13 +964,58 @@ P. Kasselman's and H. Dobbertin's collision classes are better.
 Through the exploration of the neighborhood technique, we have found over
 35,000 new differential paths which originated from the five original
 collisions in MD4. This shows that the neighborhood definition is sufficient
-to produce a large quantity of new collision classes.
+to produce a large quantity of new collision classes. Further, we give
+evidence for propagating neighborhoods across reduced round versions of MD4,
+and show a new collision in MD4 with new differential path.
+
+\subsection{Extensions of Prior Work}
+
+We noted in table \ref{table:neighborhood} that the unit-step neighborhood of
+the existing attacks were non-empty. By repeatedly expanding neighborhoods of
+known collision classes, we can construct paths in the collision space. We
+made the following observations:
+
+\begin{enumerate}
+    \item The space of collision classes is not smooth under the unit distance
+        relation. That is, starting at $C_{Schlaffer}$ and evaluating
+        successive neighborhoods, moving towards $C_{Wang}$ whenever the
+        distance decreases does not lead to a simple path of length
+        $\delta(C_{Schlaffer}, C_{Wang}) = 17$. Our lower bound on the actual
+        distance is 29, but after 14 rounds of expansion, we only reduced the
+        distance to 15.
+    \item Even under successive unit neighborhoods, the family of input block
+        differentials remains roughly the same among. This can be partially
+        counteracted by moving to reduced-round spaces, evaluating the
+        neighborhood, and expanding back to a collision in full-round MD4.
+        That is, there is a detectable signature of sharing significant
+        input block differential structure with the original collision.
+        With 35,918 unique classes of collisions which had 176 unique
+        families of collisions, there were only three unique families of
+        input block differentials: those of the starting collision classes.
+\end{enumerate}
+
+This last point show that, while there may be a number of unique differentials
+for a given collision class, and potentially many collision classes within
+some neighborhood of the original collision class, by analyzing the structure
+of the input block differential, systems can potentially prohibit successful
+collision attacks by preventing structures of input block differences.
+
+\textbf{TODO - figures and graphics on dataset}
+
+
+
+
+\subsection{New Differentials}
+
+We present the following new differentials as part of our work:
+
+\textbf{TODO - figures and graphics on new differentials/differential paths}
 
 
 
 \section{Discussion of Impacts} \label{Sec:Impacts}
 
-\textbf{TODO} - Discuss impacts on real-world systems like MD5, SHA-1, etc.
+\textbf{TODO} - Recap impacts on real-world systems like MD5, SHA-1, etc.
 
 % An example of a floating figure using the graphicx package.
 % Note that \label must occur AFTER (or within) \caption.
