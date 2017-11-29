@@ -374,7 +374,7 @@ traditionally resulted in the immediate deprecation of that hash function.
 In this paper we propose five scalable and practical metrics for evaluating
 the utility of collision classes based on boolean constraints and show that
 the published attacks by X. Wang, Y. Sasaki, P. Kasselman, H. Dobbertin, and
-M. Schlaffer in MD4 have high utility. We expand on existing attacks by
+M. Schl{\"a}ffer in MD4 have high utility. We expand on existing attacks by
 developing a series of techniques based on logical cryptanalysis to find
 over 35,000 collisions in MD4 based on existing collisions, through the novel
 definition of a collision neighborhood. We demonstrate new techniques for
@@ -427,7 +427,7 @@ in less than $2^n$, we note that this requires rather long messages
 \cite{SchneierSecondPreimage}. However, collision attacks are well within reach
 for adversaries, and well past only theoretical attacks. The work of
 H. Dobbertin \cite{Dobbertin1998}, X. Wang \cite{cryptoeprint:2004:199},
-M. Schlaffer \cite{Schlaffer2006} and others demonstrate the ease with which
+M. Schl{\"a}ffer \cite{Schlaffer2006} and others demonstrate the ease with which
 collisions can be found.
 
 From a cryptographic perspective, the existence of a feasible collision attack
@@ -558,12 +558,176 @@ collision classes from a single instance of a collision in MD4.
 
 \section{Terminology \& Notation}  \label{Sec:Terminology}
 
-\textbf{TODO}.
+\subsection{Conventions}
+\begin{itemize}
+    \item We assume ordered tuples and strings are indexable via square
+        brackets. Occasionally we use subscripts for referring to
+        elements of tuples with named members.
+\end{itemize}
 
-$\mathcal{C}$ for collision class. Ordered tuple, indexable.
-$\mathcal{F}$ for family of collision classes. Ordered set, indexable.
-$[i]$ is an indexing function.
-$R$ is number of rounds of $F$ or $C$.
+\textbf{TODO}
+
+\subsection{Collisions in Hash Functions}
+
+We use the following terminology when discussing the notion of collisions in
+a hash function.
+
+\begin{itemize}
+    \item A \textit{cryptographic hash function} is a function:
+        \begin{align*}
+            h: S_{i} \times B \rightarrow S_{o}
+        \end{align*}
+        which satisfies the usual properties of cryptographic hash functions
+        (preimage, second preimage, collision, deterministic, etc.). We denote
+        the input state space as $S_{i}$, the input block space as $B$, and the
+        output state space as $S_{o}$. Usually the input state space and the
+        output state space are the same, so we omit the subscripts, $S$. We
+        assume that these are sets of binary strings of a fixed length. In the
+        case of MD4, $S$ is all binary strings of length 128, and $B$ is all
+        binary strings of length 512.
+
+    \item An \textit{input} to a hash function is an ordered pair, $i = (s, b)$,
+        where $s \in S$ and $b \in B$. The \textit{input space} is simply
+        the domain of the hash function, which we denote as $\mathcal{I}$.
+        If $i \in \mathcal{I}$ is an input, we reference the state as $i_s$
+        and the input block as $i_b$.
+
+    \item We use the term \textit{intermediate state variables} to refer to
+        intermediate steps in the computation of a hash function under
+        a specific input. Typically these are the outputs of
+        one-way compression functions as part of the Merkel-Damg{\aa}rd
+        construct. If $i$ is an input to a hash function, we use $I(i)$ to
+        denote the intermediate state variables. Formally, this is represented
+        as an ordered tuple of binary strings of the size of the updated state.
+        In the case of MD4, this is an ordered tuple of cardinality 48, where
+        each index is a binary string of length 32, for a total of 1536
+        intermediate state variables. We denote the space that $I(i)$ maps
+        into as $\mathcal{V}$. We define the number of rounds as $R$.
+
+    \item We use the notation $R(I)$
+
+    \item A \textit{collision}, $L \subseteq \mathcal{I}$ is a subset of the
+        input space of a hash function with $\big|L\big| \geq 2$, such that
+        there exists an output $v \in S$ such that for all inputs $i \in L$,
+        $h(i) = c$.
+
+        \begin{itemize}
+            \item We define a \textit{simple collision} to be any collision
+                with cardinality exactly two.
+
+            \item We define a \textit{strong collision} to be a collision which
+                has multiple blocks which hash to the same output under the same
+                input  state. That is, if $L$ is a collision, then
+                $\forall i \in L$, $i_s = c$ for some $c \in S$ for $L$ to be
+                a strong collision.
+
+            \item We define a \textit{multicollision} to be a collision which
+                has multiple input states which hash to the same output under
+                a single input block. That is, if $L$ is a collision, then
+                $\forall i \in L$, $i_b = c$ for some $c \ in B$ for $L$ to be
+                a multicollision.
+        \end{itemize}
+
+    \item For a simple collision, we say that the \textit{differential path}
+        is the difference between the two sets of intermediate state
+        variables. \textbf{TODO -- HELP define formal notation?}
+            \begin{itemize}
+                \item Signed - Wang's, we don't use.
+                \item Unsigned - more common, actually used by us.
+            \end{itemize}
+
+
+    \item A \textit{collision class}, $C$, is an arbitrary differential path.
+        If there exists at least one collision pair which has that differential
+        path, we call that collision class non-empty. We denote the set of all
+        non-empty collision classes as $\mathcal{C}$. When we wish to convert
+        between a collision, $c \in L$ and a collision class,
+        $C \in \mathcal{C}$, we use the notation $C = \mathcal{C}(c)$.
+
+    \item A \textit{family of collision classes}, $F$, is the indices of a
+        collision class, $C$, which have any non-zero difference. That is,
+        $F = \{ 0 \leq i \leq R : C[i] \neq 0 \}$.
+\end{itemize}
+
+\subsection{Known Collision Classes}
+
+We define the following set of known collision classes.
+
+\begin{itemize}
+    \item $C_{Wang}$, to be the collision class introduced by X. Wang
+        \textit{et al.} in \cite{Wang2005}.
+    \item $C_{Sasaki}$, to be the collision class introduced by Y. Sasaki
+        \textit{et al.} in \cite{Sasaki2007}.
+    \item $C_{Dobbertin}$, to be the collision class introduced by
+        H. Dobbertin in \cite{Dobbertin1998}.
+    \item $C_{Kasselman}$, to be the collision class introduced by
+        P. Kasselman in \cite{KasselmanMD4}.
+    \item $C_{Schlaffer}$, to be the collision class introduced by
+        M. Schl{\"a}ffer in \cite{Schlaffer2006}.
+\end{itemize}
+
+\subsection{Distance Metrics}
+
+We introduce a distance function, $\delta$ between collision classes by the
+number of differences in intermediate rounds deltas. That is, given two
+collision classes, $C_1, C_2 \in \mathcal{C}$:
+\begin{align}
+    \delta(C_1, C_2) = \big| \{ i : C_1[i] \neq C_2[i] \} \big|
+\end{align}
+
+
+We can define a similar distance function, $\Delta$, between families of
+collision classes by cardinality of the symmetric difference in the two
+collision families. That is, given two families of collision classes,
+$F_1, F_2 \in \mathcal{F}$:
+\begin{align}
+    \Delta(F_1, F_2) = \big| (F_1 \cup F_2) \setminus (F_1 \cap F_2) \big|
+\end{align}
+This is convenient for when the specifics of the differential path do not
+matter, merely that there exist at least one collision class of the specified
+form.
+
+
+\subsection{Neighborhoods}
+
+We define the neighborhood of a collision class, $C \in \mathcal{C}$, to be the
+set of all other collisions at a fixed distance, $d \in \mathbb{N}$, from $C$.
+That is:
+\begin{align}
+    N(C, d) & = \{ C_j \in \mathcal{C} : \delta(C, C_j) = d \} \\
+    N(C) & = N(C, 1)
+\end{align}
+For instance, $C_{Wang} \in N(C_{Sasaki}, 21)$. The distance parameter, $d$,
+may optionally be omitted, in which case the unit distance is implied. Thus,
+$C_{Kasselman} \in N(C_{Dobbertin})$.
+
+We can similarly define the neighborhood of a family of collision classes,
+$F \in \mathcal{F}$, to be the set of all other families of collision classes
+at a fixed distance, $d \in \mathbb{N}$, from $F$. That is:
+\begin{align}
+    \mathcal{N}(F, d) & = \{ F_j \in \mathcal{F} : \delta(F, F_j) = d \} \\
+    \mathcal{N}(F) & = N(F, 1)
+\end{align}
+The distance parameter, $d$, may optionally be omitted, in which case the unit
+distance is implied.
+
+Neighborhoods can be classified into three types: \textit{expansion},
+\textit{internal}, and \textit{mixed}. Let $d$ be fixed. An \textit{expansion}
+neighborhood of a collision class, $C \in \mathcal{C}$, is the neighborhood
+restricted only to those collision classes which only differ in rounds external
+to the collision family of $C$. An \textit{internal} neighborhood of $C$ is the
+neighborhood restricted only to those collision classes which differ in rounds
+internal to the collision family of $C$. An \textit{mixed} neighborhood of $C$
+is the neighborhood restricted only to collisions which differ in a round
+internal and a round external to the collision family of $C$. That is:
+\begin{align*}
+    N_{exp}(C, d) = \{ & C_{j} \in N(C, d) : \forall i \in F(C), C_j[i] = C[i] \} \\
+    N_{int}(C, d) = \{ & C_{j} \in N(C, d) : \forall i \not\in F(C), C_j[i] = C[i] \} \\
+    N_{mix}(C, d) = \{ & C_{j} \in N(C, d) : \exists i \in F(C), C_j[i] \neq C[i] \\
+        & \text{ and } \exists k \not\in F(C), C_j[k] \neq C[k] \}
+\end{align*}
+
+
 
 \section{Intuition on the Utility of a Collision} \label{Sec:Intuition}
 
@@ -640,18 +804,12 @@ to any later hash function, such as SHA-1, SHA-2, or SHA-3, and have not been
 tested yet.
 
 In the following sections, we use the collisions of X. Wang \cite{Wang2005},
-Y. Sasaki \cite{Sasaki2007}, M. Schlaffer \cite{Schlaffer2006}, H. Dobbertin
+Y. Sasaki \cite{Sasaki2007}, M. Schl{\"a}ffer \cite{Schlaffer2006}, H. Dobbertin
 \cite{Dobbertin1998}, and P. Kasselman \cite{KasselmanMD4} for examples.
 
 
 \subsection{Distance Metrics}
 
-We introduce a distance function, $\delta$ between collision classes by the
-number of differences in intermediate rounds deltas. That is, given two
-collision classes, $C_1, C_2 \in \mathcal{C}$:
-\begin{align}
-    \delta(C_1, C_2) = \big| \{ i : C_1[i] \neq C_2[i] \} \big|
-\end{align}
 We find justification for this metric in the existing literature on MD4:
 H. Dobbertin's \cite{Dobbertin1998} and P. Kasselman's \cite{KasselmanMD4}
 collision classes have distance $1$ under this metric. We extend this distance
@@ -670,64 +828,11 @@ collisions in MD4.
         Y. Sasaki's & & 0 & 25 & 26 & 2 & 16 \\
         P. Kasselman's &  &  & 0 & 1 & 25 & 11 \\
         H. Dobbertin's &  &  &  & 0 & 26 & 12 \\
-        M. Schlaffer's &  &  &  &  & 0 & 17 \\
+        M. Schl{\"a}ffer's &  &  &  &  & 0 & 17 \\
     \end{tabular}
 \end{table}
 
 
-We can define a similar distance function, $\Delta$, between families of
-collision classes by cardinality of the symmetric difference in the two
-collision families. That is, given two families of collision classes,
-$F_1, F_2 \in \mathcal{F}$:
-\begin{align}
-    \Delta(F_1, F_2) = \big| (F_1 \cup F_2) \setminus (F_1 \cap F_2) \big|
-\end{align}
-This is convenient for when the specifics of the differential path do not
-matter, merely that there exist at least one collision class of the specified
-form.
-
-
-\subsection{Neighborhoods}
-
-We define the neighborhood of a collision class, $C \in \mathcal{C}$, to be the
-set of all other collisions at a fixed distance, $d \in \mathbb{N}$, from $C$.
-That is:
-\begin{align}
-    N(C, d) & = \{ C_j \in \mathcal{C} : \delta(C, C_j) = d \} \\
-    N(C) & = N(C, 1)
-\end{align}
-For instance, $C_{Wang} \in N(C_{Sasaki}, 21)$. The distance parameter, $d$,
-may optionally be omitted, in which case the unit distance is implied. Thus,
-$C_{Kasselman} \in N(C_{Dobbertin})$.
-
-The implications of collision class neighborhoods are discussed further in
-section \ref{empirical:neighborhood}.
-
-We can similarly define the neighborhood of a family of collision classes,
-$F \in \mathcal{F}$, to be the set of all other families of collision classes
-at a fixed distance, $d \in \mathbb{N}$, from $F$. That is:
-\begin{align}
-    \mathcal{N}(F, d) & = \{ F_j \in \mathcal{F} : \delta(F, F_j) = d \} \\
-    \mathcal{N}(F) & = N(F, 1)
-\end{align}
-The distance parameter, $d$, may optionally be omitted, in which case the unit
-distance is implied.
-
-Neighborhoods can be classified into three types: \textit{expansion},
-\textit{internal}, and \textit{mixed}. Let $d$ be fixed. An \textit{expansion}
-neighborhood of a collision class, $C \in \mathcal{C}$, is the neighborhood
-restricted only to those collision classes which only differ in rounds external
-to the collision family of $C$. An \textit{internal} neighborhood of $C$ is the
-neighborhood restricted only to those collision classes which differ in rounds
-internal to the collision family of $C$. An \textit{mixed} neighborhood of $C$
-is the neighborhood restricted only to collisions which differ in a round
-internal and a round external to the collision family of $C$. That is:
-\begin{align*}
-    N_{exp}(C, d) = \{ & C_{j} \in N(C, d) : \forall i \in F(C), C_j[i] = C[i] \} \\
-    N_{int}(C, d) = \{ & C_{j} \in N(C, d) : \forall i \not\in F(C), C_j[i] = C[i] \} \\
-    N_{mix}(C, d) = \{ & C_{j} \in N(C, d) : \exists i \in F(C), C_j[i] \neq C[i] \\
-        & \text{ and } \exists k \not\in F(C), C_j[k] \neq C[k] \}
-\end{align*}
 
 
 \subsection{Family Similarity}
@@ -775,7 +880,7 @@ tips and tricks for faster model runs.
 
 \textbf{TODO}
 Refer to Table \ref{table:differentials} for the number of differential
-paths...
+paths.
 
 \begin{table}
     \caption{Number of Differentials for Existing Collision Classes}
@@ -784,7 +889,7 @@ paths...
         \textbf{Attack} & \textbf{Size} & \textbf{Attack} & \textbf{Size} \\
         X. Wang's & 64 & Y. Sasaki's & 4 \\
         H. Dobbertin's & 32 & P. Kasselman's & 32 \\
-        M. Schlaffer's & 64 & & \\
+        M. Schl{\"a}ffer's & 64 & & \\
     \end{tabular}
 \end{table}
 
@@ -804,7 +909,7 @@ likewise with P. Kasselman's attack which improved upon H. Dobbertin's attack.
         \textbf{Attack} & \textbf{Size} & \textbf{Attack} & \textbf{Size} \\
         X. Wang's & 54 & Y. Sasaki's & 157 \\
         H. Dobbertin's & 55 & P. Kasselman's & 60 \\
-        M. Schlaffer's & 100 & & \\
+        M. Schl{\"a}ffer's & 100 & & \\
     \end{tabular}
 \end{table}
 
@@ -813,10 +918,9 @@ likewise with P. Kasselman's attack which improved upon H. Dobbertin's attack.
 
 \textbf{TODO}
 
-Include graphic of count of max number of zeros/ones for all 35k collision
-classes.
-
 Separate table for known attacks as data points. Examples as appendix.
+
+
 
 
 \subsection{Multicollisions}
@@ -837,7 +941,7 @@ Include table detailing how many have ASCII blocks and how many don't.
 
 See Table \ref{table:ascii} for results. Note that the validation of
 P. Kasselman's and H. Dobbertin's results do not hold for the latter attacks
-by X. Wang, Y. Sasaki, or M. Schlaffer. Thus, while the latter attacks have
+by X. Wang, Y. Sasaki, or M. Schl{\"a}ffer. Thus, while the latter attacks have
 been viewed as being of better quality, under this particular metric,
 P. Kasselman's and H. Dobbertin's collision classes are better.
 
@@ -850,12 +954,18 @@ P. Kasselman's and H. Dobbertin's collision classes are better.
         Y. Sasaki's & true & false \\
         P. Kasselman's & true & \textbf{true} \\
         H. Dobbertin's & true & \textbf{true} \\
-        M. Schlaffer's & true & false \\
+        M. Schl{\"a}ffer's & true & false \\
     \end{tabular}
 \end{table}
 
 
-\section{New Collision} \label{Sec:Collision}
+\section{New Collisions} \label{Sec:Collision}
+
+Through the exploration of the neighborhood technique, we have found over
+35,000 new differential paths which originated from the five original
+collisions in MD4. This shows that the neighborhood definition is sufficient
+to produce a large quantity of new collision classes.
+
 
 
 \section{Discussion of Impacts} \label{Sec:Impacts}
