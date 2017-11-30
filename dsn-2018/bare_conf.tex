@@ -401,11 +401,11 @@ discuss potential applications to real-world systems.
 
 \section{Introduction}
 
-Cryptographic hash functions form the core of many protocols. From file
-integrity checks to verify long term storage of data, to cache invalidation
-techniques, and use as a building block in network protocols such as Kerberos
-and TLS, this class of functions necessarily has strong guarantees about
-properties of its members. There are three basic properties hash
+Cryptographic hash functions form the core of many protocols. With widespread
+use as file integrity checks to verify long term storage of data, as cache
+invalidation techniques, and as a building block in network protocols such as
+Kerberos and TLS, this class of functions necessarily has strong guarantees
+about properties of its members. There are three basic properties hash
 functions must have to be considered cryptographically secure:
 \begin{itemize}
     \item \textbf{Preimage Resistance}: It should be computationally hard to find
@@ -437,14 +437,13 @@ functions. One widespread example is the continued use by Git of SHA-1, despite
 M. Stevens et al. publishing a full SHA-1 collision in February of 2017
 \cite{cryptoeprint:2017:190}. However, this attack had a bound of $2^{63.1}$ --
 faster than the theoretical $2^{80}$ but still requiring significant compute
-resources.
+resources to find.
 
 We seek to address the problem of evaluating the use cases for a collision,
-to determine--or partially determine--whether or not a collision affects
-a particular system. This paper contributes several novel techniques to
-logical cryptanalysis and uses these techniques to derive metrics of the
-trustworthiness of hash functions. We claim the following results are novel
-in the field:
+to determine whether or not a collision affects a particular system. This
+paper contributes several novel techniques to logical cryptanalysis and uses
+these techniques to derive metrics of the trustworthiness of hash functions.
+We claim the following results are novel in the field:
 \begin{itemize}
     \item We define the neighborhood of a class of collisions and show that
         it is frequently non-empty.
