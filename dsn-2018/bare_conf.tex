@@ -466,7 +466,7 @@ The remainder of this paper is organized as follows. In Section
 \ref{Sec:Related} we discuss previous results and show how our research
 expands upon prior work. In Section \ref{Sec:Terminology}, we discuss the
 terminology and notations we use throughout the remainder of the paper.
-In Section \ref{Sec:Intuition}, we give the intuition between measuring
+In Section \ref{Sec:Intuition}, we give the intuition behind measuring
 the utility of a collision and motivate why it is useful. In Section
 \ref{Sec:Logical}, we present new techniques in logical cryptanalysis to
 analyze collisions in hash functions. In Section \ref{Sec:Empirical}, we
@@ -494,7 +494,7 @@ cryptanalysis.
 
 \subsection{On Differential Cryptanalysis}
 
-Differential Cryptanalysis has been the major technique behind the discovery
+Differential cryptanalysis has been the major technique behind the discovery
 of collisions in cryptographic hash functions. Its importance can be seen
 everywhere from X. Wang's attacks on MD4 \cite{Wang2005} to more recent
 cryptanalysis of general purpose hash functions such as Murmur3 by
@@ -516,7 +516,7 @@ techniques to replace differential cryptanalysis with logical cryptanalysis.
 
 \subsection{On Logical Cryptanalysis}
 
-Logical Cryptanalysis and its encoding as SAT likely started under the work of
+Logical cryptanalysis and its encoding as SAT likely started under the work of
 F. Massacci in 1999 with his paper titled ``Using walk-SAT and rel-sat for
 cryptographic key search''. \cite{Massacci:1999:UWR:1624218.1624261}. However,
 much of the early work by F. Massacci was focused on symmetric and asymmetric
@@ -545,7 +545,7 @@ example collision \cite{Soos:2009:ESS:1575471.1575502, CryptoMiniSat5}. We
 deviate from evaluating the performance of SAT solvers or encodings of models
 by instead focusing on evaluating the properties of the hash function. We have
 developed new techniques for using a SAT solver to inductively build full
-collisions in MD4 from collisions in reduced-round MD4 and to build addition
+collisions in MD4 from collisions in reduced-round MD4 and to build additional
 examples of collision classes from a single instance of a collision in MD4.
 
 
@@ -689,7 +689,7 @@ $F_1, F_2 \in \mathcal{F}$:
     \Delta(F_1, F_2) = \big| (F_1 \cup F_2) \setminus (F_1 \cap F_2) \big|
 \end{align}
 This is convenient for when the specifics of the differential path do not
-matter, merely that there exist at least one collision class of the specified
+matter, merely that there exists at least one collision class of the specified
 form.
 
 
@@ -722,7 +722,7 @@ neighborhood of a collision class, $C \in \mathcal{C}$, is the neighborhood
 restricted only to those collision classes which only differ in rounds external
 to the collision family of $C$. An \textit{internal} neighborhood of $C$ is the
 neighborhood restricted only to those collision classes which differ in rounds
-internal to the collision family of $C$. An \textit{mixed} neighborhood of $C$
+internal to the collision family of $C$. A \textit{mixed} neighborhood of $C$
 is the neighborhood restricted only to collisions which differ in a round
 internal and a round external to the collision family of $C$. That is:
 \begin{align*}
@@ -747,7 +747,7 @@ we introduce and give justification for general techniques, and present some
 results of these techniques.
 
 To begin, real world systems are most vulnerable to two attacks: the preimage
-and second preimage. For systems relying on e.g., password validation via
+and second preimage. For systems relying on password validation via
 comparing two hashes, preimage attacks would allow inverting the hash,
 increasing the risk associated with losing a database of hashed passwords.
 On the other hand, systems relying on message validation, such as signature
@@ -784,13 +784,13 @@ class:
 \end{enumerate}
 Note that the first three are quantitative measures providing some measure of
 flexibility of a collision class, whereas the latter two are merely looking
-for a single witness for having the property. Depending on the scenario,
+for a single witness having such a property. Depending on the scenario,
 specific properties of a collision may be of more interest than others.
 
 The first metric evaluates the flexibility of the differential path. A
 differential path with more flexibility will have more differentials which
 produce blocks with the given differential path. More differentials implies
-a greater flexibility in choice of colliding block, and possibly allowing
+a greater flexibility in choice of colliding block, and possibly allows
 for multiple collisions for a given colliding block. Furthermore, a collision
 with more differentials is more likely to satisfy the last metric, having a
 pair of blocks--both ASCII--which produce a collision.
@@ -836,7 +836,7 @@ find other collision classes which have higher utility.
 \section{Techniques for Logical Cryptanalysis} \label{Sec:Logical}
 
 The following techniques have been extensively tested on MD4 and partially
-tested on MD5 and believe to apply fully to MD5. They likely apply to any
+tested on MD5 and are believed to apply fully to MD5. They likely apply to any
 hash function with similar structure, but as of yet, are untested.
 
 
