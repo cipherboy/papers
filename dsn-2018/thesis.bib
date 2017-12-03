@@ -70,6 +70,13 @@
     note = {\url{http://disi.unitn.it/~massacci/CryptoSAT/}}
 }
 
+@misc{MD5Executables,
+    author = {Peter Selinger},
+    title = {MD5 Collision Demo},
+    note = {\url{http://www.mathstat.dal.ca/~selinger/md5collision}},
+
+}
+
 @inproceedings{Massacci:1999:UWR:1624218.1624261,
     author = {Massacci, Fabio},
     title = {Using Walk-SAT and Rel-SAT for Cryptographic Key Search},
@@ -332,4 +339,42 @@
     author={Nossum, Vegard},
     year={2012},
     school={University of Oslo}
+}
+
+@Inbook{Stevens2009,
+    author="Stevens, Marc
+    and Sotirov, Alexander
+    and Appelbaum, Jacob
+    and Lenstra, Arjen
+    and Molnar, David
+    and Osvik, Dag Arne
+    and de Weger, Benne",
+    editor="Halevi, Shai",
+    title="Short Chosen-Prefix Collisions for MD5 and the Creation of a Rogue CA Certificate",
+    bookTitle="Advances in Cryptology - CRYPTO 2009: 29th Annual International Cryptology Conference, Santa Barbara, CA, USA, August 16-20, 2009. Proceedings",
+    year="2009",
+    publisher="Springer Berlin Heidelberg",
+    address="Berlin, Heidelberg",
+    pages="55--69",
+    abstract="We present a refined chosen-prefix collision construction for MD5 that allowed creation of a rogue Certification Authority (CA) certificate, based on a collision with a regular end-user website certificate provided by a commercial CA. Compared to the previous construction from Eurocrypt 2007, this paper describes a more flexible family of differential paths and a new variable birthdaying search space. Combined with a time-memory trade-off, these improvements lead to just three pairs of near-collision blocks to generate the collision, enabling construction of RSA moduli that are sufficiently short to be accepted by current CAs. The entire construction is fast enough to allow for adequate prediction of certificate serial number and validity period: it can be made to require about 249 MD5 compression function calls. Finally, we improve the complexity of identical-prefix collisions for MD5 to about 216 MD5 compression function calls and use it to derive a practical single-block chosen-prefix collision construction of which an example is given.",
+    isbn="978-3-642-03356-8",
+    doi="10.1007/978-3-642-03356-8_4",
+    url="http://deweger.xs4all.nl/papers/[41]StSoApLeMoOsdW-RogueCA-Crypto[2009].pdf"
+}
+
+@Inbook{Stevens2007,
+    author="Stevens, Marc
+    and Lenstra, Arjen
+    and de Weger, Benne",
+    editor="Naor, Moni",
+    title="Chosen-Prefix Collisions for MD5 and Colliding X.509 Certificates for Different Identities",
+    bookTitle="Advances in Cryptology - EUROCRYPT 2007: 26th Annual International Conference on the Theory and Applications of Cryptographic Techniques, Barcelona, Spain, May 20-24, 2007. Proceedings",
+    year="2007",
+    publisher="Springer Berlin Heidelberg",
+    address="Berlin, Heidelberg",
+    pages="1--22",
+    abstract="We present a novel, automated way to find differential paths for MD5. As an application we have shown how, at an approximate expected cost of 250 calls to the MD5 compression function, for any two chosen message prefixes P and P{\textasciiacutex}, suffixes S and S{\textasciiacutex} can be constructed such that the concatenated values P||S and P{\textasciiacutex}||S{\textasciiacutex} collide under MD5. Although the practical attack potential of this construction of chosen-prefix collisions is limited, it is of greater concern than random collisions for MD5. To illustrate the practicality of our method, we constructed two MD5 based X.509 certificates with identical signatures but different public keys and different Distinguished Name fields, whereas our previous construction of colliding X.509 certificates required identical name fields. We speculate on other possibilities for abusing chosen-prefix collisions. More details than can be included here can be found on                                   www.win.tue.nl/hashclash/ChosenPrefixCollisions/                                              .",
+    isbn="978-3-540-72540-4",
+    doi="10.1007/978-3-540-72540-4_1",
+    url="https://doi.org/10.1007/978-3-540-72540-4_1"
 }

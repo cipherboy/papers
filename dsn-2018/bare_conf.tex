@@ -421,7 +421,10 @@ stronger result with higher use for an attacker.
 
 From an attacker's perspective, finding a preimage or second preimage has been
 difficult: the current published bound for a preimage attack in MD5 is a cost
-of $2^{123.4}$ by Y. Sasaki and K. Aoki \cite{SasakiPreimage}. Further, while
+of $2^{123.4}$ by Y. Sasaki and K. Aoki \cite{SasakiPreimage}. In MD4, the
+best second preimage attack by H. Yu et al. gives a bound of $2^{-56}$
+likelihood, but uses destructive message modification techniques to achieve
+collisions for all other messages \cite{cryptoeprint:2007:206}. Further, while
 J. Kelsey and B. Schneier proposed a method for finding second preimages
 in less than $2^n$, we note that this requires rather long messages
 \cite{SchneierSecondPreimage}. However, collision attacks are well within reach
@@ -459,16 +462,19 @@ preimage attack in the amount of flexibility they provide to an attacker,
 whereas classes of low utility may not affect all systems which use a
 particular hash function.
 
-\textbf{TODO - Finish Organization}
-The remainder of this paper is organized as fol
-lows. In Section
+The remainder of this paper is organized as follows. In Section
 \ref{Sec:Related} we discuss previous results and show how our research
 expands upon prior work. In Section \ref{Sec:Terminology}, we discuss the
 terminology and notations we use throughout the remainder of the paper.
 In Section \ref{Sec:Intuition}, we give the intuition between measuring
 the utility of a collision and motivate why it is useful. In Section
 \ref{Sec:Logical}, we present new techniques in logical cryptanalysis to
-analyze collisions in hash functions.
+analyze collisions in hash functions. In Section \ref{Sec:Empirical}, we
+discuss the utility of existing collisions under the metrics described in
+\ref{Sec:Intuition}. In Section \ref{Sec:Collision}, we discuss new
+differential paths and the effectiveness of various techniques presented
+in Section \ref{Sec:Logical}. Lastly, in Section \ref{Sec:Impacts}, we
+discuss broader impacts of this research.
 
 
 
@@ -535,12 +541,12 @@ our models \cite{circuits}. This allows us to encode hash functions as generic
 structures in the circuit description language and ease the algorithmic
 creation of models which build on top of them. We then use CryptoMiniSat5 by
 M. Soos to run the models and check for a satisfying witness, often an
-example collision \cite{CryptoMiniSat5}. We deviate from evaluating the
-performance of SAT solvers or encodings of models by instead focusing on
-evaluating the properties of the hash function. We have developed new
-techniques for using a SAT solver to inductively build full collisions in MD4
-from collisions in reduced-round MD4 and to build addition examples of
-collision classes from a single instance of a collision in MD4.
+example collision \cite{Soos:2009:ESS:1575471.1575502, CryptoMiniSat5}. We
+deviate from evaluating the performance of SAT solvers or encodings of models
+by instead focusing on evaluating the properties of the hash function. We have
+developed new techniques for using a SAT solver to inductively build full
+collisions in MD4 from collisions in reduced-round MD4 and to build addition
+examples of collision classes from a single instance of a collision in MD4.
 
 
 \subsection{On Trustworthy Computing}
@@ -559,6 +565,7 @@ collision classes from a single instance of a collision in MD4.
     \item We assume ordered tuples and strings are indexable via square
         brackets. Occasionally we use subscripts for referring to
         elements of tuples with named members.
+    \item We use MD4 as specified in RFC 1320 \cite{rfc1320}.
 \end{itemize}
 
 \textbf{TODO}
@@ -752,15 +759,15 @@ attacks, producing efficient results.
 Thus, we seek to evaluate the relative difference between a collision
 attack and second preimage attacks, to give some measure of distance between
 them. Several high profile attacks against hash function usage have been
-made, including \textbf{TODO -- cite}, with MD5, cloning a CA certificate
-and creating malicious executables, and with SHA-1, a pair of PDFs with the
-same hash. However, many of these techniques exploit not the hash, but the
-flexibility of the file format, relying instead on embedding arbitrary,
-collidable data and later checking for the presence of one of the matching
-blocks. This is especially obvious in the MD5 executable and SHA-1 PDF attacks.
-In some cases, such as trying to produce a rogue CA certificate that matches
-an existing root, this is not possible and thus relies on searching a wide
-enough set of objects for a possible match to the collision.
+made. For MD5, these include cloning a CA certificate \cite{Stevens2009}
+and creating malicious executables \cite{MD5Executables}. For SHA-1, a pair of
+PDFs with the same hash \cite{cryptoeprint:2017:190}. However, many of these
+techniques exploit not the hash, but the flexibility of the file format,
+relying instead on embedding arbitrary, collidable data and later checking for
+the presence of one of the matching blocks. This is especially obvious in the
+MD5 executable and SHA-1 PDF attacks. The work by M. Stevens to perform the
+CA Collision, on the other hand, was a chosen prefix attack extending
+previous work from 2007 \cite{Stevens2007}.
 
 Seeing the need to evaluate how much flexibility exists in a collision,
 we propose the following metrics for evaluating the utility of a collision
@@ -943,7 +950,12 @@ results may be limited in usefulness and may not be uniformly applicable.
 \end{itemize}
 
 
+
+
+
+
 \section{Empirical Results:\\The Utility of Existing Collisions}
+\label{Sec:Empirical}
 
 \textbf{TODO -- Introduction?}
 
@@ -1096,104 +1108,6 @@ of the input block differential, systems can potentially prohibit successful
 collision attacks by preventing structures of input block differences.
 
 \textbf{TODO - figures and graphics on dataset}
-
-
-
-
-\subsection{New Differentials}
-
-We present the following new differentials as part of our work:
-
-\textbf{TODO - figures and graphics on new differentials/differential paths}
-
-
-
-
-\section{ASCII Collisions}
-
-\subsection{Dobbertin}
-
-Default IV
-
-Block 1:
-
-3f474422
-624f2b46
-683b6c7e
-48227d5c
-4f2a4f61
-206c573e
-61622234
-227a2633
-53482622
-706a6727
-503e2b3e
-7a636c76
-7\textbf{b}752620
-3f2e5728
-236a6376
-45654a75
-
-Block 2:
-
-3f474422
-624f2b46
-683b6c7e
-48227d5c
-4f2a4f61
-206c573e
-61622234
-227a2633
-53482622
-706a6727
-503e2b3e
-7a636c76
-7\textbf{c}752620
-3f2e5728
-236a6376
-45654a75
-
-\subsection{Kasselman}
-
-Default IV
-
-Block 1:
-
-7e273957
-597e7f4a
-7c773d7c
-4034376f
-69643257
-515f5269
-6a4d665a
-29416b3a
-7f377a64
-7e232455
-6d436c56
-26717321
-3\textbf{6}65774f
-6f2f4421
-77787656
-26236479
-
-7e273957
-597e7f4a
-7c773d7c
-4034376f
-69643257
-515f5269
-6a4d665a
-29416b3a
-7f377a64
-7e232455
-6d436c56
-26717321
-3\textbf{7}65774f
-6f2f4421
-77787656
-26236479
-
-
 
 
 
