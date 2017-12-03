@@ -664,7 +664,7 @@ We define the following set of known collision classes.
 
 \subsection{Distance Metrics}
 
-We introduce a distance function, $\delta$ between collision classes by the
+We introduce a distance function, $\delta$, between collision classes by the
 number of differences in intermediate rounds deltas. That is, given two
 collision classes, $C_1, C_2 \in \mathcal{C}$:
 \begin{align}
@@ -687,8 +687,8 @@ form.
 \subsection{Neighborhoods}
 
 We define the neighborhood of a collision class, $C \in \mathcal{C}$, to be the
-set of all other collisions at a fixed distance, $d \in \mathbb{N}$, from $C$.
-That is:
+set of all other non-empty collision classes at a fixed distance,
+$d \in \mathbb{N}$, from $C$. That is:
 \begin{align}
     N(C, d) & = \{ C_j \in \mathcal{C} : \delta(C, C_j) = d \} \\
     N(C) & = N(C, 1)
@@ -729,8 +729,8 @@ internal and a round external to the collision family of $C$. That is:
 
 \textbf{TODO - audit introductory paragraphs}
 
-We seek to build new intuition about collisions in hash functions,
-specifically, collisions in MD4. By developing techniques from logical
+We seek to build new intuition about collisions in hash functions
+and particularly collisions in MD4. By developing techniques using logical
 cryptanalysis, we seek to complement and extend the results from
 differential cryptanalysis. In particular, we wish to use logical cryptanalysis
 to discuss the impacts of collisions in real-world systems. In this paper,
@@ -827,13 +827,8 @@ find other collision classes which have higher utility.
 \section{Techniques for Logical Cryptanalysis} \label{Sec:Logical}
 
 The following techniques have been extensively tested on MD4 and partially
-tested on MD5 and believe to apply fully to MD5. They may or may not apply
-to any later hash function, such as SHA-1, SHA-2, or SHA-3, and have not been
-tested yet.
-
-In the following sections, we use the collisions of X. Wang \cite{Wang2005},
-Y. Sasaki \cite{Sasaki2007}, M. Schl{\"a}ffer \cite{Schlaffer2006}, H. Dobbertin
-\cite{Dobbertin1998}, and P. Kasselman \cite{KasselmanMD4} for examples.
+tested on MD5 and believe to apply fully to MD5. They likely apply to any
+hash function with similar structure, but as of yet, are untested.
 
 
 \subsection{Distance Metrics}
