@@ -949,7 +949,13 @@ results may be limited in usefulness and may not be uniformly applicable.
 
 \subsection{Unique Differentials}
 
-Table \ref{table:differentials} states the
+Table \ref{table:differentials} states the number of unique differentials,
+including the specified one, which produce a differential path conforming to
+each of the collision classes. We note in particular that while Y. Sasaki's
+attack is generally an improvement upon X. Wang's, Y. Sasaki's attack has fewer
+input block differentials and thus less flexibility in this aspect. Further,
+M. Schl{\"a}ffer's attack -- also building off the work of X. Wang -- has the
+same number of differentials as thus is also more flexible than Y. Sasaki's.
 
 \begin{table}
     \caption{Number of Differentials for Existing Collision Classes}
@@ -964,12 +970,12 @@ Table \ref{table:differentials} states the
 
 \subsection{Unit-Step Neighborhood} \label{empirical:neighborhood}
 
-\textbf{TODO}
-
 Refer to Table \ref{table:neighborhood} for the sizes of neighborhoods
-of existing collisions. In particular, note that Y. Sasaki's attack--which
-claimed to improve upon X. Wang's attack--has a larger neighborhood size, and
-likewise with P. Kasselman's attack which improved upon H. Dobbertin's attack.
+of existing collisions. In particular, note that both Y. Sasaki's attack and
+M. Schl{\"a}ffer's attack -- which both claimed to improve upon X. Wang's
+attack--have a larger neighborhood sizes, and likewise with P. Kasselman's
+attack which improved upon H. Dobbertin's attack. Thus, the newer collisions
+occur in more dense subsets of the collision class space.
 
 \begin{table}
     \caption{Neighborhood Sizes for Existing Collision Classes}
@@ -983,36 +989,46 @@ likewise with P. Kasselman's attack which improved upon H. Dobbertin's attack.
 \end{table}
 
 
-\subsection{Zeroes \& Ones}
+\subsection{Zeroes}
 
-\textbf{TODO}
+See table \ref{table:zeroes} for the maximum count of zeroes in a block
+for existing collisions. Note that X. Wang's attack is the leader, with 509
+maximum zero bits in the collision pair. Further, while Y. Sasaki improved
+the bound in other areas, this was not one of them. Of note too,
+H. Dobbertin's and P. Kasselman's collisions are essentially identical in
+this metric.
 
-Separate table for known attacks as data points. Examples as appendix.
-
+\begin{table}
+    \caption{Number of Zeroes in a Colliding Block}
+    \label{table:zeroes}
+    \begin{tabular}{c c c c}
+        \textbf{Attack} & \textbf{Count} & \textbf{Attack} & \textbf{Count} \\
+        X. Wang's & 509 & Y. Sasaki's & 494 \\
+        H. Dobbertin's & 504 & P. Kasselman's & 504 \\
+        M. Schl{\"a}ffer's & 506 & & \\
+    \end{tabular}
+\end{table}
 
 
 
 \subsection{Multicollisions}
 
-\textbf{TODO}
-
-Include table detailing how many have multicollisions and how many don't.
-Hypothesis: all do since all existing datapoints do.
-
-Separate table for known attacks as data points. Examples as appendix.
+We note that while these collisions are state independent and include
+multicollisions, none of these attacks are always multicollisions. Many of the
+blocks we've found only collide under the initial state value. Because of this,
+these collisions are only useful if you know the current state where a
+colliding pair is to be injected. Thus, this is one area in which collisions
+could potentially improve.
 
 
 \subsection{ASCII Blocks}
 
-\textbf{TODO}
-
-Include table detailing how many have ASCII blocks and how many don't.
-
-See Table \ref{table:ascii} for results. Note that the validation of
-P. Kasselman's and H. Dobbertin's results do not hold for the latter attacks
-by X. Wang, Y. Sasaki, or M. Schl{\"a}ffer. Thus, while the latter attacks have
-been viewed as being of better quality, under this particular metric,
-P. Kasselman's and H. Dobbertin's collision classes are better.
+See Table \ref{table:ascii} for results of finding ASCII block pairs. Note that
+this table validates P. Kasselman's and H. Dobbertin's results of finding
+two ASCII block messages. However, these results do not hold for later
+collisions by X. Wang, Y. Sasaki, or M. Schl{\"a}ffer. Thus, while the latter
+attacks have been viewed as being of better quality, under this particular
+metric, P. Kasselman's and H. Dobbertin's collision classes are better.
 
 \begin{table}
     \caption{ASCII Blocks in Existing Collision Classes}
@@ -1026,6 +1042,16 @@ P. Kasselman's and H. Dobbertin's collision classes are better.
         M. Schl{\"a}ffer's & true & false \\
     \end{tabular}
 \end{table}
+
+
+\subsection{Recapitulation}
+
+Overall, we feel that while the given collision classes have value and utility,
+they do not constitute full second preimage attacks. Further, simple
+neighborhood search does not lead to collisions in every case. Therefore,
+additional techniques are necessary for expanding the collision neighborhood.
+
+
 
 
 \section{New Collisions} \label{Sec:Collision}
