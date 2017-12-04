@@ -451,7 +451,7 @@ the following results are novel in the field:
     \item We define the neighborhood of a class of collisions and show that
         it is frequently non-empty.
     \item We discuss techniques for finding useful collisions within a
-        class of collisions.
+        class of collisions using logical cryptanalysis.
     \item We propose additional techniques for building new classes of
         collisions and show that collisions in MD4 can be found inductively.
     \item We propose five universal metrics for evaluating the utility of
@@ -850,7 +850,7 @@ under this metric. The distance function allows us to find collision classes
 based off of existing classes. By limiting ourselves to unit distances, we
 maximally reuse an existing collision and limit the amount of work the SAT
 solver needs to do. Further, rather than searching for any unit-distance
-new collision class, we can easily split our search to look in each of the
+new collision classes, we can easily split our search to look in each of the
 48 rounds of MD4, allowing us to parallelize the search for neighbors.
 
 Refer to Table \ref{table:distance} for the distances between existing
@@ -891,8 +891,8 @@ We claim that the following statements are true for MD4:
         $F \lesssim F'$.
 \end{enumerate}
 
-From an intuitive standpoint, what this is says is that collisions have
-witnesses for the existence in reduced round versions of the function, and
+From an intuitive standpoint, what this says is that collisions have
+witnesses for their existence in reduced round versions of the function, and
 further, that it is sufficient to search reduced round versions to find
 candidates for extension into additional rounds. This likely derives from
 the iterative construction of MD4 and the particular choice of block schedule.
@@ -904,13 +904,13 @@ the iterative construction of MD4 and the particular choice of block schedule.
 
 We claim that the aforementioned statements hold when considering individual
 collision classes instead of families of collision classes, but with less
-likelihood. That is, we can transplant a $n$ round collision into a $n+4$
+likelihood. That is, we can transplant an $n$ round collision into an $n+4$
 round and consider a neighborhood around it to find a new collision.
 
 \subsubsection{Second Preimage Similarity}
 
 If the models are constrained for a second preimage, we note that attack again
-works, but requires searching wide and wider differential paths in small round
+works, but requires searching wider and wider differential paths in small round
 sizes. In particular, despite strong evidence for this pattern holding in
 $n \leq 24$ rounds, outside of the collision family $\{0, 16\}$ in both 28 and
 32 round MD4--which does not extend any further--we have been unable to find
@@ -942,11 +942,11 @@ results may be limited in usefulness and may not be uniformly applicable.
         leaving the initial state unconstrained.
     \item Adding ASCII block constraints significantly and negatively impact
         the performance of finding a collision.
-    \item Keeping small search radius on neighborhoods involving families
+    \item Keeping a small search radius on neighborhoods involving families
         of collision classes is important for good performance. However,
         once sufficient witnesses have been found across rounds, missing
-        families can be found by various filling-in techniques by applying
-        the $\lesssim$ relation.
+        families within the round can be found by various filling-in
+        techniques through applying the $\lesssim$ relation.
 \end{itemize}
 
 
@@ -962,12 +962,12 @@ results may be limited in usefulness and may not be uniformly applicable.
 \subsection{Unique Differentials}
 
 Table \ref{table:differentials} states the number of unique differentials,
-including the specified one, which produce a differential path conforming to
+including the specified one, which produces a differential path conforming to
 each of the collision classes. We note in particular that while Y. Sasaki's
 attack is generally an improvement upon X. Wang's, Y. Sasaki's attack has fewer
 input block differentials and thus less flexibility in this aspect. Further,
 M. Schl{\"a}ffer's attack -- also building off the work of X. Wang -- has the
-same number of differentials as thus is also more flexible than Y. Sasaki's.
+same number of differentials and is thus also more flexible than Y. Sasaki's.
 
 \begin{table}
     \caption{Number of Differentials for Existing Collision Classes}
@@ -985,7 +985,7 @@ same number of differentials as thus is also more flexible than Y. Sasaki's.
 Refer to Table \ref{table:neighborhood} for the sizes of neighborhoods
 of existing collisions. In particular, note that both Y. Sasaki's attack and
 M. Schl{\"a}ffer's attack -- which both claimed to improve upon X. Wang's
-attack--have a larger neighborhood sizes, and likewise with P. Kasselman's
+attack--have larger neighborhood sizes, and likewise with P. Kasselman's
 attack which improved upon H. Dobbertin's attack. Thus, the newer collisions
 occur in more dense subsets of the collision class space.
 
@@ -1060,7 +1060,7 @@ metric, P. Kasselman's and H. Dobbertin's collision classes are better.
 
 Overall, we feel that while the given collision classes have value and utility,
 they do not constitute full second preimage attacks. Further, simple
-neighborhood search does not lead to collisions in every case. Therefore,
+neighborhood searches do not lead to collisions in every case. Therefore,
 additional techniques are necessary for expanding the collision neighborhood.
 
 
@@ -1072,8 +1072,7 @@ Through the exploration of the neighborhood technique, we have found over
 35,000 new differential paths which originated from the five original
 collisions in MD4. This shows that the neighborhood definition is sufficient
 to produce a large quantity of new collision classes. Further, we give
-evidence for propagating neighborhoods across reduced round versions of MD4,
-and show a new collision in MD4 with new differential path.
+evidence for propagating neighborhoods across reduced round versions of MD4.
 
 \subsection{Extensions of Prior Work}
 
@@ -1091,17 +1090,17 @@ made the following observations:
         distance is 29, but after 14 rounds of expansion, we only reduced the
         distance to 15.
     \item Even under successive unit neighborhoods, the family of input block
-        differentials remains roughly the same among. This can be partially
-        counteracted by moving to reduced-round spaces, evaluating the
-        neighborhood, and expanding back to a collision in full-round MD4.
-        That is, there is a detectable signature of sharing significant
-        input block differential structure with the original collision.
-        With 35,918 unique classes of collisions which had 176 unique
-        families of collisions, there were only three unique families of
-        input block differentials: those of the starting collision classes.
+        differentials remains roughly the same among successive neighborhoods.
+        This can be partially counteracted by moving to reduced-round spaces,
+        evaluating the neighborhood, and expanding back to a collision in
+        full-round MD4. That is, there is a detectable signature of sharing
+        significant input block differential structure with the original
+        collision. With 35,918 unique classes of collisions which had 176
+        unique families of collisions, there were only three unique families
+        of input block differentials: those of the starting collision classes.
 \end{enumerate}
 
-This last point show that, while there may be a number of unique differentials
+This last point shows that, while there may be a number of unique differentials
 for a given collision class, and potentially many collision classes within
 some neighborhood of the original collision class, by analyzing the structure
 of the input block differential, systems can potentially prohibit successful
