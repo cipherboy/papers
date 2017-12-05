@@ -951,10 +951,11 @@ P. Kasselman's collision classes from Figure \ref{Fig:Graph-Intro} are viewed
 independently, the large cliques become apparent. Depending on the search
 strategies utilized, cliques may be expanded before new neighbors, or a
 significant portion of a vertices neighbors might belong to existing cliques,
-resulting in slow progress towards any external goal.
+resulting in slow progress towards any external goal, such as finding
+a second-preimage attack when distance must be greater than some bound.
 
-Refer to Table \ref{table:distance} for the distances between existing
-collisions in MD4.
+We present results in Table \ref{table:distance} which illustrate the
+distances found between published collision classes in MD4.
 
 \begin{table}
     \caption{Distance between Existing Collision Classes}
@@ -969,7 +970,7 @@ collisions in MD4.
     \end{tabular}
 \end{table}
 
-We find justification for the distance heuristic $\Delta$ in the existing
+We justify the distance heuristic $\Delta$ in the existing
 literature due to collisions by  X. Wang \cite{cryptoeprint:2004:199} and
 M. Schl{\"a}ffer \cite{Schlaffer2006}. Their respective families are:
 $
@@ -983,7 +984,7 @@ F(C_{Schlaffer}) = (& 1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12, \\
 \end{aligned}
 $
 
-
+For this example $\Delta(F(C_{Wang}), F(C_{Schlaffer})) = 1$.
 
 \subsection{Family Similarity}
 
