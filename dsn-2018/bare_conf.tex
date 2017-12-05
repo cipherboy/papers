@@ -86,7 +86,7 @@
 % have to be run twice to clear warning/error messages.
 
 
-\linespread{1.05}
+\linespread{1.04}
 
 
 
@@ -400,9 +400,9 @@ discuss potential applications to real-world systems.
 \section{Introduction}
 
 Cryptographic hash functions form the core of many protocols which
-trust that these functions preserve certain basic
+trust that cryptographic hash functions preserve certain basic
 properties. Cryptograpic hash functions see widespread
-use as file integrity checks to verify long term storage of
+use for file integrity checks to verify long term storage of
 data, as cache invalidation techniques, and as a building block in network
 protocols such as Kerberos and TLS.  The classes of functions suitable
 for these use cases necessarily have
@@ -416,6 +416,15 @@ initial conditions - small changes to a message should change the hash
 value to a degree that the new hash value appears uncorrelated with
 the old hash value; unique digests - it should be infeasible to find
 two different messages with the same hash value.
+
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.5\textwidth]{Figs/graph-intro-crop.pdf}
+\caption{A visualization of the heuristic unit-distance neighborhood
+  of valid collisions from the Dobbertin and Kasselman collisions.}
+\label{Fig:Graph-Intro}
+\end{center}
+\end{figure}
 
 The most important aspect of these can be formally defined under three
 properties which hash function implementations must have to be
@@ -447,15 +456,6 @@ H. Dobbertin \cite{Dobbertin1998}, X. Wang \cite{cryptoeprint:2004:199},
 M. Schl{\"a}ffer \cite{Schlaffer2006} and others demonstrate the ease with which
 collisions can be found.
 
-\begin{figure}
-\begin{center}
-\includegraphics[width=0.5\textwidth]{Figs/graph-intro-crop.pdf}
-\caption{A visualization of the heuristic unit-distance neighborhood
-  of valid collisions from the Dobbertin and Kasselman collisions.}
-\label{Fig:Graph-Intro}
-\end{center}
-\end{figure}
-
 From a cryptographic perspective, the existence of a feasible collision attack
 breaks the requisite properties, thus deprecating the function's use
 for trustworthy applications. In many practical instances, however,
@@ -477,7 +477,6 @@ is \textbf{imperitive to discontinue use of such hash functions as
 example of such structure showing the unit distance neighborhood
 (defined in Section \ref{Sec:Terminology}) of the known collisions
 from Dobbertin and Kasselman is presented in Figure \ref{Fig:Graph-Intro}.
-
 This paper contributes several techniques to logical cryptanalysis and uses these
 techniques to derive metrics of the trustworthiness for hash functions. We claim
 the following results are novel in the field:
@@ -507,8 +506,9 @@ analyze collisions in hash functions. In Section \ref{Sec:Empirical}, we
 discuss the utility of existing collisions under the metrics described in
 \ref{Sec:Intuition}. In Section \ref{Sec:Collision}, we discuss new
 differential paths and the effectiveness of various techniques presented
-in Section \ref{Sec:Logical}. Lastly, we discuss the broader impacts and
-conclusions of this research in Section \ref{Sec:Conclusion}, discussing future work and
+in Section \ref{Sec:Logical}. Lastly, in Section \ref{Sec:Impacts}, we
+discuss the broader impacts and conclusions of this research, and
+conclude with Section \ref{Sec:Conclusion} discussing future work and
 extensions in Section \ref{Sec:Future}.
 
 \section{Related Work} \label{Sec:Related}
@@ -957,15 +957,15 @@ noting that this problem is embarrassingly parallel: allowing us to
 check each
 candidate collision class independently on separate machines.
 
-\begin{figure}
+\begin{figure*}
 \begin{center}
-\includegraphics[width=0.5\textwidth]{Figs/graph-clique-crop.pdf}
+\includegraphics[width=0.7\textwidth]{Figs/graph-clique-crop.pdf}
 \caption{Clique and pseudo-clique neighborhoods associated with
   unit distance neighborhoods of Dobbertin and Kasselman collision
   classes from the literature.}
 \label{Fig:Graph-Clique}
 \end{center}
-\end{figure}
+\end{figure*}
 
 The highly connected, highly similar differential paths are highlighted in
 Figure \ref{Fig:Graph-Clique}: when the neighbors of H. Dobbertin's and
@@ -1119,7 +1119,7 @@ exploration of unique differentials, exploration of unit distance
 neighborhoods, maximum count of zeros in the binary representation of
 a colliding block, the existance of blocks which collide under
 multiple initial values, and ASCII block collisions as discussed
-previously in Section \label{Sec:Intuition}.
+previously in Section \ref{Sec:Intuition}.
 
 \subsection{Unique Differentials} \label{empirical:differentials}
 
@@ -1128,7 +1128,7 @@ including the input block differential specified by the original authors, which 
 each of the collision classes. We note in particular that while Y. Sasaki's
 attack is generally an improvement upon X. Wang's, Y. Sasaki's attack has fewer
 input block differentials and thus less flexibility in this aspect. Further,
-M. Schl{\"a}ffer's attack --- also building off the work of X. Wang --- has the
+M. Schl{\"a}ffer's attack -- also building off the work of X. Wang -- has the
 same number of differentials and is thus also more flexible than Y. Sasaki's.
 
 \begin{table}
@@ -1144,21 +1144,21 @@ same number of differentials and is thus also more flexible than Y. Sasaki's.
 
 \subsection{Unit Distance Neighborhood} \label{empirical:neighborhood}
 
-\begin{figure}
+\begin{figure*}
 \begin{center}
-\includegraphics[width=0.5\textwidth]{Figs/graph-neighborhood-crop.pdf}
+\includegraphics[width=0.7\textwidth]{Figs/graph-neighborhood-crop.pdf}
 \caption{All collisions in the unit distance neighborhoods of
   Dobbertin and Kasselman collision classes
   organized by connectedness, and showing the inter-distance
   paths neighborhoods of unpublished collisions.}
 \label{Fig:Graph-Neighborhood}
 \end{center}
-\end{figure}
+\end{figure*}
 
 Table \ref{table:neighborhood} presents the sizes discovered empirically of neighborhoods
 of existing collisions. In particular, note that both Y. Sasaki's attack and
-M. Schl{\"a}ffer's attack --- which both claimed to improve upon X. Wang's
-attack---have larger neighborhood sizes, and likewise with P. Kasselman's
+M. Schl{\"a}ffer's attack -- which both claimed to improve upon X. Wang's
+attack--have larger neighborhood sizes, and likewise with P. Kasselman's
 attack which improved upon H. Dobbertin's attack. Thus, the newer collisions
 occur in more dense subsets of the collision class space.
 
@@ -1248,14 +1248,16 @@ evidence for propagating neighborhoods across reduced round versions of MD4.
 
 \subsection{Extensions of Prior Work}
 
-\begin{figure}
+\begin{figure*}
 \begin{center}
-\includegraphics[width=0.5\textwidth]{Figs/families48.pdf}
+\includegraphics[width=0.7\textwidth]{Figs/families48.pdf}
 \caption{A visualization of the unit-distance family relationships
-of the 35,000 new collisions in MD4. }
+of the 35,000 new collisions in MD4. Note these nodes represent
+collision \textbf{families} with solid vertices as opposed to the
+classes in previous figures represented by open verticies.}
 \label{Fig:Families48}
 \end{center}
-\end{figure}
+\end{figure*}
 
 We noted in table \ref{table:neighborhood} that the unit distance neighborhood of
 the existing attacks were non-empty. By repeatedly expanding neighborhoods of
