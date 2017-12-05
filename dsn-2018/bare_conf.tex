@@ -1207,10 +1207,9 @@ this metric.
 We note that while these collisions are state independent and include
 multicollisions, none of these attacks are always multicollisions. Many of the
 blocks we've found only collide under the initial state value. Because of this,
-these collisions are only useful if you know the current state where a
+strict multicollision attacks are only useful if you know the current state where a
 colliding pair is to be injected. Thus, this is one area in which collisions
 could potentially improve.
-
 
 \subsection{ASCII Blocks}
 
@@ -1234,24 +1233,15 @@ metric, P. Kasselman's and H. Dobbertin's collision classes are better.
     \end{tabular}
 \end{table}
 
-
-\subsection{Recapitulation}
-
 Overall, we feel that while the given collision classes have value and utility,
 they do not constitute full second preimage attacks. Further, simple
 neighborhood searches do not lead to collisions in every case. Therefore,
 additional techniques are necessary for expanding the collision neighborhood.
 
-
-
-
-
-
-
 \section{New Collisions} \label{Sec:Collision}
 
 Through the exploration of the neighborhood technique, we have found over
-35,000 new differential paths which originated from the five original
+35,000 new differential paths which originated from the five original published
 collisions in MD4. This shows that the neighborhood definition is sufficient
 to produce a large quantity of new collision classes. Further, we give
 evidence for propagating neighborhoods across reduced round versions of MD4.
@@ -1267,7 +1257,7 @@ of the 35,000 new collisions in MD4. }
 \end{center}
 \end{figure}
 
-We noted in table \ref{table:neighborhood} that the unit-step neighborhood of
+We noted in table \ref{table:neighborhood} that the unit distance neighborhood of
 the existing attacks were non-empty. By repeatedly expanding neighborhoods of
 known collision classes, we can construct paths in the collision space. We
 made the following observations:
@@ -1291,7 +1281,7 @@ significant input block differential structure with the original
 collision. Our 35,918 collision classes belonged to 176 unique
 families of collisions. However, there were only three unique families
 of input block differentials with 100 input block differences. Note
-however, that the unlike the metric evaluations in
+however, that unlike the metric evaluations in
 Section \ref{empirical:differentials}, these collision classes were
 not evaluated for number of unique differentials; thus there are likely
 more than 100 patterns, but still only three families.
@@ -1306,14 +1296,13 @@ into three disconnected subgraphs, which fall along input block differential
 family boundaries.
 
 Further, compared to the work presented by M. Schl{\"a}ffer and E. Oswald
-\cite{Schlaffer2006}, this is a 35 fold increase. Increasing this bound is
+\cite{Schlaffer2006}, this is a 35 fold increase. Increasing this yield is
 possible with low additional cost. Further, by fully considering the
 similarities of collision families under $\precsim$ and better enumerating the
 resulting candidates, additional paths with unique differentials could be
 constructed. This would allow for new candidate input block differentials,
-better construction of chosen prefix attacks, and potentially to a full second
+better construction of chosen prefix attacks, and could potentially lead to a full second
 preimage attack without relying on message modification techniques.
-
 
 % An example of a floating figure using the graphicx package.
 % Note that \label must occur AFTER (or within) \caption.
