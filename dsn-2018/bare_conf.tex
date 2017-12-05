@@ -789,42 +789,46 @@ value of $d$ as determined by computational resources such that $d$
 becomes a trustworthiness metric under constraints of current
 3-CNF-SAT solving capabilities within reasonable time bounds.
 
-\section{Intuition on the Utility of a Collision} \label{Sec:Intuition}
+\section{Flexibility and the Utility of a Collision Class} \label{Sec:Intuition}
 
-\textbf{TODO - audit introductory paragraphs}
-
-We seek to build new intuition about collisions in hash functions
+We seek to build new intuition about collision classes in hash functions
 and particularly collisions in MD4. By developing techniques using logical
-cryptanalysis, we seek to complement and extend the results from
-differential cryptanalysis. In particular, we wish to use logical cryptanalysis
-to discuss the impacts of collisions in real-world systems. In this paper,
-we introduce and give justification for general techniques, and present some
+cryptanalysis, we complement and extend the results from
+differential cryptanalysis. In particular, we use logical cryptanalysis
+to discuss the impacts of collisions in real-world systems, and to
+give justification for general techniques, and the
 results of these techniques.
 
-To begin, real world systems are most vulnerable to two attacks: the preimage
+Real world systems are most vulnerable to two attacks: preimage
 and second preimage. For systems relying on password validation via
 comparing two hashes, preimage attacks would allow inverting the hash,
 increasing the risk associated with losing a database of hashed passwords.
 On the other hand, systems relying on message validation, such as signature
 checks or file integrity checks would be easily broken with fast second
-preimage techniques. Both of these attacks are intractable, thus protecting
-real-world systems. However, much research has been devoted to collision
-attacks, producing efficient results.
-
-Thus, we seek to evaluate the relative difference between a collision
-attack and second preimage attacks, to give some measure of distance between
-them. Several high profile attacks against hash function usage have been
-made. For MD5, these include cloning a CA certificate \cite{Stevens2009}
+preimage techniques. Both of these attacks are theoretically intractable, thus protecting
+real-world systems. In practice, however, research efforts have been
+successfully devoted to the production of collision attacks, producing
+efficient results.  These attacks have real consequences for
+trustworthy systems, and evaluating their impact and risk is an
+important and underserved area of the existing literature.
+We seek to evaluate trustworthiness by building a measure of the relative difference between a collision
+attack and second preimage attacks. The literature describes a number
+of successful high profile attacks against popular, and industrially
+relevant hash functions. 
+For MD5, these include cloning a CA certificate \cite{Stevens2009}
 and creating malicious executables \cite{MD5Executables}. For SHA-1, a pair of
-PDFs with the same hash \cite{cryptoeprint:2017:190}. However, many of these
-techniques exploit not the hash, but the flexibility of the file format,
+PDFs with the same hash was successfully produced \cite{cryptoeprint:2017:190}. Many of these
+techniques, however, exploit not the hash but the flexibility of the file format
 relying instead on embedding arbitrary, collidable data and later checking for
 the presence of one of the matching blocks. This is especially obvious in the
 MD5 executable and SHA-1 PDF attacks. The work by M. Stevens to perform the
 CA Collision, on the other hand, was a chosen prefix attack extending
 previous work from 2007 \cite{Stevens2007}.
 
-Seeing the need to evaluate how much flexibility exists in a collision,
+Evaluating flexibility becomes important as it serves as a
+contrapositive to trustworthiness.  A highly flexible attack implies a
+larger set of families of collision classes, and decreasing the trust
+that should be placed in a hash function. To evaluate how much flexibility exists in a collision,
 we propose the following metrics for evaluating the utility of a collision
 class:
 \begin{enumerate}
@@ -843,12 +847,12 @@ for a single witness having such a property. Depending on the scenario,
 specific properties of a collision may be of more interest than others.
 
 The first metric evaluates the flexibility of the differential path. A
-differential path with more flexibility will have more differentials which
+differential path with more flexibility will have more input-block differentials which
 produce blocks with the given differential path. More differentials implies
 a greater flexibility in choice of colliding block, and possibly allows
 for multiple collisions for a given colliding block. Furthermore, a collision
 with more differentials is more likely to satisfy the last metric, having a
-pair of blocks--both ASCII--which produce a collision.
+pair of blocks --- both ASCII --- which produce a collision.
 
 The second metric evaluates the density of the neighborhood of a collision
 class. If a collision resides in a dense neighborhood, it provides more
@@ -864,29 +868,24 @@ provide a more relevant metric as desired by the system under study.
 
 The fourth metric evaluates the utility of a collision when the internal state
 of the hash function is unknown. If a collision occurs under multiple initial
-values, this could be used to attack some systems where user provided input is
+values, this could be used to attack some systems where the input
+provided by a user is
 appended to unknown data and then hashed. If a block collides under a suitably
 large number of initial values, the attack becomes highly likely to occur
-successfully. However, measuring the exact number of initial values a block
-collides under is beyond the scope of this work.
+successfully. Measuring the exact number of initial values a block
+collides under, however, is beyond the scope of this work.
 
-The last metric is similar to the third in that it looks for specific bit
+The final metric is similar to the third in that it looks for specific bit
 patterns in a collision. ASCII is one example of a widely used constraint
 system. Further examples, such as JSON, XML, etc., may likewise be
-supplemented based on the specifics of the system.
+supplemented based on the specifics of the system, and the domain of
+its application and implementation.
 
 If a collision class satisfies many of these properties, then it is more
 flexible and thus more likely to be used to target deployed systems. If,
 however, a collision class does not satisfy these properties, its impact is
 likely severely limited in scope, and may not provide useful information to
 find other collision classes which have higher utility.
-
-
-
-
-
-
-
 
 \section{Techniques for Logical Cryptanalysis} \label{Sec:Logical}
 
