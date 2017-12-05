@@ -886,27 +886,49 @@ however, a collision class does not satisfy these properties, its impact is
 likely severely limited in scope, and may not provide useful information to
 find other collision classes which have higher utility.
 
-\section{Techniques for Logical Cryptanalysis} \label{Sec:Logical}
 
 \begin{figure*}
 \begin{center}
   \begin{subfigure}{\textwidth}
     \includegraphics[width=\textwidth]{Figs/differential-1289.png}
-    \caption{Collision 1289}
+    \caption{Collision Class S1289}
     \label{Fig:1289}
   \end{subfigure}\\
   \begin{subfigure}{\textwidth}
     \includegraphics[width=\textwidth]{Figs/differential-1250.png}
-    \caption{Collision 1250}
+    \caption{Collision Class S1250}
     \label{Fig:1250}
   \end{subfigure}\\
   \begin{subfigure}{\textwidth}
     \includegraphics[width=\textwidth]{Figs/transitions.pdf}
-    \caption{Differential Path Transitions}
+    \caption{Differential Path Transitions between S1289 and S1250}
     \label{Fig:Transitions}
   \end{subfigure}\\
+  \caption{An optimal path between collision classes S1289 and S1250,
+  centered around S0 (M. Schl{\"a}ffer's Collision Class), showing each
+  intermediate collision class, transition steps, and appropriate
+  round differences.}
+  \label{Fig:Transition}
 \end{center}
 \end{figure*}
+
+An example of this intuition can be seen in Figure \ref{Fig:Transition}.
+From M. Schl{\"a}ffer's collision class, S1289 and S1250 are equidistant, with
+$\delta(C_{Schlaffer}, S1289) = 3$ and $\delta(S1289, S1250) = 3$.
+Individual step transitions between $S1289$ and $S1250$ are notated in
+Figure \ref{Fig:Transitions}, showing each step and each intermediate collision
+class. Figures \ref{Fig:1289} and \ref{Fig:1250} show the complete differential
+path for S1289 and S1250 respectively.
+
+By considering paths among neighbors, a more optimal exploration strategy can
+be constructed, favoring switching rounds before exploring cliques when the
+triangle inequality holds in the local search area. This allows for a wider
+coverage in differential paths, escaping the local collision type, and
+ultimately improving chosen prefix and second preimage attacks.
+
+
+\section{Techniques for Logical Cryptanalysis} \label{Sec:Logical}
+
 
 We approach the problem of logical cryptanalysis by applying
 techniques based in 3-CNF-SAT solving to explore the underlying
