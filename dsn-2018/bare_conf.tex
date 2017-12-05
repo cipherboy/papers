@@ -611,7 +611,7 @@ meaningful way in an environment with changing hardware capabilities.
 
 In order to define our define our metrics using logical cryptanalysis
 we first define a set of formal terminology and notation whn
-discussing our work, and the notation of collisions within a hash. 
+discussing our work, and the notation of collisions within a hash.
 We make the general assumption that ordered tuples and strings are
 indexable via square brackets. We utilize subscripts when referring to
 elements of tuples with named members, as opposed to just indexable
@@ -655,7 +655,7 @@ intermediate state variables. We denote the space that $I(i)$ maps
 into as $\mathcal{V}$.
 
 A \textit{collision}, $L \subseteq \mathcal{I}$ is a subset of the
-input space of a hash function with $\big|L\big| \geq 2$, such that
+input space of a hash function with $\big|L\big| = 2$, such that
 there exists an output $v \in S$ such that for all inputs $i \in L$,
 $h(i) = c$. We extend this to arbitrary round hash functions using
 the notation $(r, L)$, to explicitly denote that $L$ is a collision
@@ -665,11 +665,11 @@ under $h_{r}$.
 \item We define a \textit{multicollision} to be a collision which
   has multiple input states which hash to the same output under
   a single input block. That is, if $L$ is a collision, then
-  $\forall i \in L$, $i_b = c$ for some $c \ in B$ for $L$ to be
+  $\forall i \in L$, $i_b = c$ for some $c \in B$ for $L$ to be
   a multicollision.
 \end{itemize}
 
-For a simple collision, we say that the \textit{differential path}
+For a collision, we say that the \textit{differential path}
 is the difference between the two sets of intermediate state
 variables. This is formally represented by an ordered tuple of
 $r$ elements. We use the simple xor difference throughout this paper.
@@ -812,7 +812,7 @@ important and underserved area of the existing literature.
 We seek to evaluate trustworthiness by building a measure of the relative difference between a collision
 attack and second preimage attacks. The literature describes a number
 of successful high profile attacks against popular, and industrially
-relevant hash functions. 
+relevant hash functions.
 For MD5, these include cloning a CA certificate \cite{Stevens2009}
 and creating malicious executables \cite{MD5Executables}. For SHA-1, a pair of
 PDFs with the same hash was successfully produced \cite{cryptoeprint:2017:190}. Many of these
@@ -990,8 +990,19 @@ witnesses for their existence in reduced round versions of the function, and
 further, that it is sufficient to search reduced round versions to find
 candidates for extension into additional rounds. This likely derives from
 the iterative construction of MD4 and the particular choice of block schedule.
+We present Figure \ref{Fig:PrecSim} as an example of the lattice structure
+induced under $\precsim$ for example collision families.
 
-\textbf{TODO -- Empirical justification / graphical representation?}
+
+\begin{figure*}
+\begin{center}
+\includegraphics[width=\textwidth]{Figs/lattice.pdf}
+\caption{The lattice structure of $\precsim$.}
+\label{Fig:PrecSim}
+\end{center}
+\end{figure*}
+
+
 
 
 \subsubsection{Collision Class Similarity}
