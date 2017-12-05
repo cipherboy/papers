@@ -406,7 +406,7 @@ discuss potential applications to real-world systems.
 Cryptographic hash functions form the core of many protocols which
 trust that these functions preserve certain basic
 properties. Cryptographic hash functions see widespread
-use for file integrity checks to verify long term storage of
+use as file integrity checks to verify long term storage of
 data, as cache invalidation techniques, and as a building block in network
 protocols such as Kerberos and TLS.  The classes of functions suitable
 for these use cases necessarily have
@@ -481,6 +481,7 @@ is \textbf{imperitive to discontinue use of such hash functions as
 example of such structure showing the unit distance neighborhood
 (defined in Section \ref{Sec:Terminology}) of the known collisions
 from Dobbertin and Kasselman is presented in Figure \ref{Fig:Graph-Intro}.
+
 This paper contributes several techniques to logical cryptanalysis and uses these
 techniques to derive metrics of the trustworthiness for hash functions. We claim
 the following results are novel in the field:
@@ -1411,7 +1412,11 @@ preimage attack without relying on message modification techniques.
 \section{Conclusion} \label{Sec:Conclusion}
 
 We have demonstrated in this paper that our theories for logical
-cryptanalysis hold, and lead to a 35 fold increase in collision
+cryptanalysis hold: namely the existance of useful distance
+heuristics; the existance of a similarity operator, $\precsim$,
+between families of collision classes; and the existance of a useful
+heuristic structure for second preimage and chosen prefix attacks.
+These theories lead to techniques which result in a 35 fold increase in collision
 discovery when compared to the existing literature.  By employing our
 presented distance heuristic and the lattice structure uncovered by
 the $\precsim$ relation, we can evaluate the trustworthiness of a hash
