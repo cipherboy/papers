@@ -832,7 +832,7 @@ we propose the following metrics for evaluating the utility of a collision
 class:
 \begin{enumerate}
     \item The number of unique differentials a collision class has.
-    \item The number of unit-step neighbors a collision class has.
+    \item The number of unit distance neighbors a collision class has.
     \item The maximum count of zeros in a the binary representation of a
         colliding block (and likewise with ones).
     \item Whether there exists a block which collides under multiple initial
@@ -1063,11 +1063,16 @@ convinced that inductively building a chosen prefix collision is a useful
 technique by itself.
 
 
-\subsection{Unjustified Performance Observations}
+\subsection{Intuition on Performance}
 
-We share the general tips for working with models of MD4 from a SAT solver
-performance perspective, without justification for results. Note that these
-results may be limited in usefulness and may not be uniformly applicable.
+Our empirical results have provided some intuition on the
+performability of our presented attacks, and the general problem of
+working with models of MD4 from a SAT solver
+performance perspective.  While our results are of a heuristic nature,
+and may not be uniformly applicable, we believe they have
+generalizable value and provide insight within the specific domain of
+collision generation.
+
 \begin{itemize}
     \item Unless searching for a second preimage or chosen prefix with
         sufficient number of bits ($\geq 128$), we find models perform better
@@ -1078,23 +1083,26 @@ results may be limited in usefulness and may not be uniformly applicable.
         of collision classes is important for good performance. However,
         once sufficient witnesses have been found across rounds, missing
         families within the round can be found by various filling-in
-        techniques through applying the $\precsim$ relation.
+        techniques through the application of the $\precsim$ relation.
 \end{itemize}
-
-
-
-
-
 
 \section{Empirical Results:\\The Utility of Existing Collisions}
 \label{Sec:Empirical}
 
-\textbf{TODO -- Introduction?}
+In this section we present our empirical results, evaluating the
+utility of existing published collisions by exploring their structure
+with 3-CNF-SAT, and building representative neighborhoods using our
+distance metrics.  We present these results in the form of an
+exploration of unique differentials, exploration of unit distance
+neighborhoods, maximum count of zeros in the binary representation of
+a colliding block, the existance of blocks which collide under
+multiple initial values, and ASCII block collisions as discussed
+previously in Section \label{Sec:Intuition}.
 
 \subsection{Unique Differentials} \label{empirical:differentials}
 
-Table \ref{table:differentials} states the number of unique differentials,
-including the specified one, which produces a differential path conforming to
+Table \ref{table:differentials} illustrates the number of unique differentials,
+including the input block differential specified by the original authors, which produces a differential path conforming to
 each of the collision classes. We note in particular that while Y. Sasaki's
 attack is generally an improvement upon X. Wang's, Y. Sasaki's attack has fewer
 input block differentials and thus less flexibility in this aspect. Further,
@@ -1112,17 +1120,20 @@ same number of differentials and is thus also more flexible than Y. Sasaki's.
     \end{tabular}
 \end{table}
 
-\subsection{Unit-Step Neighborhood} \label{empirical:neighborhood}
+\subsection{Unit Distance Neighborhood} \label{empirical:neighborhood}
 
 \begin{figure}
 \begin{center}
 \includegraphics[width=0.5\textwidth]{Figs/graph-neighborhood-crop.pdf}
-\caption{}
+\caption{All collisions in the unit distance neighborhoods of
+  Dobbertin and Kasselman collision classes
+  organized by connectedness, and showing the inter-distance
+  paths neighborhoods of unpublished collisions.}
 \label{Fig:Graph-Neighborhood}
 \end{center}
 \end{figure}
 
-Refer to Table \ref{table:neighborhood} for the sizes of neighborhoods
+Table \ref{table:neighborhood} presents the sizes discovered empirically of neighborhoods
 of existing collisions. In particular, note that both Y. Sasaki's attack and
 M. Schl{\"a}ffer's attack -- which both claimed to improve upon X. Wang's
 attack--have larger neighborhood sizes, and likewise with P. Kasselman's
@@ -1140,10 +1151,18 @@ occur in more dense subsets of the collision class space.
     \end{tabular}
 \end{table}
 
+Figure \ref{Fig:Graph-Neighborhood} graphically illustrates the
+geometry of the unit distance neighborhoods for H. Dobbertin and
+P. Kasselman's attack, illustrating the geometry of inter-distance
+paths within the newly discovered collisions.  While all nodes
+represent collisions which are unit-distance from the Dobbertin and
+Kasselman collisions, inter-distance paths may be as large as two.
+Clear structure emerges in this representation of the cliques, and
+corresponds directly to the cliques in Figure \ref{Fig:Graph-Clique}.
 
 \subsection{Zeroes}
 
-See table \ref{table:zeroes} for the maximum count of zeroes in a block
+We present results in Table \ref{table:zeroes} which represent the maximum count of zeroes in a block
 for existing collisions. Note that X. Wang's attack is the leader, with 509
 maximum zero bits in the collision pair. Further, while Y. Sasaki improved
 the bound in other areas, this was not one of them. Of note too,
@@ -1160,8 +1179,6 @@ this metric.
         M. Schl{\"a}ffer's & 506 & & \\
     \end{tabular}
 \end{table}
-
-
 
 \subsection{Multicollisions}
 
