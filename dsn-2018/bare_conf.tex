@@ -386,11 +386,6 @@ propose these techniques as a mechanism for measuring hash trustworthiness and
 discuss potential applications to real-world systems.
 \end{abstract}
 
-
-
-
-
-
 % no keywords
 % For peer review papers, you can put extra information on the cover
 % page as needed:
@@ -404,12 +399,26 @@ discuss potential applications to real-world systems.
 
 \section{Introduction}
 
-Cryptographic hash functions form the core of many protocols. With widespread
-use of hash functions as file integrity checks to verify long term storage of
+Cryptographic hash functions form the core of many protocols which
+trust that cryptographic hash functions preserve certain basic
+properties. Cryptograpic hash functions see widespread
+use for file integrity checks to verify long term storage of
 data, as cache invalidation techniques, and as a building block in network
-protocols such as Kerberos and TLS, this class of functions necessarily has
-strong guarantees about properties of its members. There are three properties
-hash functions must have to be considered cryptographically secure:
+protocols such as Kerberos and TLS.  The classes of functions suitable
+for these use cases necessarily have
+strong guarantees about properties of its members. 
+An ideal cryptographic hash has five main features: determinism - the
+same message always results in the same hash; performability -
+computing a hash for a message should not be algorithmically
+difficult; one-way - it should be infeasible to generate a message
+from its hash except by trying all possible messages; sensitive to
+initial conditions - small changes to a message should change the hash
+value to a degree that the new hash value appears uncorrelated with
+the old hash value; unique digests - it should be infeasible to find
+two different messages with the same hash value.
+
+The most important aspect of these can be formally defined as three
+properties which hash functions must have to be considered cryptographically secure:
 \begin{itemize}
     \item \textbf{Preimage Resistance}: It should be computationally hard to find
         the inverse of a hash function.
@@ -425,13 +434,14 @@ stronger result with higher use for an attacker.
 From an attacker's perspective, finding a preimage or second preimage has been
 difficult: the current published bound for a preimage attack in MD5 is a cost
 of $2^{123.4}$ by Y. Sasaki and K. Aoki \cite{SasakiPreimage}. In MD4, the
-best second preimage attack by H. Yu et al. gives a bound of $2^{-56}$
+best second preimage attack by H. Yu et al. gives a bound of $\frac{1}{2^{56}}$
 likelihood, but uses destructive message modification techniques to achieve
 collisions for all other messages \cite{cryptoeprint:2007:206}. Further, while
 J. Kelsey and B. Schneier proposed a method for finding second preimages
 in less than $2^n$, we note that this requires rather long messages
-\cite{SchneierSecondPreimage}. However, collision attacks are well within reach
-of adversaries, and well past theoretical attacks. The work of
+\cite{SchneierSecondPreimage} which limits their utility to
+attackers. Collision attacks, however, are well within reach
+of adversaries, and have progressed past theoretical attacks into feasibility. The work of
 H. Dobbertin \cite{Dobbertin1998}, X. Wang \cite{cryptoeprint:2004:199},
 M. Schl{\"a}ffer \cite{Schlaffer2006} and others demonstrate the ease with which
 collisions can be found.
@@ -439,18 +449,20 @@ collisions can be found.
 \begin{figure}
 \begin{center}
 \includegraphics[width=0.5\textwidth]{Figs/graph-intro-crop.pdf}
-\caption{}
+\caption{A visualization of the heuristic unit-distance neighborhood
+  of valid collisions from the Dobbertin and Kasselman collisions.}
 \label{Fig:Graph-Intro}
 \end{center}
 \end{figure}
 
 From a cryptographic perspective, the existence of a feasible collision attack
-breaks the requisite properties, thus deprecating the function's use. In some
-instances however, there continues to be widespread use of deprecated hash
-functions. One widespread example is the continued use by Git of SHA-1, despite
+breaks the requisite properties, thus deprecating the function's use
+for trustworthy applications. In many practical instances, however,
+communities continue to use deprecated hash functions in a widespread fashion.
+One such example of widespread use post-deprecation is the continued use by Git of SHA-1, despite
 M. Stevens et al. publishing a full SHA-1 collision in February of 2017
-\cite{cryptoeprint:2017:190}. However, this attack had a bound of $2^{63.1}$ --
-faster than the theoretical $2^{80}$ but still requiring significant compute
+\cite{cryptoeprint:2017:190}. This attack had a bound of $2^{63.1}$
+\emdash faster than the theoretical $2^{80}$ but still requiring significant compute
 resources to find.
 
 We seek to address the problem of evaluating the use cases for a collision,
