@@ -86,7 +86,7 @@
 % have to be run twice to clear warning/error messages.
 
 
-
+\linespread{1.05}
 
 
 
@@ -1439,22 +1439,29 @@ presence of structural weaknesses.
 
 \section{Future Work} \label{Sec:Future}
 
-Moving forward, we seek to solidify the utility metrics by improving upon
+While the literature has established a set of known collisions and
+some initial algorithms for finding new collisions, the 35 fold
+increase in collisions discovered by the methods we have presented in
+this paper open a broad range of possible avenues for future work.
+Moving forward we plan to solidify the utility metrics by improving upon
 second preimage and chosen preimage bounds to validate assumptions about the
-utility of collisions. Further, we seek to apply these results to other hash
-functions in the same family, such as MD5, SHA-1, and SHA-2. Lastly, it
-remains to be seen how this work impacts dissimilar constructions such as
+utility of collisions. Further, we plan to apply these results to other hash
+functions in the same family, such as MD5, SHA-1, and SHA-2 to better
+understand if published collisions represent structural weaknesses
+which impact the trustworthiness of these broadly used algorithms, or not. Lastly, it
+remains to be seen how this work impacts dissimilar hash function constructions such as
 SHA-3 and key derivation functions such as bcrypt and scrypt, and whether
 logical cryptanalysis techniques can be applied to these categories of
 hash functions as well.
 
-This research and all associated code are open access and open source.
-The code is hosted on GitHub at \url{https://github.com/XXXXXXXXXXXXXXXXXX}.
+In order to help the community build upon or work, and for the
+purposes of reproducability and ascertainment of correctness the
+research, data, and all associated code are provided on an open access
+and open source basis under the GNU General Public License Version 3
+\footnote{\url{https://www.gnu.org/licenses/gpl-3.0.en.html}}.
+The code itself is hosted on GitHub at \url{https://github.com/XXXXXXXXXXXXXXXXXX}.
 For additional details or to request data associated with the project, please
 contact the authors.
-
-
-
 
 % conference papers do not normally have an appendix
 
@@ -1462,7 +1469,8 @@ contact the authors.
 % use section* for acknowledgment
 \section*{Acknowledgments}
 
-The authors would like to thank XXXXX XXXXX for providing hardware for the
+The authors would like to thank XXXXX XXXXX for providing access to
+the hardware used for the
 project.
 
 
