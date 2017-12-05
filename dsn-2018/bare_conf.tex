@@ -406,7 +406,7 @@ use for file integrity checks to verify long term storage of
 data, as cache invalidation techniques, and as a building block in network
 protocols such as Kerberos and TLS.  The classes of functions suitable
 for these use cases necessarily have
-strong guarantees about properties of its members. 
+strong guarantees about properties of its members.
 An ideal cryptographic hash has five main features: determinism - the
 same message always results in the same hash; performability -
 computing a hash for a message should not be algorithmically
@@ -702,7 +702,7 @@ We define the following set of known collision classes.
         M. Schl{\"a}ffer in \cite{Schlaffer2006}.
 \end{itemize}
 
-\subsection{Distance Metrics} \label{terminology:distance}
+\subsection{Distance Heuristics} \label{terminology:distance}
 
 We introduce a distance function, $\delta$, between collision classes by the
 number of differences in intermediate rounds deltas. That is, given two
@@ -894,7 +894,7 @@ find other collision classes which have higher utility.
     \label{Fig:1250}
   \end{subfigure}\\
   \begin{subfigure}{\textwidth}
-    \includegraphics[width=\textwidth]{Figs/transitions.png}
+    \includegraphics[width=\textwidth]{Figs/transitions.pdf}
     \caption{Differential Path Transitions}
     \label{Fig:Transitions}
   \end{subfigure}\\
@@ -906,18 +906,27 @@ tested on MD5 and are believed to apply fully to MD5. They likely apply to any
 hash function with similar structure, but as of yet, are untested.
 
 
-\subsection{Distance Metrics}
+\subsection{Distance Heuristics}
 
-We find justification for the distance metric defined in Section
+We find justification for the distance heuristic, $\delta$, defined in Section
 \ref{terminology:distance} in the existing literature on MD4:
 H. Dobbertin's \cite{Dobbertin1998} and P. Kasselman's \cite{KasselmanMD4}
 collision classes have distance $\delta(C_{Dobbertin}, C_{Kasselman}) = 1$
-under this metric. The distance function allows us to find collision classes
-based off of existing classes. By limiting ourselves to unit distances, we
-maximally reuse an existing collision and limit the amount of work the SAT
-solver needs to do. Further, rather than searching for any unit-distance
-new collision classes, we can easily split our search to look in each of the
-48 rounds of MD4, allowing us to parallelize the search for neighbors.
+under this metric. Since others have shown that MD4 is untrustworthy, we can
+limit our search space to small distances, exploiting the structure of MD4. This
+reduction in search space decreases the time to solve a single 3-CNF-SAT
+instance at the expense of restricting ourselves to highly connected, highly
+similar differential paths. Further, we can achieve parallel solving
+capabilities by noting that this problem is embarrassingly parallel: each
+candidate collision class can be independently checked on separate machines.
+
+The highly connected, highly similar differential paths are highlighted in
+Figure \ref{Fig:Graph-Clique}: when the neighbors of H. Dobbertin's and
+P. Kasselman's collision classes from Figure \ref{Fig:Graph-Intro} are viewed
+independently, the large cliques become apparent. Depending on the search
+strategies utilized, cliques may be expanded before new neighbors, or a
+significant portion of a vertices neighbors might belong to existing cliques,
+resulting in slow progress towards any external goal.
 
 Refer to Table \ref{table:distance} for the distances between existing
 collisions in MD4.
@@ -935,14 +944,21 @@ collisions in MD4.
     \end{tabular}
 \end{table}
 
-We find justification for the distance metric $\Delta$ in the existing
+We find justification for the distance heuristic $\Delta$ in the existing
 literature due to collisions by  X. Wang \cite{cryptoeprint:2004:199} and
 M. Schl{\"a}ffer \cite{Schlaffer2006}. Their respective families are:
+$
+\begin{aligned}
+F(C_{Wang}) = (& 1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12, \\
+        & \textbf{13}, 15, 16, 19, 20, 35, 36) \\
+\end{aligned} \\
+\begin{aligned}
+F(C_{Schlaffer}) = (& 1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12, \\
+         & 15, 16, 19, 20, 35, 36)
+\end{aligned}
+$
 
-\begin{align*}
-F(C_{Wang}) &=& (1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12, \textbf{13}, 15, 16, 19, 20, 35, 36)\\
-F(C_{Schlaffer}) &=& (1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12, 15, 16, 19, 20, 35, 36)
-\end{align*}
+
 
 \subsection{Family Similarity}
 
@@ -1154,6 +1170,9 @@ additional techniques are necessary for expanding the collision neighborhood.
 
 
 
+
+
+
 \section{New Collisions} \label{Sec:Collision}
 
 Through the exploration of the neighborhood technique, we have found over
@@ -1194,7 +1213,8 @@ some neighborhood of the original collision class, by analyzing the structure
 of the input block differential, systems can potentially prohibit successful
 collision attacks by preventing structures of input block differences.
 
-\textbf{TODO - figures and graphics on dataset}
+
+\textbf{TODO - figures and graphics on dataset, cross round, etc.}
 
 
 
@@ -1300,14 +1320,26 @@ collision attacks by preventing structures of input block differences.
 
 
 \section{Conclusion} \label{Sec:Conclusion}
-The conclusion goes here.
 
+\textbf{TODO: COMPLETE}
 
 
 \section{Future Work}
 
-The framework can be seen here \textbf{TODO}. Complete data set available
-upon request.
+Moving forward, we seek to solidify the utility metrics by improving upon
+second preimage and chosen preimage bounds to validate assumptions about the
+utility of collisions. Further, we seek to apply these results to other hash
+functions in the same family, such as MD5, SHA-1, and SHA-2. Lastly, it
+remains to be seen how this work impacts dissimilar constructions such as
+SHA-3 and key derivation functions such as bcrypt and scrypt, and whether
+logical cryptanalysis techniques can be applied to these categories of
+hash functions as well.
+
+This research and all associated code are open access and open source.
+The code is hosted on GitHub at \url{https://github.com/XXXXXXXXXXXXXXXXXX}.
+For additional details or to request data associated with the project, please
+contact the authors.
+
 
 
 
