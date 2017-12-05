@@ -154,7 +154,10 @@
 %
 % You can find documentation about the pdfTeX application at:
 % http://www.tug.org/applications/pdftex
-
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{wrapfig}
 
 
 
@@ -433,6 +436,14 @@ H. Dobbertin \cite{Dobbertin1998}, X. Wang \cite{cryptoeprint:2004:199},
 M. Schl{\"a}ffer \cite{Schlaffer2006} and others demonstrate the ease with which
 collisions can be found.
 
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.5\textwidth]{Figs/graph-intro-crop.pdf}
+\caption{}
+\label{Fig:Graph-Intro}
+\end{center}
+\end{figure}
+
 From a cryptographic perspective, the existence of a feasible collision attack
 breaks the requisite properties, thus deprecating the function's use. In some
 instances however, there continues to be widespread use of deprecated hash
@@ -493,6 +504,26 @@ Towards this, we look at prior work in two main areas: differential and logical
 cryptanalysis.
 
 \subsection{On Differential Cryptanalysis}
+
+\begin{figure*}
+\begin{center}
+  \begin{subfigure}{\textwidth}
+    \includegraphics[width=\textwidth]{Figs/differential-1289.png}
+    \caption{Collision 1289}
+    \label{Fig:1289}
+  \end{subfigure}\\
+  \begin{subfigure}{\textwidth}
+    \includegraphics[width=\textwidth]{Figs/differential-1250.png}
+    \caption{Collision 1250}
+    \label{Fig:1250}
+  \end{subfigure}\\
+  \begin{subfigure}{\textwidth}
+    \includegraphics[width=\textwidth]{Figs/transitions.png}
+    \caption{Differential Path Transitions}
+    \label{Fig:Transitions}
+  \end{subfigure}\\
+\end{center}
+\end{figure*}
 
 Differential cryptanalysis has been the major technique behind the discovery
 of collisions in cryptographic hash functions. Its importance can be seen
@@ -981,6 +1012,22 @@ same number of differentials and is thus also more flexible than Y. Sasaki's.
 \end{table}
 
 \subsection{Unit-Step Neighborhood} \label{empirical:neighborhood}
+
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.5\textwidth]{Figs/graph-clique-crop.pdf}
+\caption{}
+\label{Fig:Graph-Clique}
+\end{center}
+\end{figure}
+
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.5\textwidth]{Figs/graph-neighborhood-crop.pdf}
+\caption{}
+\label{Fig:Graph-Neighborhood}
+\end{center}
+\end{figure}
 
 Refer to Table \ref{table:neighborhood} for the sizes of neighborhoods
 of existing collisions. In particular, note that both Y. Sasaki's attack and
