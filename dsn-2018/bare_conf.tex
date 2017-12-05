@@ -410,15 +410,16 @@ strong guarantees about properties of its members.
 An ideal cryptographic hash has five main features: determinism - the
 same message always results in the same hash; performability -
 computing a hash for a message should not be algorithmically
-difficult; one-way - it should be infeasible to generate a message
-from its hash except by trying all possible messages; sensitive to
+difficult; non-reversability - it should be infeasible to generate a message
+from its hash except by trying all possible messages; sensitivity to
 initial conditions - small changes to a message should change the hash
 value to a degree that the new hash value appears uncorrelated with
 the old hash value; unique digests - it should be infeasible to find
 two different messages with the same hash value.
 
-The most important aspect of these can be formally defined as three
-properties which hash functions must have to be considered cryptographically secure:
+The most important aspect of these can be formally defined under three
+properties which hash function implementations must have to be
+considered cryptographically secure in practice:
 \begin{itemize}
     \item \textbf{Preimage Resistance}: It should be computationally hard to find
         the inverse of a hash function.
@@ -462,13 +463,22 @@ communities continue to use deprecated hash functions in a widespread fashion.
 One such example of widespread use post-deprecation is the continued use by Git of SHA-1, despite
 M. Stevens et al. publishing a full SHA-1 collision in February of 2017
 \cite{cryptoeprint:2017:190}. This attack had a bound of $2^{63.1}$
-\emdash faster than the theoretical $2^{80}$ but still requiring significant compute
+--- faster than the theoretical $2^{80}$ but still requiring significant compute
 resources to find.
 
 We seek to address the problem of evaluating the use cases for a collision,
-to determine whether or not a collision affects a particular system. This
-paper contributes several techniques to logical cryptanalysis and uses these
-techniques to derive metrics of the trustworthiness of hash functions. We claim
+to determine whether or not a collision affects a particular system.
+The central thesis of this research is that logical cryptanalysis
+allows us to formalize the structure inherent to the underlying hash
+function such that new collisions can be found within reasonable time
+on commodity hardware.  We assert that when such structure exists, it
+is \textbf{imperitive to discontinue use of such hash functions as
+  they are fundamentally untrustworthy for critical applications.}  An
+example of such structure showing the unit distance neighborhood
+(defined in Section \ref{Sec:Terminology}) of the known collisions
+from Dobbertin and Kasselman is presented in Figure \ref{Fig:Graph-Intro}.
+This paper contributes several techniques to logical cryptanalysis and uses these
+techniques to derive metrics of the trustworthiness for hash functions. We claim
 the following results are novel in the field:
 \begin{itemize}
     \item We define the neighborhood of a class of collisions and show that
@@ -516,26 +526,6 @@ Towards this, we look at prior work in two main areas: differential and logical
 cryptanalysis.
 
 \subsection{On Differential Cryptanalysis}
-
-\begin{figure*}
-\begin{center}
-  \begin{subfigure}{\textwidth}
-    \includegraphics[width=\textwidth]{Figs/differential-1289.png}
-    \caption{Collision 1289}
-    \label{Fig:1289}
-  \end{subfigure}\\
-  \begin{subfigure}{\textwidth}
-    \includegraphics[width=\textwidth]{Figs/differential-1250.png}
-    \caption{Collision 1250}
-    \label{Fig:1250}
-  \end{subfigure}\\
-  \begin{subfigure}{\textwidth}
-    \includegraphics[width=\textwidth]{Figs/transitions.png}
-    \caption{Differential Path Transitions}
-    \label{Fig:Transitions}
-  \end{subfigure}\\
-\end{center}
-\end{figure*}
 
 Differential cryptanalysis has been the major technique behind the discovery
 of collisions in cryptographic hash functions. Its importance can be seen
@@ -735,6 +725,8 @@ This is convenient for when the specifics of the differential path do not
 matter, merely that there exists at least one collision class of the specified
 form.
 
+We introduce this distance function as a heuristic measure of the
+sensitivity of the hash function to small changes in the input.
 
 \subsection{Neighborhoods}
 
@@ -775,7 +767,18 @@ internal and a round external to the collision family of $C$. That is:
         & \text{ and } \exists k \not\in F(C), C_j[k] \neq C[k] \}
 \end{align*}
 
+When the neighborhood defined by $\delta = 1$ is frequently non-empty
+we assert that sufficient structure exists in the underlying hash
+function such that logical cryptanalysis via 3-CNF-SAT becomes
+feasible.  This condition is thus sufficient to render the underlying
+hash function \textbf{untrustworthy}.  Conversely it is a necessary
+condition (but possibly insufficient) that a trustworthy hash function
+has an empty neighborhood defined by $\delta = 1$.
 
+Furthermore this condition extends to $\delta = d$ for some small
+value of $d$ as determined by computational resources such that $d$
+becomes a trustworthiness metric under constraints of current
+3-CNF-SAT solving capabilities within reasonable time bounds.
 
 \section{Intuition on the Utility of a Collision} \label{Sec:Intuition}
 
@@ -878,6 +881,26 @@ find other collision classes which have higher utility.
 
 \section{Techniques for Logical Cryptanalysis} \label{Sec:Logical}
 
+\begin{figure*}
+\begin{center}
+  \begin{subfigure}{\textwidth}
+    \includegraphics[width=\textwidth]{Figs/differential-1289.png}
+    \caption{Collision 1289}
+    \label{Fig:1289}
+  \end{subfigure}\\
+  \begin{subfigure}{\textwidth}
+    \includegraphics[width=\textwidth]{Figs/differential-1250.png}
+    \caption{Collision 1250}
+    \label{Fig:1250}
+  \end{subfigure}\\
+  \begin{subfigure}{\textwidth}
+    \includegraphics[width=\textwidth]{Figs/transitions.png}
+    \caption{Differential Path Transitions}
+    \label{Fig:Transitions}
+  \end{subfigure}\\
+\end{center}
+\end{figure*}
+
 The following techniques have been extensively tested on MD4 and partially
 tested on MD5 and are believed to apply fully to MD5. They likely apply to any
 hash function with similar structure, but as of yet, are untested.
@@ -912,14 +935,20 @@ collisions in MD4.
     \end{tabular}
 \end{table}
 
+We find justification for the distance metric $\Delta$ in the existing
+literature due to collisions by  X. Wang \cite{cryptoeprint:2004:199} and
+M. Schl{\"a}ffer \cite{Schlaffer2006}. Their respective families are:
 
-
+\begin{align*}
+F(C_{Wang}) &=& (1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12, \textbf{13}, 15, 16, 19, 20, 35, 36)\\
+F(C_{Schlaffer}) &=& (1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12, 15, 16, 19, 20, 35, 36)
+\end{align*}
 
 \subsection{Family Similarity}
 
 We define a relation among families of collisions across rounds as follows.
 Let $F_1$ and $F_2$ be two different families of collisions. Then we say that
-$F_1$ and $F_2$ are \textit{similar}, and notate it $F_1 \lesssim F_2$, if
+$F_1$ and $F_2$ are \textit{similar}, and notate it $F_1 \precsim F_2$, if
 $R(F_1) \leq R(F_2)$ and $F_1 \subseteq F_2$. Note that, when
 $R(F_1) = R(F_2)$, this is equivalent to saying that $F_2$ is in some
 expansion neighborhood of $F_1$. Further, when $R(F_1) < R(F_2)$ and
@@ -929,9 +958,9 @@ $F_1$.
 We claim that the following statements are true for MD4:
 \begin{enumerate}
     \item For every $F \in \mathcal{F}$, there exists $F'$ such that
-        $F' \lesssim F$ and $R(F') + 4 = R(F)$.
+        $F' \precsim F$ and $R(F') + 4 = R(F)$.
     \item For every $F \in \mathcal{F}$, there exists $F'$ such that
-        $F \lesssim F'$.
+        $F \precsim F'$.
 \end{enumerate}
 
 From an intuitive standpoint, what this says is that collisions have
@@ -989,7 +1018,7 @@ results may be limited in usefulness and may not be uniformly applicable.
         of collision classes is important for good performance. However,
         once sufficient witnesses have been found across rounds, missing
         families within the round can be found by various filling-in
-        techniques through applying the $\lesssim$ relation.
+        techniques through applying the $\precsim$ relation.
 \end{itemize}
 
 
