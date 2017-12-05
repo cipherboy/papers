@@ -331,10 +331,14 @@
 % author names and affiliations
 % use a multiple column layout for up to three different
 % affiliations
-\author{\IEEEauthorblockN{Alexander M. Scheel, Eric W. D. Rozier}
-\IEEEauthorblockA{Department of Computer Science\\Iowa State University of Science and Technology\\
-Ames, Iowa, USA 50011\\
-Email: \texttt{alexander.m.scheel@gmail.com, erozier@iastate.edu}}}
+
+%\author{\IEEEauthorblockN{Alexander M. Scheel, Eric W. D. Rozier}
+%\IEEEauthorblockA{Department of Computer Science\\Iowa State University of Science and Technology\\
+%Ames, Iowa, USA 50011\\
+%Email: \texttt{alexander.m.scheel@gmail.com, erozier@iastate.edu}}}
+
+\vspace{3in}
+
 % conference papers do not typically use \thanks and this command
 % is locked out in conference mode. If really needed, such as for
 % the acknowledgment of grants, issue a \IEEEoverridecommandlockouts
@@ -400,8 +404,8 @@ discuss potential applications to real-world systems.
 \section{Introduction}
 
 Cryptographic hash functions form the core of many protocols which
-trust that cryptographic hash functions preserve certain basic
-properties. Cryptograpic hash functions see widespread
+trust that these functions preserve certain basic
+properties. Cryptographic hash functions see widespread
 use for file integrity checks to verify long term storage of
 data, as cache invalidation techniques, and as a building block in network
 protocols such as Kerberos and TLS.  The classes of functions suitable
@@ -410,7 +414,7 @@ strong guarantees about properties of its members.
 An ideal cryptographic hash has five main features: determinism - the
 same message always results in the same hash; performability -
 computing a hash for a message should not be algorithmically
-difficult; non-reversability - it should be infeasible to generate a message
+difficult; non-reversibility - it should be infeasible to generate a message
 from its hash except by trying all possible messages; sensitivity to
 initial conditions - small changes to a message should change the hash
 value to a degree that the new hash value appears uncorrelated with
