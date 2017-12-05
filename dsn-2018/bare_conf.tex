@@ -416,10 +416,10 @@ same message always results in the same hash; performability -
 computing a hash for a message should not be algorithmically
 difficult; non-reversibility - it should be infeasible to generate a message
 from its hash except by trying all possible messages; sensitivity to
-initial conditions - small changes to a message should change the hash
-value to a degree that the new hash value appears uncorrelated with
-the old hash value; unique digests - it should be infeasible to find
-two different messages with the same hash value.
+initial conditions - small changes to a message should change every bit of
+the hash value with probability $\frac{1}{2}$;
+unique digests - it should be infeasible to find two different messages with
+the same hash value.
 
 \begin{figure}
 \begin{center}
