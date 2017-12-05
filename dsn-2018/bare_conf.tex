@@ -592,7 +592,7 @@ provenance of data, the credibility of image data
 \cite{friedman1993trustworthy}, sensor identity and trust
 \cite{wong2006dynamic}, meta-data validity \cite{bayer1993improving},
 hardware authorization \cite{sirer2011logical}, and other measures of
-trust in system and mission critical systems.  
+trust in system and mission critical systems.
 The use of deprecated hashes for commit verification in
 git\cite{loeliger2012version}, and for patch identity and trust
 verification \cite{kuhn2005secure}, or segment verification in
@@ -636,7 +636,9 @@ a hash function.
         output state space are the same, so we omit the subscripts, $S$. We
         assume that these are sets of binary strings of a fixed length. In the
         case of MD4, $S$ is all binary strings of length 128, and $B$ is all
-        binary strings of length 512.
+        binary strings of length 512. We assume that the hash function can be
+        reduced to an arbitrary number of rounds, $r$. We note the hash
+        function reduced to $r$ rounds as $h_{r}$.
 
     \item An \textit{input} to a hash function is an ordered pair, $i = (s, b)$,
         where $s \in S$ and $b \in B$. The \textit{input space} is simply
@@ -651,28 +653,19 @@ a hash function.
         construct. If $i$ is an input to a hash function, we use $I(i)$ to
         denote the intermediate state variables. Formally, this is represented
         as an ordered tuple of binary strings of the size of the updated state.
-        In the case of MD4, this is an ordered tuple of cardinality 48, where
-        each index is a binary string of length 32, for a total of 1536
+        In the case of MD4, this is an ordered tuple of cardinality $r$, where
+        each index is a binary string of length 32, for a maximum of $1536$
         intermediate state variables. We denote the space that $I(i)$ maps
-        into as $\mathcal{V}$. We define the number of rounds as $R$.
-
-    \item We use the notation $R(I)$
+        into as $\mathcal{V}$.
 
     \item A \textit{collision}, $L \subseteq \mathcal{I}$ is a subset of the
         input space of a hash function with $\big|L\big| \geq 2$, such that
         there exists an output $v \in S$ such that for all inputs $i \in L$,
-        $h(i) = c$.
+        $h(i) = c$. We extend this to arbitrary round hash functions using
+        the notation $(r, L)$, to explicitly denote that $L$ is a collision
+        under $h_{r}$.
 
         \begin{itemize}
-            \item We define a \textit{simple collision} to be any collision
-                with cardinality exactly two.
-
-            \item We define a \textit{strong collision} to be a collision which
-                has multiple blocks which hash to the same output under the same
-                input  state. That is, if $L$ is a collision, then
-                $\forall i \in L$, $i_s = c$ for some $c \in S$ for $L$ to be
-                a strong collision.
-
             \item We define a \textit{multicollision} to be a collision which
                 has multiple input states which hash to the same output under
                 a single input block. That is, if $L$ is a collision, then
@@ -682,11 +675,8 @@ a hash function.
 
     \item For a simple collision, we say that the \textit{differential path}
         is the difference between the two sets of intermediate state
-        variables. \textbf{TODO -- HELP define formal notation?}
-            \begin{itemize}
-                \item Signed - Wang's, we don't use.
-                \item Unsigned - more common, actually used by us.
-            \end{itemize}
+        variables. This is formally represented by an ordered tuple of
+        $r$ elements. We use the simple xor difference throughout this paper.
 
 
     \item A \textit{collision class}, $C$, is an arbitrary differential path.
@@ -694,11 +684,19 @@ a hash function.
         path, we call that collision class non-empty. We denote the set of all
         non-empty collision classes as $\mathcal{C}$. When we wish to convert
         between a collision, $c \in L$ and a collision class,
-        $C \in \mathcal{C}$, we use the notation $C = \mathcal{C}(c)$.
+        $C \in \mathcal{C}$, we use the notation $C = \mathcal{C}(c)$. When
+        $c$ is a tuple, $(r, L)$, we say that the collision class, $C$
+        must exist over same round collisions, and thus $C$ becomes a
+        two-tuple, $(r, d)$, where $d$ is the ordered tuple denoting
+        differential path.
+
 
     \item A \textit{family of collision classes}, $F$, is the indices of a
         collision class, $C$, which have any non-zero difference. That is,
-        $F = \{ 0 \leq i \leq R : C[i] \neq 0 \}$.
+        $F = \{ 0 \leq i \leq R : C[i] \neq 0 \}$. When $C$ again is over
+        a single round, $r$, we extend $F$ likewise, to become
+        $(r, F)$. We denote the set of all families of collision classes as
+        $\mathcal{F}$.
 \end{itemize}
 
 \subsection{Known Collision Classes}
