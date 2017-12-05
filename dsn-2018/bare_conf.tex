@@ -1269,7 +1269,7 @@ for a given collision class, and potentially many collision classes within
 some neighborhood of the original collision class, by analyzing the structure
 of the input block differential, systems can potentially prohibit successful
 collision attacks by preventing structures of input block differences. Note
-too how the graph presented in \ref{Fig:Families48} shows a distinct grouping
+too how the graph presented in Figure \ref{Fig:Families48} shows a distinct grouping
 into three disconnected subgraphs, which fall along input block differential
 family boundaries.
 
@@ -1381,14 +1381,39 @@ preimage attack without relying on message modification techniques.
 
 \section{Conclusion} \label{Sec:Conclusion}
 
-- Theory behind Logical Cryptanalysis:
-    - Distance heuristic.
-    - $\precsim$.
-- Tie into Trustworthiness of hash functions.
-- Demonstrated metrics.
-- Demonstrated 35k new collisions.
-- Implications to real world systems.
+We have demonstrated in this paper that our theories for logical
+cryptanalysis hold, and lead to a 35 fold increase in collision
+discovery when compared to the existing literature.  By employing our
+presented distance heuristic and the lattice structure uncovered by
+the $\precsim$ relation, we can evaluate the trustworthiness of a hash
+function as the inverse of the flexibility of known collisions for
+that hash function.  This allows us to measure the structural
+weaknesses of a hash function and determine if extant collisions are sufficient
+to render a hash function untrustworthy, and likewise to understand if
+necessary conditions related to the underlying structure are met to
+ensure trustworthiness.
 
+We demonstrate the utility of five metrics of the flexibility present
+in a collision on the basis of 1) the number of unique differentials
+within a collision class; 2) the size of the unit distance
+neighborhood for a collision class; 3) the maximum count of zeros in a
+binary representation of a colliding block; 4) the existance of blocks
+which collide under multiple initial values; and 5) the presence of
+ASCII valued inplut blocks within a collision.  These metrics proved
+capable when evaluating the flexibility of collisions in the published
+literature, and showed that flexibility is a multi-dimensional
+quantity that must be compared over multiple distance metrics, as not all
+collisions dominate universally.
+
+Our empirical results furthermore demonstrated that concerns over
+industrial use of deprecated hash functions, specifically MD4, are
+real, and that structural weaknesses exist which are highly
+exploitable and limit the trustworthiness of any system which employs
+such hash functions.  We hope the presented results lead to a
+reduction in the use of such deprecated hash functions, and that new
+hash functions are periodically evaluated when collisions are
+discovered to understand if these collisions also indicate the
+presence of structural weaknesses.
 
 \section{Future Work} \label{Sec:Future}
 
