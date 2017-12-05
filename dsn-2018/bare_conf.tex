@@ -609,54 +609,47 @@ meaningful way in an environment with changing hardware capabilities.
 
 \section{Terminology \& Notation}  \label{Sec:Terminology}
 
-\subsection{Conventions}
-\begin{itemize}
-    \item We assume ordered tuples and strings are indexable via square
-        brackets. Occasionally we use subscripts for referring to
-        elements of tuples with named members.
-    \item We use MD4 as specified in RFC 1320 \cite{rfc1320}.
-\end{itemize}
+In order to define our define our metrics using logical cryptanalysis
+we first define a set of formal terminology and notation whn
+discussing our work, and the notation of collisions within a hash. 
+We make the general assumption that ordered tuples and strings are
+indexable via square brackets. We utilize subscripts when referring to
+elements of tuples with named members, as opposed to just indexable
+members.  When referring to the MD4 hash function, we use MD4 as
+specified in RFC 1320 \cite{rfc1320}.
 
-\textbf{TODO}
+A \textit{cryptographic hash function} is a function:
+\begin{align*}
+  h: S_{i} \times B \rightarrow S_{o}
+\end{align*}
+which satisfies the usual properties of cryptographic hash functions
+(preimage, second preimage, collision, deterministic, etc.). We denote
+the input state space as $S_{i}$, the input block space as $B$, and the
+output state space as $S_{o}$. Usually the input state space and the
+output state space are the same, so we omit the subscripts, $S$. We
+assume that these are sets of binary strings of a fixed length. In the
+case of MD4, $S$ is all binary strings of length 128, and $B$ is all
+binary strings of length 512.
 
-\subsection{Collisions in Hash Functions}
+An \textit{input} to a hash function is an ordered pair, $i = (s, b)$,
+where $s \in S$ and $b \in B$. The \textit{input space} is simply
+the domain of the hash function, which we denote as $\mathcal{I}$.
+If $i \in \mathcal{I}$ is an input, we reference the state as $i_s$
+and the input block as $i_b$.
 
-We use the following terminology when discussing the notion of collisions in
-a hash function.
-
-\begin{itemize}
-    \item A \textit{cryptographic hash function} is a function:
-        \begin{align*}
-            h: S_{i} \times B \rightarrow S_{o}
-        \end{align*}
-        which satisfies the usual properties of cryptographic hash functions
-        (preimage, second preimage, collision, deterministic, etc.). We denote
-        the input state space as $S_{i}$, the input block space as $B$, and the
-        output state space as $S_{o}$. Usually the input state space and the
-        output state space are the same, so we omit the subscripts, $S$. We
-        assume that these are sets of binary strings of a fixed length. In the
-        case of MD4, $S$ is all binary strings of length 128, and $B$ is all
-        binary strings of length 512.
-
-    \item An \textit{input} to a hash function is an ordered pair, $i = (s, b)$,
-        where $s \in S$ and $b \in B$. The \textit{input space} is simply
-        the domain of the hash function, which we denote as $\mathcal{I}$.
-        If $i \in \mathcal{I}$ is an input, we reference the state as $i_s$
-        and the input block as $i_b$.
-
-    \item We use the term \textit{intermediate state variables} to refer to
-        intermediate steps in the computation of a hash function under
-        a specific input. Typically these are the outputs of
-        one-way compression functions as part of the Merkel-Damg{\aa}rd
-        construct. If $i$ is an input to a hash function, we use $I(i)$ to
-        denote the intermediate state variables. Formally, this is represented
-        as an ordered tuple of binary strings of the size of the updated state.
-        In the case of MD4, this is an ordered tuple of cardinality 48, where
-        each index is a binary string of length 32, for a total of 1536
-        intermediate state variables. We denote the space that $I(i)$ maps
-        into as $\mathcal{V}$. We define the number of rounds as $R$.
-
-    \item We use the notation $R(I)$
+We use the term \textit{intermediate state variables} to refer to
+intermediate steps in the computation of a hash function under
+a specific input. Typically these are the outputs of
+one-way compression functions as part of the Merkel-Damg{\aa}rd
+construct. If $i$ is an input to a hash function, we use $I(i)$ to
+denote the intermediate state variables. Formally, this is represented
+as an ordered tuple of binary strings of the size of the updated state.
+In the case of MD4, this is an ordered tuple of cardinality 48, where
+each index is a binary string of length 32, for a total of 1536
+intermediate state variables. We denote the space that $I(i)$ maps
+into as $\mathcal{V}$. We define a set of functions $R(x)$ where $x$
+is an element derived from the sets $\mathcal{C}$ or $\mathcal{F}$
+which returns an element.
 
     \item A \textit{collision}, $L \subseteq \mathcal{I}$ is a subset of the
         input space of a hash function with $\big|L\big| \geq 2$, such that
