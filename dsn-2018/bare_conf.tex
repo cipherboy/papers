@@ -988,8 +988,8 @@ $
 \subsection{Family Similarity}
 
 We define a relation among families of collisions across rounds as follows.
-Let $F_1$ and $F_2$ be two different families of collisions. Then we say that
-$F_1$ and $F_2$ are \textit{similar}, and notate it $F_1 \precsim F_2$, if
+Let $F_1$ and $F_2$ be two different families of collisions. We say that
+$F_1$ and $F_2$ are \textit{similar} and notate this similarity as $F_1 \precsim F_2$ if
 $R(F_1) \leq R(F_2)$ and $F_1 \subseteq F_2$. Note that, when
 $R(F_1) = R(F_2)$, this is equivalent to saying that $F_2$ is in some
 expansion neighborhood of $F_1$. Further, when $R(F_1) < R(F_2)$ and
@@ -999,10 +999,20 @@ $F_1$.
 We claim that the following statements are true for MD4:
 \begin{enumerate}
     \item For every $F \in \mathcal{F}$, there exists $F'$ such that
-        $F' \precsim F$ and $R(F') + 4 = R(F)$.
+        $F' \precsim F$ and $R(F') + 4 = R(F)$ due to the entire
+        internal state being replaced every four rounds of MD4.
     \item For every $F \in \mathcal{F}$, there exists $F'$ such that
         $F \precsim F'$.
 \end{enumerate}
+
+\begin{figure*}
+\begin{center}
+\includegraphics[width=\textwidth]{Figs/lattice.pdf}
+\caption{The lattice structure of $\precsim$ for the collision
+  families under X. Wang and Y. Sasaki.}
+\label{Fig:PrecSim}
+\end{center}
+\end{figure*}
 
 From an intuitive standpoint, what this says is that collisions have
 witnesses for their existence in reduced round versions of the function, and
@@ -1010,46 +1020,44 @@ further, that it is sufficient to search reduced round versions to find
 candidates for extension into additional rounds. This likely derives from
 the iterative construction of MD4 and the particular choice of block schedule.
 We present Figure \ref{Fig:PrecSim} as an example of the lattice structure
-induced under $\precsim$ for example collision families.
+induced under $\precsim$ for example collision families, and
+demonstrates the claims from our statements about MD4 for collision
+families under X. Wang and Y. Sasaki.
 
-
-\begin{figure*}
-\begin{center}
-\includegraphics[width=\textwidth]{Figs/lattice.pdf}
-\caption{The lattice structure of $\precsim$.}
-\label{Fig:PrecSim}
-\end{center}
-\end{figure*}
-
-
-
-
-\subsubsection{Collision Class Similarity}
+\paragraph{Collision Class Similarity}
 
 We claim that the aforementioned statements hold when considering individual
 collision classes instead of families of collision classes, but with less
-likelihood. That is, we can transplant an $n$ round collision into an $n+4$
-round and consider a neighborhood around it to find a new collision.
+likelihood which may lead to the requirement of enlarging the
+neighborhood distance. That is, we can transplant an $n$ round collision into an $n+4$
+round and consider a neighborhood to find new collisions.  Empirically
+we have shown this is not only likely, but extant for published
+collision classes.
 
-\subsubsection{Second Preimage Similarity}
+\paragraph{Second Preimage Similarity}
 
 If the models are constrained for a second preimage, we note that attack again
 works, but requires searching wider and wider differential paths in small round
 sizes. In particular, despite strong evidence for this pattern holding in
 $n \leq 24$ rounds, outside of the collision family $\{0, 16\}$ in both 28 and
-32 round MD4--which does not extend any further--we have been unable to find
+32 round MD4 --- which does not extend any further --- we have been unable to find
 any other differential path in those rounds by exhaustive brute force search
 up to a differential path of length 8. Further searches have been done of
 36, 40, 44, and 48 rounds up to a differential path of length 5 with a similar
-lack of results. Thus we believe the general technique to hold, but the size
-of the search space for a second preimage becomes prohibitively large, and
+lack of results. Thus we believe the general technique to hold but it
+is heuristic in nature and the size
+of the search space for a second preimage may become prohibitively
+large so as to be infeasible, and
 further, that differential paths become sufficiently long to prohibit easy
 finding of second preimages.
 
-\subsubsection{Chosen Prefix Similarity}
+\paragraph{Chosen Prefix Similarity}
 
-Unlike second preimage attacks, chosen prefix attacks have a higher likelihood
-of working, and give better results. However, we have found that most chosen
+The attack also has been shown empirically to work on chosen prefix
+attacks, but once again these attacks are heuristic and not
+guaranteed.  Unlike second preimage attacks, chosen prefix attacks
+have empirically shown a higher likelihood
+of working, and have given better results in practice. We have found that most chosen
 prefixes work in the neighborhoods of existing collisions, and thus are not
 convinced that inductively building a chosen prefix collision is a useful
 technique by itself.
