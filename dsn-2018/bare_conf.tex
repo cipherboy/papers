@@ -1083,7 +1083,7 @@ results may be limited in usefulness and may not be uniformly applicable.
 
 \textbf{TODO -- Introduction?}
 
-\subsection{Unique Differentials}
+\subsection{Unique Differentials} \label{empirical:differentials}
 
 Table \ref{table:differentials} states the number of unique differentials,
 including the specified one, which produces a differential path conforming to
@@ -1211,42 +1211,62 @@ evidence for propagating neighborhoods across reduced round versions of MD4.
 
 \subsection{Extensions of Prior Work}
 
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.5\textwidth]{Figs/families48.pdf}
+\caption{A visualization of the unit-distance family relationships
+of the 35,000 new collisions in MD4. }
+\label{Fig:Families48}
+\end{center}
+\end{figure}
+
 We noted in table \ref{table:neighborhood} that the unit-step neighborhood of
 the existing attacks were non-empty. By repeatedly expanding neighborhoods of
 known collision classes, we can construct paths in the collision space. We
 made the following observations:
 
-\begin{enumerate}
-    \item The space of collision classes is not smooth under the unit distance
-        relation. That is, starting at $C_{Schlaffer}$ and evaluating
-        successive neighborhoods, moving towards $C_{Wang}$ whenever the
-        distance decreases does not lead to a simple path of length
-        $\delta(C_{Schlaffer}, C_{Wang}) = 17$. Our lower bound on the actual
-        distance is 29, but after 14 rounds of expansion, we only reduced the
-        distance to 15.
-    \item Even under successive unit neighborhoods, the family of input block
-        differentials remains roughly the same among successive neighborhoods.
-        This can be partially counteracted by moving to reduced-round spaces,
-        evaluating the neighborhood, and expanding back to a collision in
-        full-round MD4. That is, there is a detectable signature of sharing
-        significant input block differential structure with the original
-        collision. With 35,918 unique classes of collisions which had 176
-        unique families of collisions, there were only three unique families
-        of input block differentials: those of the starting collision classes.
-\end{enumerate}
+The space of collision classes is not smooth under the unit distance
+relation. That is, starting at $C_{Schlaffer}$ and evaluating
+successive neighborhoods, moving towards $C_{Wang}$ whenever the
+distance decreases does not lead to a simple path of length
+$\delta(C_{Schlaffer}, C_{Wang}) = 17$. Our lower bound on the actual
+distance is 29, but after 14 rounds of expansion, we only reduced the
+distance to 15. This shows that $\delta$ does not satisfy the triangle
+equality and cannot be a metric, only a heuristic.
+
+Even under successive unit neighborhoods, the family of input block
+differentials remains roughly the same among successive neighborhoods,
+echoing the work of M. Schl{\"a}ffer and E. Oswald \cite{Schlaffer2006}.
+This can be partially counteracted by moving to reduced-round spaces,
+evaluating the neighborhood, and expanding back to a collision in
+full-round MD4. That is, there is a detectable signature of sharing
+significant input block differential structure with the original
+collision. Our 35,918 collision classes belonged to 176 unique
+families of collisions. However, there were only three unique families
+of input block differentials with 100 input block differences. Note
+however, that the unlike the metric evaluations in
+Section \ref{empirical:differentials}, these collision classes were
+not evaluated for number of unique differentials; thus there are likely
+more than 100 patterns, but still only three families.
 
 This last point shows that, while there may be a number of unique differentials
 for a given collision class, and potentially many collision classes within
 some neighborhood of the original collision class, by analyzing the structure
 of the input block differential, systems can potentially prohibit successful
-collision attacks by preventing structures of input block differences.
+collision attacks by preventing structures of input block differences. Note
+too how the graph presented in \ref{Fig:Families48} shows a distinct grouping
+into three disconnected subgraphs, which fall along input block differential
+family boundaries.
 
-Further, compared to the work presented by M. Schl{\"a}ffer and E. Oswald in
+Further, compared to the work presented by M. Schl{\"a}ffer and E. Oswald
 \cite{Schlaffer2006}, this is a 35 fold increase. Increasing this bound is
 possible with low additional cost. Further, by fully considering the
 similarities of collision families under $\precsim$ and better enumerating the
 resulting candidates, additional paths with unique differentials could be
-constructed.
+constructed. This would allow for new candidate input block differentials,
+better construction of chosen prefix attacks, and potentially to a full second
+preimage attack without relying on message modification techniques.
+
 
 
 \section{Discussion} \label{Sec:Impacts}
