@@ -809,7 +809,8 @@ successfully devoted to the production of collision attacks, producing
 efficient results.  These attacks have real consequences for
 trustworthy systems, and evaluating their impact and risk is an
 important and underserved area of the existing literature.
-We seek to evaluate trustworthiness by building a measure of the relative difference between a collision
+
+We evaluate trustworthiness by building a measure of the relative difference between a collision
 attack and second preimage attacks. The literature describes a number
 of successful high profile attacks against popular, and industrially
 relevant hash functions.
@@ -907,24 +908,42 @@ find other collision classes which have higher utility.
 \end{center}
 \end{figure*}
 
-The following techniques have been extensively tested on MD4 and partially
-tested on MD5 and are believed to apply fully to MD5. They likely apply to any
-hash function with similar structure, but as of yet, are untested.
+We approach the problem of logical cryptanalysis by applying
+techniques based in 3-CNF-SAT solving to explore the underlying
+structure of various hash functions.  In this paper we present the
+first case of extensive testing of these methods on the MD4 hash
+function and the partial testing of these methods on the MD5 hash
+function.  Our results lead us to believe that these techniques likely
+fully apply to MD5, as well as any other hash function with similar structure.
 
 
 \subsection{Distance Heuristics}
 
-We find justification for the distance heuristic, $\delta$, defined in Section
-\ref{terminology:distance} in the existing literature on MD4:
+We justify our the distance heuristic, $\delta$, defined in Section
+\ref{terminology:distance} in the existing literature on MD4.  Using
 H. Dobbertin's \cite{Dobbertin1998} and P. Kasselman's \cite{KasselmanMD4}
-collision classes have distance $\delta(C_{Dobbertin}, C_{Kasselman}) = 1$
-under this metric. Since others have shown that MD4 is untrustworthy, we can
+collision classes, we find they have distance $\delta(C_{Dobbertin}, C_{Kasselman}) = 1$
+under our metric. Since others have shown that MD4 is untrustworthy,
+we hypothesized (correctly) that we could
 limit our search space to small distances, exploiting the structure of MD4. This
 reduction in search space decreases the time to solve a single 3-CNF-SAT
 instance at the expense of restricting ourselves to highly connected, highly
-similar differential paths. Further, we can achieve parallel solving
-capabilities by noting that this problem is embarrassingly parallel: each
-candidate collision class can be independently checked on separate machines.
+similar differential paths which none-the-less yield rich and
+interesting sets of collisions. We further improved our performability
+by exploiting the parallalizability of this problem
+noting that this problem is embarrassingly parallel: allowing us to
+check each
+candidate collision class independently on separate machines.
+
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.5\textwidth]{Figs/graph-clique-crop.pdf}
+\caption{Clique and pseudo-clique neighborhoods associated with
+  unit distance neighborhoods of Dobbertin and Kasselman collision
+  classes from the literature.}
+\label{Fig:Graph-Clique}
+\end{center}
+\end{figure}
 
 The highly connected, highly similar differential paths are highlighted in
 Figure \ref{Fig:Graph-Clique}: when the neighbors of H. Dobbertin's and
@@ -1086,14 +1105,6 @@ same number of differentials and is thus also more flexible than Y. Sasaki's.
 \end{table}
 
 \subsection{Unit-Step Neighborhood} \label{empirical:neighborhood}
-
-\begin{figure}
-\begin{center}
-\includegraphics[width=0.5\textwidth]{Figs/graph-clique-crop.pdf}
-\caption{}
-\label{Fig:Graph-Clique}
-\end{center}
-\end{figure}
 
 \begin{figure}
 \begin{center}
