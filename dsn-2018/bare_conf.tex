@@ -484,9 +484,9 @@ the following results are novel in the field:
     \item We define the neighborhood of a class of collisions and show that
         it is frequently non-empty.
     \item We discuss techniques for finding useful collisions within a
-        class of collisions using logical cryptanalysis.
+        class using logical cryptanalysis.
     \item We propose additional techniques for building new classes of
-        collisions and show that collisions in MD4 can be found inductively.
+        collisions and show that classes of collisions in MD4 can be found inductively.
     \item We propose five universal metrics for evaluating the utility of
         a class of collisions.
 \end{itemize}
@@ -507,19 +507,21 @@ discuss the utility of existing collisions under the metrics described in
 \ref{Sec:Intuition}. In Section \ref{Sec:Collision}, we discuss new
 differential paths and the effectiveness of various techniques presented
 in Section \ref{Sec:Logical}. Lastly, in Section \ref{Sec:Impacts}, we
-discuss broader impacts of this research.
-
-
-
-
-
+discuss the broader impacts and conclusions of this research, and
+conclude with Section \ref{Sec:Conclusion} discussing future work and
+extensions in Section \ref{Sec:Future}.
 
 \section{Related Work} \label{Sec:Related}
 
 This paper draws heavily upon the public cryptanalysis of MD4, the wide
 availability of high quality SAT solvers, and previous work in logical
 cryptanalysis. In particular, we look at ways that SAT solving can aid
-cryptanalysis instead of using cryptanalysis to benchmark SAT solvers. We
+cryptanalysis instead of using cryptanalysis to benchmark SAT
+solvers.  A critical assumption of our use of SAT solvers as a means
+to discover structures in hash functions which lead to untrustworthy
+behavior is the insight that while SAT is, in general, a hard problem
+for many specific and practical instances current SAT-solving
+technology is quite efficient \cite{vardi2010p}. We
 then apply them to aid the understanding of attacks against real world
 systems, and propose general metrics that target different types of systems.
 Towards this, we look at prior work in two main areas: differential and logical
@@ -537,7 +539,7 @@ analysis of hash functions are still an emerging area. Further, techniques
 are being developed to make hash functions impervious to differential
 analysis.
 
-Our work removes the need for finding message modification techniques by
+Our work advances the current state of the art by removing the need for finding message modification techniques by
 specifying the differential path as part of the SAT formula and letting the
 solver find a pair of satisfying messages which follow the differential path
 and produce a collision. Further constraints can then be placed upon this
@@ -560,8 +562,9 @@ that exploring collisions in the context of SAT was introduced
 \cite{LogicalAnalysis}, and until the work of I. Mironov and L. Zhang that
 this was studied for an existing collision class \cite{Mironov2006}.
 
-However, much of the work in this area is focused on benchmarking SAT solvers,
-and not on evaluating techniques for using SAT solvers to aid reasoning and
+Much of the work in this area is focused on the use of these problems
+to benchmark the performance of SAT solvers,
+and not to evaluate techniques for using SAT solvers to aid reasoning and
 understanding. E. Homsirikamol et al.\ show that SAT solvers can be used to
 brute force finding collisions in SHA-3, but with limited utility and limited
 to a small number of rounds \cite{Homsirikamol2012}. On the other hand,
@@ -581,15 +584,28 @@ developed new techniques for using a SAT solver to inductively build full
 collisions in MD4 from collisions in reduced-round MD4 and to build additional
 examples of collision classes from a single instance of a collision in MD4.
 
+\subsection{Trustworthy Computing}
 
-\subsection{On Trustworthy Computing}
+Hash functions see wide usage in modern trustworthy computing
+applications, where they are used to establish the authenticity and
+provenance of data, the credibility of image data
+\cite{friedman1993trustworthy}, sensor identity and trust
+\cite{wong2006dynamic}, meta-data validity \cite{bayer1993improving},
+hardware authorization \cite{sirer2011logical}, and other measures of
+trust in system and mission critical systems.  
+The use of deprecated hashes for commit verification in
+git\cite{loeliger2012version}, and for patch identity and trust
+verification \cite{kuhn2005secure}, or segment verification in
+peer-to-peer decentralized networks \cite{lua2005survey} is quite
+common.  The use of deprecated hashes poses a serious problem, and can
+compromise an otherwise trustworthy system or platform.  A key
+component missing from the existing literature is a good metric which
+can be used to assess the trustworthiness of a hash, and its
+suitability for a given use case.
 
-\textbf{TODO - Assigned @erozier}
-
-
-
-
-
+Such a metric needs to be one which allows for a variable which
+accounts for difficulty, so that trustworthiness can be assessed in a
+meaningful way in an environment with changing hardware capabilities.
 
 \section{Terminology \& Notation}  \label{Sec:Terminology}
 
@@ -1198,7 +1214,7 @@ collision attacks by preventing structures of input block differences.
 
 
 
-\section{Discussion of Impacts} \label{Sec:Impacts}
+\section{Discussion} \label{Sec:Impacts}
 
 \textbf{TODO} - Recap impacts on real-world systems like MD5, SHA-1, etc.
 
@@ -1304,7 +1320,7 @@ The conclusion goes here.
 
 
 
-\section{Future Work}
+\section{Future Work} \label{Sec:Future}
 
 The framework can be seen here \textbf{TODO}. Complete data set available
 upon request.
