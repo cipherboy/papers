@@ -400,9 +400,9 @@ discuss potential applications to real-world systems.
 \section{Introduction}
 
 Cryptographic hash functions form the core of many protocols which
-trust that cryptographic hash functions preserve certain basic
+trust that these functions preserve certain basic
 properties. Cryptograpic hash functions see widespread
-use for file integrity checks to verify long term storage of
+use as file integrity checks to verify long term storage of
 data, as cache invalidation techniques, and as a building block in network
 protocols such as Kerberos and TLS.  The classes of functions suitable
 for these use cases necessarily have
@@ -477,6 +477,7 @@ is \textbf{imperitive to discontinue use of such hash functions as
 example of such structure showing the unit distance neighborhood
 (defined in Section \ref{Sec:Terminology}) of the known collisions
 from Dobbertin and Kasselman is presented in Figure \ref{Fig:Graph-Intro}.
+
 This paper contributes several techniques to logical cryptanalysis and uses these
 techniques to derive metrics of the trustworthiness for hash functions. We claim
 the following results are novel in the field:
@@ -506,9 +507,8 @@ analyze collisions in hash functions. In Section \ref{Sec:Empirical}, we
 discuss the utility of existing collisions under the metrics described in
 \ref{Sec:Intuition}. In Section \ref{Sec:Collision}, we discuss new
 differential paths and the effectiveness of various techniques presented
-in Section \ref{Sec:Logical}. Lastly, in Section \ref{Sec:Impacts}, we
-discuss the broader impacts and conclusions of this research, and
-conclude with Section \ref{Sec:Conclusion} discussing future work and
+in Section \ref{Sec:Logical}. Lastly, we discuss the broader impacts and
+conclusions of this research in Section \ref{Sec:Conclusion}, discussing future work and
 extensions in Section \ref{Sec:Future}.
 
 \section{Related Work} \label{Sec:Related}
@@ -1128,7 +1128,7 @@ including the input block differential specified by the original authors, which 
 each of the collision classes. We note in particular that while Y. Sasaki's
 attack is generally an improvement upon X. Wang's, Y. Sasaki's attack has fewer
 input block differentials and thus less flexibility in this aspect. Further,
-M. Schl{\"a}ffer's attack -- also building off the work of X. Wang -- has the
+M. Schl{\"a}ffer's attack --- also building off the work of X. Wang --- has the
 same number of differentials and is thus also more flexible than Y. Sasaki's.
 
 \begin{table}
@@ -1157,8 +1157,8 @@ same number of differentials and is thus also more flexible than Y. Sasaki's.
 
 Table \ref{table:neighborhood} presents the sizes discovered empirically of neighborhoods
 of existing collisions. In particular, note that both Y. Sasaki's attack and
-M. Schl{\"a}ffer's attack -- which both claimed to improve upon X. Wang's
-attack--have larger neighborhood sizes, and likewise with P. Kasselman's
+M. Schl{\"a}ffer's attack --- which both claimed to improve upon X. Wang's
+attack---have larger neighborhood sizes, and likewise with P. Kasselman's
 attack which improved upon H. Dobbertin's attack. Thus, the newer collisions
 occur in more dense subsets of the collision class space.
 
