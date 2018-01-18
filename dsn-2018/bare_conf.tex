@@ -332,10 +332,10 @@
 % use a multiple column layout for up to three different
 % affiliations
 
-%\author{\IEEEauthorblockN{Alexander M. Scheel, Eric W. D. Rozier}
-%\IEEEauthorblockA{Department of Computer Science\\Iowa State University of Science and Technology\\
-%Ames, Iowa, USA 50011\\
-%Email: \texttt{alexander.m.scheel@gmail.com, erozier@iastate.edu}}}
+\author{\IEEEauthorblockN{Alexander M. Scheel, Eric W. D. Rozier}
+\IEEEauthorblockA{Department of Computer Science\\Iowa State University of Science and Technology\\
+Ames, Iowa, USA 50011\\
+Email: \texttt{alexander.m.scheel@gmail.com, erozier@iastate.edu}}}
 
 \vspace{3in}
 
@@ -510,10 +510,9 @@ analyze collisions in hash functions. In Section \ref{Sec:Empirical}, we
 discuss the utility of existing collisions under the metrics described in
 \ref{Sec:Intuition}. In Section \ref{Sec:Collision}, we discuss new
 differential paths and the effectiveness of various techniques presented
-in Section \ref{Sec:Logical}. Lastly, in Section \ref{Sec:Impacts}, we
+in Section \ref{Sec:Logical}. Lastly, in Section \ref{Sec:Conclusion}, we
 discuss the broader impacts and conclusions of this research, and
-conclude with Section \ref{Sec:Conclusion} discussing future work and
-extensions in Section \ref{Sec:Future}.
+conclude by discussing future work and extensions in Section \ref{Sec:Future}.
 
 \section{Related Work} \label{Sec:Related}
 
@@ -525,7 +524,7 @@ primarily used to benchmark SAT
 solvers.  A critical assumption of our use of SAT solvers as a means
 to discover structures in hash functions which lead to untrustworthy
 behavior is the insight that while SAT is, in general, a hard problem
-for many specific and practical instances current SAT-solving
+for many specific and practical instances, current SAT-solving
 technology is quite efficient \cite{vardi2010p}. We
 then apply them to aid the understanding of attacks against real world
 systems, and propose general metrics that target different types of systems.
@@ -614,7 +613,7 @@ meaningful way in an environment with changing hardware capabilities.
 
 \section{Terminology \& Notation}  \label{Sec:Terminology}
 
-In order to define our define our metrics using logical cryptanalysis
+In order to define our metrics using logical cryptanalysis
 we first define a set of formal terminology and notation whn
 discussing our work, and the notation of collisions within a hash.
 We make the general assumption that ordered tuples and strings are
@@ -724,7 +723,7 @@ collision classes, $C_1, C_2 \in \mathcal{C}$:
 \end{align}
 We extend this distance function to include an \textit{absolute} distance,
 measuring the number of intermediate rounds with non-zero differences.
-We notate this as $\delta(C_1)$.
+We denote this as $\delta(C_1)$.
 
 We can define a similar distance function, $\Delta$, between families of
 collision classes by cardinality of the symmetric difference in the two
@@ -787,7 +786,7 @@ hash function \textbf{untrustworthy}.  Conversely it is a necessary
 condition (but possibly insufficient) that a trustworthy hash function
 has an empty neighborhood defined by $\delta = 1$.
 
-Furthermore this condition extends to $\delta = d$ for some small
+Furthermore, this condition extends to $\delta = d$ for some small
 value of $d$ as determined by computational resources such that $d$
 becomes a trustworthiness metric under constraints of current
 3-CNF-SAT solving capabilities within reasonable time bounds.
@@ -838,7 +837,7 @@ class:
 \begin{enumerate}
     \item The number of unique differentials a collision class has.
     \item The number of unit distance neighbors a collision class has.
-    \item The maximum count of zeros in a the binary representation of a
+    \item The maximum count of zeros in the binary representation of a
         colliding block (and likewise with ones).
     \item Whether there exists a block which collides under multiple initial
         values.
@@ -946,7 +945,7 @@ fully apply to MD5, as well as any other hash function with similar structure.
 
 \subsection{Distance Heuristics}
 
-We justify our the distance heuristic, $\delta$, defined in Section
+We justify our distance heuristic, $\delta$, defined in Section
 \ref{terminology:distance} in the existing literature on MD4.  Using
 H. Dobbertin's \cite{Dobbertin1998} and P. Kasselman's \cite{KasselmanMD4}
 collision classes, we find they have distance $\delta(C_{Dobbertin}, C_{Kasselman}) = 1$
@@ -977,7 +976,7 @@ Figure \ref{Fig:Graph-Clique}: when the neighbors of H. Dobbertin's and
 P. Kasselman's collision classes from Figure \ref{Fig:Graph-Intro} are viewed
 independently, the large cliques become apparent. Depending on the search
 strategies utilized, cliques may be expanded before new neighbors, or a
-significant portion of a vertices neighbors might belong to existing cliques,
+significant portion of a vertex's neighbors might belong to existing cliques,
 resulting in slow progress towards any external goal.
 
 Refer to Table \ref{table:distance} for the distances between existing
@@ -1122,7 +1121,7 @@ with 3-CNF-SAT, and building representative neighborhoods using our
 distance metrics.  We present these results in the form of an
 exploration of unique differentials, exploration of unit distance
 neighborhoods, maximum count of zeros in the binary representation of
-a colliding block, the existance of blocks which collide under
+a colliding block, the existence of blocks which collide under
 multiple initial values, and ASCII block collisions as discussed
 previously in Section \ref{Sec:Intuition}.
 
@@ -1189,7 +1188,7 @@ corresponds directly to the cliques in Figure \ref{Fig:Graph-Clique}.
 
 \subsection{Zeroes}
 
-We present results in Table \ref{table:zeroes} which represent the maximum count of zeroes in a block
+We present results in Table \ref{table:zeros} which represent the maximum count of zeros in a block
 for existing collisions. Note that X. Wang's attack is the leader, with 509
 maximum zero bits in the collision pair. Further, while Y. Sasaki improved
 the bound in other areas, this was not one of them. Of note too,
@@ -1198,7 +1197,7 @@ this metric.
 
 \begin{table}
     \caption{Number of Zeroes in a Colliding Block}
-    \label{table:zeroes}
+    \label{table:zeros}
     \begin{tabular}{c c c c}
         \textbf{Attack} & \textbf{Count} & \textbf{Attack} & \textbf{Count} \\
         X. Wang's & 509 & Y. Sasaki's & 494 \\
@@ -1246,7 +1245,7 @@ additional techniques are necessary for expanding the collision neighborhood.
 \section{New Collisions} \label{Sec:Collision}
 
 Through the exploration of the neighborhood technique, we have found over
-35,000 new differential paths which originated from the five original published
+35,000 new differential paths which originated from the five originally published
 collisions in MD4. This shows that the neighborhood definition is sufficient
 to produce a large quantity of new collision classes. Further, we give
 evidence for propagating neighborhoods across reduced round versions of MD4.
@@ -1264,7 +1263,7 @@ classes in previous figures represented by open verticies.}
 \end{center}
 \end{figure*}
 
-We noted in table \ref{table:neighborhood} that the unit distance neighborhood of
+We noted in Table \ref{table:neighborhood} that the unit distance neighborhood of
 the existing attacks were non-empty. By repeatedly expanding neighborhoods of
 known collision classes, we can construct paths in the collision space. We
 made the following observations:
@@ -1426,9 +1425,9 @@ We demonstrate the utility of five metrics of the flexibility present
 in a collision on the basis of 1) the number of unique differentials
 within a collision class; 2) the size of the unit distance
 neighborhood for a collision class; 3) the maximum count of zeros in a
-binary representation of a colliding block; 4) the existance of blocks
+binary representation of a colliding block; 4) the existence of blocks
 which collide under multiple initial values; and 5) the presence of
-ASCII valued inplut blocks within a collision.  These metrics proved
+ASCII valued input blocks within a collision.  These metrics proved
 capable when evaluating the flexibility of collisions in the published
 literature, and showed that flexibility is a multi-dimensional
 quantity that must be compared over multiple distance metrics, as not all
@@ -1461,7 +1460,7 @@ SHA-3 and key derivation functions such as bcrypt and scrypt, and whether
 logical cryptanalysis techniques can be applied to these categories of
 hash functions as well.
 
-In order to help the community build upon or work, and for the
+In order to help the community build upon our work, and for the
 purposes of reproducability and ascertainment of correctness, the
 research, data, and all associated code are provided on an open access
 and open source basis under the GNU General Public License Version 3
@@ -1477,8 +1476,7 @@ contact the authors.
 \section*{Acknowledgments}
 
 The authors would like to thank XXXXX XXXXX for providing access to
-the hardware used for the
-project.
+the hardware used for the project.
 
 
 
