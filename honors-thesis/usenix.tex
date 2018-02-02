@@ -61,7 +61,15 @@ Iowa State University
 TODO
 
 \section{Introduction}
-\subsection{History of SAT in Cryptography}
+\subsection{Brief History of SAT in Cryptography}
+
+Much of the original research for developing the use of SAT with cryptography
+was done by Fabio Massacci currently at the University of Trento \cite{CryptoSAT}.
+The focus of this work was largely two fold: cryptoanalysis against the DES
+and faking signatures in the RSA with $e=3$. More information can be found
+here \cite{MASSACCI2000LogicalCA} and here \cite{FIORINI2003101}, but note that
+this work predates all of the collisions discussed in this article.
+
 
 \begin{itemize}
     \item CryptoSAT
@@ -140,16 +148,17 @@ attack which can generate multiple collisions.
 
 A collision is \textbf{extensible} if one example of a collision will lead to
 other examples under the same differential and weak state transition constraints.
-Note that an extensible collision is inherently constraint-based.
+Note that if a collision is extensible, it is also constraint-based.
 
 A collision is \textbf{differential-independent} if there are multiple
-differentials which satisfy the intermediate state constr
+differentials which satisfy the state transition constraints.
+
 A collision is \textbf{malleable} if collisions can be found with different
 properties such as ASCII or JSON input blocks, or with fixed internal text.
 
 A collision is \textbf{state-independent} if there exist alternative
 starting states which produce collisions. A state-independent collision
-is termed strong if one collision can collide under two or more starting
+is termed \textbf{strong} if one block can collide under two or more starting
 states.
 
 Thus, a collision is said to have \textbf{high utility} if it is
@@ -164,7 +173,22 @@ language \cite{circuits}; further, unline $3-CNF-SAT$, this notation is composab
 in the sense that adding new constraints does not impact other existing constraints.
 
 We now introduce a series of notations to ease construction of cryptographic
-SAT models. $b := AND_{i = 0}^{32}(a)$. Needs to be
+SAT models.
+
+We define
+\begin{align*}
+    c_{l}^{l + k - j} := EQ_{i = j}^{k}(a_i, b_i)
+\end{align*}
+for $j \geq 0, k \geq j, l \geq 0$ to be equivalent to:
+\begin{align*}
+    \{ c_l & := a_j == b_j, \\
+    c_{l+1} & := a_{j+1} == b_{j+1}, \\
+    ..., \\
+    c_{l+k-j} & := a_{k} == b_{k} \} \\
+\end{align*}
+In particular, $c$ is a tuple of boolean equations with cardinality $|c| = k-j$,
+defining an equality relation between input sets $a$ and $b$, at index starting
+at $j$ and ending at $k$ (inclusive).
 
 Discuss encodings of hash functions? No, leave to section in
 
@@ -222,6 +246,12 @@ Together these form an equivalent constraint set as what is seen in \cite{Wang20
 testing
 \subsubsection{Differential-Independent}
 \subsubsection{State-Independent}
+h1: f7f3fe7437e33bee3590392936aeab37e0b848329173bf0f08a252a0281e3284f4e4fd90626c4cbb3350ac3e36694d34703d31498806e520608c6738da70170b:40a8b995bd89b97662b4516e1df317f2
+h2: f7f3fe7437e33b6e3590399936aeab37e0b848329173bf0f08a252a0281e3284f4e4fd90626c4cbb3350ac3e36694d34703d30498806e520608c6738da70170b:40a8b995bd89b97662b4516e1df317f2
+h3: f7f3fe7437e33bee3590392936aeab37e0b848329173bf0f08a252a0281e3284f4e4fd90626c4cbb3350ac3e36694d34703d31498806e520608c6738da70170b:aabcc2e21ea0e529178ca7dcb21240a2
+h4: f7f3fe7437e33b6e3590399936aeab37e0b848329173bf0f08a252a0281e3284f4e4fd90626c4cbb3350ac3e36694d34703d30498806e520608c6738da70170b:aabcc2e21ea0e529178ca7dcb21240a2
+c Total time               : 127.12
+
 \subsubsection{Malleable}
 \begin{itemize}
     \item ASCII
@@ -251,11 +281,21 @@ forms have valid collisions as well \cite{Sasaki2007}.
 We note that Sasaki's MD4 collisions are differential independent, finding
 examples of all 64 theoretical differentials.
 
+\subsubsection{State Independent}
+h1: 13d340f35ff2c0ace19bcd73f5c153aa816105701b5050a2c7e0ab260adf14026e0a20b1f39a8f4be37e60aad37d5b1100140082c228676c4d1c8098c095d023:746094a6c1cf11f96614c893f6b54d67
+h2: 13d340035ff2c0ace19bcdf3f5c153aa816105f01b5050a2c7e0ab260adf14026e0a2031f39a8f4be37e60aad37d5b1100140002c228676c4d1c8098c095d023:746094a6c1cf11f96614c893f6b54d67
+h3: 13d340f35ff2c0ace19bcd73f5c153aa816105701b5050a2c7e0ab260adf14026e0a20b1f39a8f4be37e60aad37d5b1100140082c228676c4d1c8098c095d023:ef64866bf9eedb5a723d7153bcce781f
+h4: 13d340035ff2c0ace19bcdf3f5c153aa816105f01b5050a2c7e0ab260adf14026e0a2031f39a8f4be37e60aad37d5b1100140002c228676c4d1c8098c095d023:ef64866bf9eedb5a723d7153bcce781f
+c Total time               : 165.32
+
+
+
 \section{MD5}
 \subsection{Brief History and Overview}
 \subsection{Wang's MD5 Collisions}
 \subsection{Stevens's MD5 Collisions}
 \subsection{Xie's MD5 Collisions}
+\subsection{Sasaki's MD5 Collisions}
 
 \section{SHA1}
 \subsection{Brief History and Overview}
