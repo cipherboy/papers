@@ -1,26 +1,25 @@
 Thank you to all of the reviewers. We have fixed the grammatical and
-typographical errors in the paper and will work on better organizing the
-paper to highlight our reviewers' comments.
+typographical errors in the paper and will work on better organizing
+the paper to highlight our reviewers' comments.
 
 This paper has two major parts:
     1) suggesting metrics for measuring the trustworthiness of a hash function
     2) developing new logical cryptanalysis techniques (LCT) for analyzing
         the structure of hash functions.
-We recognize that MD4 is untrustworthy and use it for the interests of
+We recognize that MD4 is untrustworthy and use it in the interest of
 reproducibility. We sought to test our new metrics against a
 known-untrustworthy hash which has multiple pre-existing attacks against it.
-Further, our new LC techniques are more broadly applicable to the entire class
-of Merkel-Damgård; while we have preliminary results on MD5 and SHA-1, these
-results are immature and not in the scope of this paper. However, while the
-utility metrics apply to SHA-3 (and broadly to most standardized hash
-functions), the new LC techniques will not immediately transfer. We will
-update the submission to make these distinctions more clear.
+Furthermore, our new LCTs are applicable to the entire class of Merkel-Damgård,
+but while we have preliminary results on MD5 and SHA-1, they are immature and
+not in the scope of this paper. The utility metrics apply to SHA-3 but the new
+LCTs will not immediately transfer. We will update the submission to make
+these distinctions more clear.
 
 To Reviewer #285E, we argue that these are five baseline metrics and not
 necessarily meant to be comprehensive for all use cases. Traditionally,
 the discovery of collisions in a hash function has resulted in its assumed
-untrustworthiness for all use cases of that function.
-
+untrustworthiness for all use cases of that function; our proposed metrics
+seek to address this shortcoming in the literature.
     - Metrics 1 and 2 are independent of the target system and try to
         quantify the information is gained from finding a single collision.
         (E.g., if a collision has a large number of neighbors, it implies
@@ -34,33 +33,24 @@ untrustworthiness for all use cases of that function.
     - Metric 5 is most suitable to systems like source code repositories or
         shell scripts, where only a limited character set is normal.
 For example, to use a collision in SHA-1 to attack Git, metrics 4 and 5 are
-important, and 3 is only important if the target code needs to make sense;
-metrics 1 and 2 are not necessary, but useful if the given collision fails.
+important, and 3 is relevant when the target code needs to make sense; 1 and
+2 are not necessary, but useful if the given collision fails. Thus, the only
+aspect we leave aside is how to weight these individual metrics to measure
+the distance from a collision attack to a second preimage attack, but we
+feel that this weighting is specific to individual use cases.
 
-We are leaving aside two main features: weightings of these metrics and any
-applicability of these metrics to preimage attacks, as they tend to be rare
-and thus hard to study from an empirical perspective. However, we leave aside
-weightings and an overarching measure of "how far is a collision from a second
-preimage" for the reason that it isn't strictly necessary for every system,
-and no one weighting can completely encompass all use cases for a hash
-function. Thus, part of our desire to publish is to begin a dialogue with the
-broader community regarding what other metrics are important, and what their
-effect on the general trustworthiness of a hash is.
-
-
-To Reviewer #285D, we argue that, while DSN doesn't explicitly call for
-cryptographic research, our work falls into the area of
-"models...for...assessing dependable systems". Because cryptographic hash
-functions are well specified and deterministic, we can model the impact of a
-collision attack on a system in a SAT framework. In addition to the five
-general metrics discussed above, explicitly evaluating the trustworthiness
-for a specific use case is a novel advancement and well within the scope of
-DSN. We present the new LC techniques, in part, to better demonstrate how we
-arrived at a ~10-fold increase in collision classes and also as a basis for
-a larger empirical study of the effectiveness of these metrics. Further,
-part of our desire to publish in DSN is to begin a dialogue with the
-broader community around dependable systems regarding what other metrics
-are important to their specific use cases.
-
+To Reviewer #285D, we argue that our work falls into DSN’s call for papers
+which describe "models...for...assessing dependable systems". Because
+cryptographic hash functions are well specified and deterministic, we can model
+the impact of a collision attack on a system in a SAT framework. In addition to
+the five general metrics discussed above, explicitly evaluating the
+trustworthiness for a specific use case is a novel advancement and well within
+the scope of DSN. We present the new LCTs as basis for an empirical study of
+the effectiveness of these metrics and techniques. Further, part of our desire
+to publish in DSN is to begin a dialogue with the broader community around
+dependable systems regarding what other metrics are important to their specific
+use cases.
 
 Thank you for your time.
+
+
