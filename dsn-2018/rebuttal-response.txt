@@ -50,7 +50,7 @@ effect on the general trustworthiness of a hash is.
 To Reviewer #285D, we argue that, while DSN doesn't explicitly call for
 cryptographic research, our work falls into the area of
 "models...for...assessing dependable systems". Because cryptographic hash
-functions are well specificied and determanistic, we can model the impact of a
+functions are well specified and deterministic, we can model the impact of a
 collision attack on a system in a SAT framework. In addition to the five
 general metrics discussed above, explicitly evaluating the trustworthiness
 for a specific use case is a novel advancement and well within the scope of
