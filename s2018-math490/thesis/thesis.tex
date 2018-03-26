@@ -1,0 +1,137 @@
+\documentclass[10pt,twocolumn,twoside]{pnas-new}
+% Use the lineno option to display guide line numbers if required.
+% Note that the use of elements such as single-column equations
+% may affect the guide line number alignment.
+
+\templatetype{pnasmathematics} % Choose template
+% {pnasresearcharticle} = Template for a two-column research article
+% {pnasmathematics} = Template for a one-column mathematics article
+% {pnasinvited} = Template for a PNAS invited submission
+
+\title{Keccak Thesis}
+
+% Use letters for affiliations, numbers to show equal authorship (if applicable) and to indicate the corresponding author
+\author{Alexander Scheel}
+
+\affil{Iowa State University}
+
+% Please give the surname of the lead author for the running footer
+\leadauthor{Scheel}
+
+% Please add here a significance statement to explain the relevance of your work
+
+% Please include corresponding author, author contribution and author declaration information
+\correspondingauthor{E-mail: alexander.m.scheel\@gmail.com}
+
+% Keywords are not mandatory, but authors are strongly encouraged to provide them. If provided, please include two to five keywords, separated by the pipe symbol, e.g:
+
+\begin{abstract}
+    TODO
+\end{abstract}
+
+\keywords{MATH 490 $|$ Advisor: Dr. Clifford Bergman $|$ SHA-3 $|$ hash\_framework }
+
+\begin{document}
+
+% Optional adjustment to line up main text (after abstract) of first page with line numbers, when using both lineno and twocolumn options.
+% You should only change this length when you've finalised the article contents.
+\verticaladjustment{-2pt}
+
+\maketitle
+% \thispagestyle{firststyle}
+% \ifthenelse{\boolean{shortarticle}}{\ifthenelse{\boolean{singlecolumn}}{\abscontentformatted}{\abscontent}}{}
+
+% Bibliography
+% \bibliography{pnas-sample}
+
+\section{A Series of Introductions} \label{sec:intro}
+    This paper presents the work of the author towards the completion of the
+requirements for the MATH 490 Independent Study course under Dr. Clifford
+Bergman at Iowa State University of Science and Technology. This work was an
+extension of the author's Honors Project under Dr. Eric Bergman and utilized
+the resulting
+\href{https://github.com/cipherboy/hash_framework}{hash\_framework} project.
+Additional artifacts related to this project can be seen in the
+\href{https://github.com/cipherboy/keccak-attacks}{keccak-attacks} repository.
+
+    Within this section are a series of introductions which provide necessary
+background on the topics of cryptography, hash functions, the development of
+Keccak/SHA-3, and its structure. While certain sections can be skipped if the
+reader has the prerequisite knowledge, hopefully all readers find the material
+engaging and useful. Following these introductions, this paper presents the
+analysis of the Keccak/SHA-3 hash function before concluding with a final
+evaluation and further work.
+
+
+\subsection{Introduction on the Topics of Cryptography} \label{sec:i:crypto}
+
+    While there have been many applications of mathematics, few are as
+demanding and shrouded in secrecy as that of cryptography. Cryptography exists
+because of the fundamental need of civilizations, governments, and individuals
+to keep secrets secure from devoted adversaries.
+
+\subsection{Introduction on the Topics of Hash Functions} \label{sec:i:hash}
+
+    Within cryptography's collection of algorithms, few are are as useful as
+hash functions have proven to be to cryptographers and non-cryptographers
+alike. A hash function maps arbitrary length binary strings to binary strings
+of a fixed length.
+
+\subsection{Introduction on the Development of Keccak/SHA-3} \label{sec:i:keccak}
+
+    FIPS 202 \cite{NIST202}.
+
+\subsection{Introduction on the Structure of SHA-3} \label{sec:i:structure}
+
+
+
+
+
+\section{Mathematical Properties of the Five Round Functions} \label{sec:properties}
+
+\subsubsection{Bijectivity} \label{sec:p:bijectivity}
+
+\subsubsection{Order of the Permutation} \label{sec:p:order}
+
+\subsubsection{Inverse of the Permutation} \label{sec:p:inverse}
+
+\subsubsection{XOR ($\oplus$) Distributivity} \label{sec:p:xor}
+
+\subsubsection{Generalizations of $\theta$ and $\chi$} \label{sec:p:generalizations}
+
+\subsubsection{Choice of Parameters for $\theta$ and $\chi$} \label{sec:p:generalizations}
+
+
+
+
+\section{Marginal and Differential Properties of the Five Round Functions} \label{sec:differentials}
+
+\subsection{Margin Properties} \label{sec:d:margin}
+
+\subsection{Differential Properties} \label{sec:d:diff}
+
+\subsection{Input Margin Impact on Differential Properties} \label{sec:d:input}
+
+\subsection{Output Margin Impact on Differential Properties} \label{sec:d:output}
+
+
+
+
+\section{Exhaustive Collision Searches} \label{sec:search}
+
+\section{Fixed Point Attacks} \label{sec:fixed}
+
+\subsection{Full Fixed Points} \label{sec:f:full}
+
+\subsection{Partial Fixed Points} \label{sec:f:partial}
+
+
+
+
+\section{Conclusions and Further Work} \label{sec:conclusion}
+
+\section{Bibliography} \label{sec:bibliography}
+
+\bibliography{thesis}
+
+\end{document}
