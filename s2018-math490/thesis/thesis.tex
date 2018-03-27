@@ -26,6 +26,7 @@
 % Keywords are not mandatory, but authors are strongly encouraged to provide them. If provided, please include two to five keywords, separated by the pipe symbol, e.g:
 
 \begin{abstract}
+    % TODO
     TODO
 \end{abstract}
 
@@ -62,6 +63,9 @@ engaging and useful. Following these introductions, this paper presents the
 analysis of the Keccak/SHA-3 hash function before concluding with a final
 evaluation and further work.
 
+% TODO
+% More information about structure of analysis section.
+
 
 \subsection{Introduction on the Topics of Cryptography} \label{sec:i:crypto}
 
@@ -70,6 +74,16 @@ demanding and shrouded in secrecy as that of cryptography. Cryptography exists
 because of the fundamental need of civilizations, governments, and individuals
 to keep secrets secure from devoted adversaries.
 
+% TODO Outline
+%    - Historic
+%        - Ciphers vs Codes
+%
+%    - Modern
+%        - Symmetric
+%        - Asymmetric
+%        - Hash Functions
+%        - Building Protocols
+
 \subsection{Introduction on the Topics of Hash Functions} \label{sec:i:hash}
 
     Within cryptography's collection of algorithms, few are are as useful as
@@ -77,58 +91,179 @@ hash functions have proven to be to cryptographers and non-cryptographers
 alike. A hash function maps arbitrary length binary strings to binary strings
 of a fixed length.
 
+% TODO Outline
+%   - Properties
+%   - History of Development
+%   - History of Attacks
+%   - Modern Theory and Structure
+
 \subsection{Introduction on the Development of Keccak/SHA-3} \label{sec:i:keccak}
 
     FIPS 202 \cite{NIST202}.
 
+% TODO Outline
+%    - Authors Background (keccak team)
+%    - Function design goals
+%    - NIST Contest
+%    - NIST standardization controversy? (sources?)
+
 \subsection{Introduction on the Structure of SHA-3} \label{sec:i:structure}
 
+    SHA-3 consists of two parts: a core permutation function, KECCAK-$f$, and
+a domain extender, the KECCAK sponge function.
 
-
-
+% TODO Outline
+%   - Sponge Function
+%   - State Array
+%   - Five functions
+%   - Keccak-$f$
 
 \section{Mathematical Properties of the Five Round Functions} \label{sec:properties}
 
-\subsubsection{Bijectivity} \label{sec:p:bijectivity}
+% TODO Outline
+%   - Outline following subsections
 
-\subsubsection{Order of the Permutation} \label{sec:p:order}
+\subsection{Bijectivity} \label{sec:p:bijectivity}
 
-\subsubsection{Inverse of the Permutation} \label{sec:p:inverse}
+% TODO Outline
+%   - Reason why bijectivity is important
+%   - Impact on attacks?
 
-\subsubsection{XOR ($\oplus$) Distributivity} \label{sec:p:xor}
+\subsubsection{Of $\theta$} \label{sec:p:b:t}
 
-\subsubsection{Generalizations of $\theta$ and $\chi$} \label{sec:p:generalizations}
+% TODO Outline
+%   - Theta -> XOR with 11 different values; linear equations?
+%   - What sizes are bijective?
+%   - Discussion in literature
 
-\subsubsection{Choice of Parameters for $\theta$ and $\chi$} \label{sec:p:generalizations}
+\subsubsection{Of $\rho$} \label{sec:p:b:r}
+
+% TODO Outline
+%   - Obvious permutation of bit orders
+
+\subsubsection{Of $\pi$} \label{sec:p:b:p}
+
+% TODO Outline
+%   - Obvious: permutation of bit orders
+
+\subsubsection{Of $\chi$} \label{sec:p:b:c}
+
+% TODO Outline
+%   - Harder, discussion in literature.
+
+\subsubsection{Of $\iota$} \label{sec:p:b:i}
+
+% TODO Outline
+%   - Obvious: XOR with fixed value.
 
 
+
+\subsection{Order of the Permutation} \label{sec:p:order}
+
+% TODO Outline
+%   - Outline why interesting
+%   - Attack on PRF/XOF -> low cycle size
+%   - Values over 2^(25w) indicate PRF has smaller upper bound for actual
+%       entropy
+%   - T R P C I
+
+\subsection{Evaluation of the Orders of Composition of Permutations}
+
+% TODO Outline
+%   - w=1 evaluation
+%   - Evaluation of different orderings of trpci
+
+\subsection{Inverse of the Permutation} \label{sec:p:inverse}
+
+% TODO Outline
+%   - Outline simplification of f^{-1}
+%   - Closed form for theta, chi
+%   - Give algorithm for any w?
+
+\subsection{XOR ($\oplus$) Distributivity} \label{sec:p:xor}
+
+% TODO Outline
+%   - Theta, Rho, Pi - free
+%   - Chi, Iota - no
+%   - Makes analysis harder, which is good
+
+\subsection{Generalizations of $\theta$ and $\chi$} \label{sec:p:generalizations}
+
+% TODO Outline
+%   - Evaluation of effect?
+%   - Pending eval?
+
+
+\subsection{Choice of Parameters and Ordering of Composition} \label{sec:p:generalizations}
+% TODO Outline
+%   - Pending evaluation?
 
 
 \section{Marginal and Differential Properties of the Five Round Functions} \label{sec:differentials}
 
+% TODO Outline
+%   - Overview of why it matters
+
 \subsection{Margin Properties} \label{sec:d:margin}
+
+% TODO Outline
+%   - Overview of why it matters - one round
+%   - Can see effect of rho in w increasing
+%   - Graphics
 
 \subsection{Differential Properties} \label{sec:d:diff}
 
+% TODO Outline
+%   - Graphics
+%   - Impact of importance
+%   - Show composition order impact if any?
+
 \subsection{Input Margin Impact on Differential Properties} \label{sec:d:input}
+
+% TODO Outline
+%   - Graphics
+%   - Impact and importance
 
 \subsection{Output Margin Impact on Differential Properties} \label{sec:d:output}
 
-
+% TODO Outline
+%   - Graphics
+%   - Impact and importance
 
 
 \section{Exhaustive Collision Searches} \label{sec:search}
 
+% TODO Outline
+%   - Importance
+%   - Finding patterns hard
+%   - No obvious connection for how to extend w=1 -> w=2
+%   - Searches limited
+
 \section{Fixed Point Attacks} \label{sec:fixed}
+
+% TODO Outline
+%   - Outline subsections
 
 \subsection{Full Fixed Points} \label{sec:f:full}
 
+% TODO Outline
+%   - Probable due to order analysis
+%   - Impact, attack
+
 \subsection{Partial Fixed Points} \label{sec:f:partial}
 
-
+% TODO Outline
+%   - More probable
+%   - Impact, attack
 
 
 \section{Conclusions and Further Work} \label{sec:conclusion}
+
+% TODO Outline
+%   - SHA-3 Secure, but introduces new attack vectors
+%   - Need more in the way of LC for SHA-3-esq functions
+%_  - Needs permutation-based cryptanalysis
+%   - Differential cryptanalysis not likely to be of much use
 
 \section{Bibliography} \label{sec:bibliography}
 
