@@ -8,7 +8,16 @@
 % {pnasmathematics} = Template for a one-column mathematics article
 % {pnasinvited} = Template for a PNAS invited submission
 
-\title{Keccak Thesis}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{amsmath,amsthm,amssymb,enumerate,euscript,mathrsfs}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{corollary}{Corollary}[theorem]
+\newtheorem{lemma}[theorem]{Lemma}
+
+
+\title{A Collection of Thoughts on the Keccak Construction}
 
 % Use letters for affiliations, numbers to show equal authorship (if applicable) and to indicate the corresponding author
 \author{Alexander Scheel}
@@ -51,7 +60,7 @@ requirements for the MATH 490 Independent Study course under Dr. Clifford
 Bergman at Iowa State University of Science and Technology. This work was an
 extension of the author's Honors Project under Dr. Eric Bergman and utilized
 the resulting
-\href{https://github.com/cipherboy/hash_framework}{hash\_framework} project.
+\href{https://github.com/cipherboy/hash\_framework}{hash\_framework} project.
 Additional artifacts related to this project can be seen in the
 \href{https://github.com/cipherboy/keccak-attacks}{keccak-attacks} repository.
 
@@ -70,9 +79,17 @@ evaluation and further work.
 \subsection{Introduction on the Topics of Cryptography} \label{sec:i:crypto}
 
     While there have been many applications of mathematics, few are as
-demanding and shrouded in secrecy as that of cryptography. Cryptography exists
+demanding and shrouded in as much secrecy as cryptography. Cryptography exists
 because of the fundamental need of civilizations, governments, and individuals
-to keep secrets secure from devoted adversaries.
+to keep secrets secure from devoted adversaries. While modern cryptography
+combines the disciplines of mathematics, computer science, and computer
+engineering, prior to the turn of the 20th century, cryptography lacked much
+of its modern rigor.
+
+    Prior to the 20th century, cryptography was split into three major
+branches: ciphers, codes, and stenography.
+
+
 
 % TODO Outline
 %    - Historic
@@ -118,74 +135,180 @@ a domain extender, the KECCAK sponge function.
 %   - Five functions
 %   - Keccak-$f$
 
+\subsection{Introduction to Terminology} \label{sec:i:terminology}
+
+Define $\Sigma = \{0, 1\}$ to be the alphabet, and for
+$w \in \{1, 2, 4, 8, 16, 32, 64\}$, $S_{w} = \Sigma^{25w}$, to be the set of
+all binary strings of length $25w$.
+
+
+
+
+
+
+
 \section{Mathematical Properties of the Five Round Functions} \label{sec:properties}
+
+In the following section, we detail various mathematical properties of the five
+permutation functions which make up the core round function of Keccak. In most
+cases, we seek to provide mathematical proofs of these properties. In all
+cases, we rely on external code and Boolean Satisfiability for computerized
+proofs of these theorems, in ways independent of the ways proved here. In a
+few cases, we provide references into the existing literature.
 
 % TODO Outline
 %   - Outline following subsections
 
-\subsection{Bijectivity} \label{sec:p:bijectivity}
-
-% TODO Outline
-%   - Reason why bijectivity is important
-%   - Impact on attacks?
-
-\subsubsection{Of $\theta$} \label{sec:p:b:t}
+\subsection{Properties of $\theta$} \label{sec:p:t}
 
 % TODO Outline
 %   - Theta -> XOR with 11 different values; linear equations?
 %   - What sizes are bijective?
 %   - Discussion in literature
 
-\subsubsection{Of $\rho$} \label{sec:p:b:r}
+In this section, we show that $\theta$ is bijective, that XOR distributes
+through $\theta$, give a method for finding the inverse of $\theta$, and
+give the order of $\theta$.
+
+Let $w$ be a fixed power of 2. Since $S_{w}$ is of finite size, it suffices to
+show that, $\forall x, y \in S_{w}$,
+$x \neq y \Rightarrow \theta(x) \neq \theta(y)$. Assume the hypothesis: then
+$x \oplus y \neq 0^{25w}$.
+
+\begin{lemma} \label{lem:p:t:1}
+\begin{align*}
+    \theta(a) = 0^{25w} \iff a = 0^{25w}
+\end{align*}
+\end{lemma}
+\begin{proof}
+
+This follows from the definition of $\theta$: note that
+$\theta(0^{25w}) = 0^{25w}$. If $a \neq 0^{25w}$, then there
+exists an index set $I_{1}$ such that $\forall i \in I_{1}$, $a[i] = 1$,
+and $\forall j \not\in I_{1}$, $a[j] = 0$. Then $\theta(a) \neq 0^{25w}$,
+which follows from the construction of $\theta$. (Note that each output
+bit of $\theta$ is composed of the XOR of 11 values in a fixed pattern).
+
+\end{proof}
+
+\begin{lemma} \label{lem:p:t:2}
+$\forall a, b \in S_{w}$,
+\begin{align*}
+    \theta(a \oplus b) = \theta(a) \oplus \theta(b)
+\end{align*}
+\end{lemma}
+\begin{proof}
+
+This follows from the definition of $\theta$: note that $\theta$ is
+composed entirely of XORs and that XOR is commutative and associative.
+
+\end{proof}
+
+
+Combining Lemma \ref{lem:p:t:1} and Lemma \ref{lem:p:t:2}, we have that:
+
+\begin{align*}
+    x \oplus y = 0^{25w} & \iff \theta(x \oplus y) = \theta(0^{25w}) \\
+        & \iff \theta(x \oplus y) = 0^{25w} \\
+        & \iff \theta(x) \oplus \theta(y) = 0^{25w}
+\end{align*}
+
+and hence $\theta$ is bijective.
+
+
+To construct the inverse of $\theta$, note that
+$A'[x, y, z] = A[x, y, z] \oplus D[x, z]$; hence,
+$A[x, y, z] = A'[x, y, z] \oplus D'[x, z]$ for some $D' = D$. Since $D[x, z]$
+is composed of several $C[x, z]$, where
+$C[x, z] = \oplus_{y = 0}^{4} A[x, y, z]$, we can similarly define $C'[x, z]$
+to be $C'[x, z] = \oplus_{y = 0}^{4} A'[x, y, z]$. Then, we expect the inverse
+of $\theta$ to be of a similar form. This reduces to a linear algebra problem
+over boolean variables. We know that $D'[x, z] = D[x, z]$ in order to recover
+$A[x, y, z]$. Hence we can represent $D[x, z]$ as a series of bits of length
+$5 \times w$, where bit $i = z' + 5 \times x'$ is $1$ if and only if
+$C[x', z']$ is used in the construction of $D[x, z]$. Further, we can view each
+of the $C'[x, z]$ as being the conjunction of three $C[x', z']$ in $A$, and thus
+can represent these as bit strings where bit $j = z' + 5\times x'$ is 1 if
+and only if $C[x', z']$ is used to construct $C'[x, z]$. (That is,
+since $C'[x, z] = \oplus_{y = 0}^{4} A'[x, y, z]$,
+$C'[x, z] = \oplus_{y = 0}^{4} (A[x, y, z] \oplus D[x, z])$ and hence
+$C'[x, z] = \oplus_{y = 0}^{4} (A[x, y, z] \oplus C[x', z'] \oplus C[x'', z''])$,
+and thus $C'[x, z] = C[x, z] \oplus C[x', z'] \oplus C[x'', z'']$, for some
+$x, z, x', z', x'', z''$ based on the definition of $\theta$. Thus,
+giving each $C'[x, z]$ a constant $c_{x,z}$ for whether it is used in constructing
+$D'[x, z]$, we can form a system of linear equations and solve for the
+constants $c_{x, z}$ in each expression. Since there are $5 \times w$ variables
+and $5 \times w$ equations in each equation for $D'[x, z]$, this can be solved
+easily, yielding the inverse of $\theta$.
+
+
+Lastly, we have computed the order of the permutation $\theta$ for all $w$.
+We reproduce them here without proof; they were found by direct search, but
+only verified exhaustively for $w = 1$. In general, the order is given by
+the expression $3 \times w$.
+
+\begin{tabular}{c c} \label{tab:p:t:1}
+    w & Order \\
+    1 & 3 \\
+    2 & 6 \\
+    4 & 12 \\
+    8 & 24 \\
+    16 & 48 \\
+    32 & 96 \\
+    64 & 192 \\
+\end{tabular}
+
+
+\subsubsection{Of $\rho$} \label{sec:p:r}
 
 % TODO Outline
 %   - Obvious permutation of bit orders
 
-\subsubsection{Of $\pi$} \label{sec:p:b:p}
+Since $\rho$ is a simple permutation of the location of bits, it holds that
+$\rho(a \oplus b) = \rho(a) \oplus \rho(b)$.
+
+It is obvious that the order of the $\rho$ permutation is $w$: this is obvious
+from the construction of $\rho$.
+
+\subsubsection{Of $\pi$} \label{sec:p:p}
 
 % TODO Outline
 %   - Obvious: permutation of bit orders
 
-\subsubsection{Of $\chi$} \label{sec:p:b:c}
+Since $\pi$ is a simple permutation of the location of bits, it holds trivially
+that $\pi(a \oplus b) = \pi(a) \oplus \pi(b)$.
+
+It is obvious that the order of the $\pi$ permutation is $24$: this is obvious
+from the construction of $\pi$.
+
+\subsubsection{Of $\chi$} \label{sec:p:c}
 
 % TODO Outline
 %   - Harder, discussion in literature.
 
-\subsubsection{Of $\iota$} \label{sec:p:b:i}
+It is non-trivial that the order of the $\chi$ function is a constant 4.
+However, this can be verified through the use of SAT to prove that $\chi^{4}$
+is the identity function. Hence $\chi^{-1} = \chi^{3}$.
+
+\subsubsection{Of $\iota$} \label{sec:p:i}
 
 % TODO Outline
 %   - Obvious: XOR with fixed value.
 
+Note that since $\iota$ is an XOR with a fixed value, it is obvious that
+$\iota$ is a bijection: for any $w$, for any $i$, and for all $x \in S_{w}$,
+$\iota(\iota(x, i), i) = x$, since $x \oplus \iota_{i} \oplus \iota_{i} = x$.
+Hence, $\iota$ is its own inverse and hence $\iota$ is bijective since the
+inverse is well defined for all $x \in S_{w}$.
 
-
-\subsection{Order of the Permutation} \label{sec:p:order}
-
-% TODO Outline
-%   - Outline why interesting
-%   - Attack on PRF/XOF -> low cycle size
-%   - Values over 2^(25w) indicate PRF has smaller upper bound for actual
-%       entropy
-%   - T R P C I
+Lastly, note that it is trivial that the order of the $\iota$ permutation is
+2 by construction (due to the XOR).
 
 \subsection{Evaluation of the Orders of Composition of Permutations}
 
 % TODO Outline
 %   - w=1 evaluation
 %   - Evaluation of different orderings of trpci
-
-\subsection{Inverse of the Permutation} \label{sec:p:inverse}
-
-% TODO Outline
-%   - Outline simplification of f^{-1}
-%   - Closed form for theta, chi
-%   - Give algorithm for any w?
-
-\subsection{XOR ($\oplus$) Distributivity} \label{sec:p:xor}
-
-% TODO Outline
-%   - Theta, Rho, Pi - free
-%   - Chi, Iota - no
-%   - Makes analysis harder, which is good
 
 \subsection{Generalizations of $\theta$ and $\chi$} \label{sec:p:generalizations}
 
