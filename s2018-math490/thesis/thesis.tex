@@ -78,15 +78,15 @@ evaluation and further work.
 
 \subsection{Introduction on the Topics of Cryptography} \label{sec:i:crypto}
 
-    While there have been many applications of mathematics, few are as
-demanding and shrouded in as much secrecy as cryptography. Cryptography exists
+    While there are many applications of pure mathematics, few are as
+demanding and shrouded in secrecy as cryptography. Cryptography exists
 because of the fundamental need of civilizations, governments, and individuals
 to keep secrets secure from devoted adversaries. While modern cryptography
 combines the disciplines of mathematics, computer science, and computer
 engineering, prior to the turn of the 20th century, cryptography lacked much
 of its modern rigor.
 
-    Prior to the 20th century, cryptography was split into three major
+    Prior to the late 19th century, cryptography was split into three major
 branches: ciphers, codes, and stenography.
 
 
@@ -124,24 +124,43 @@ of a fixed length.
 %    - NIST Contest
 %    - NIST standardization controversy? (sources?)
 
+
+\subsection{Introduction to Terminology} \label{sec:i:terminology}
+
+This section contains a collection terminology useful for discussing SHA-3
+and Boolean Satisfiability.
+
+We define $\Sigma = \{0, 1\}$ to be the alphabet.
+
+We define the set $W = \{1, 2, 4, 8, 16, 32, 64\}$ to be the powers of two
+typically used in constructing the Keccak widths; $w=64$ is standardized for
+use in SHA-3, though any power of two can be used.
+
+For a given $w \in W$, we define $S_{w} = \Sigma^{25w}$, to be the set of
+all binary strings of length $25w$; these represent the possible states (which
+are binary strings that map onto an indexible array $A$ described later) and each
+round permutation maps $S_{w} \mapsto S_{w}$.
+
+A binary string $s \in S_{w}$ can be indexed directly (in a zero-indexed
+manner, i.e., the starting bit of $s$ is denoted $s[0]$), or via a 3
+dimensional structure of size 5 by 5 by $w$. This is typically done in
+conjunction with an uppercase letter, $A = s$, and then
+$A[x, y, z] = s[w(5y + x) + z]$. This is in accordance with
+FIPS 202 \cite{NIST202}.
+
 \subsection{Introduction on the Structure of SHA-3} \label{sec:i:structure}
 
     SHA-3 consists of two parts: a core permutation function, KECCAK-$f$, and
-a domain extender, the KECCAK sponge function.
+a domain extender, the KECCAK sponge function. As discussed by the Keccak
+authors, additional security is given by choosing the permutation functions to
+be bijective, though they need not be (the domain need only be $S_{w}$).
+
 
 % TODO Outline
 %   - Sponge Function
 %   - State Array
 %   - Five functions
 %   - Keccak-$f$
-
-\subsection{Introduction to Terminology} \label{sec:i:terminology}
-
-Define $\Sigma = \{0, 1\}$ to be the alphabet, and for
-$w \in \{1, 2, 4, 8, 16, 32, 64\}$, $S_{w} = \Sigma^{25w}$, to be the set of
-all binary strings of length $25w$.
-
-
 
 
 
@@ -243,8 +262,8 @@ easily, yielding the inverse of $\theta$.
 
 
 Lastly, we have computed the order of the permutation $\theta$ for all $w$.
-We reproduce them here without proof; they were found by direct search, but
-only verified exhaustively for $w = 1$. In general, the order is given by
+We reproduce them here without proof; they were found by randomized search, and
+verified with SAT for $w = 1, 2, 4$ and $8$. In general, the order is given by
 the expression $3 \times w$.
 
 \begin{tabular}{c c} \label{tab:p:t:1}
@@ -304,7 +323,18 @@ inverse is well defined for all $x \in S_{w}$.
 Lastly, note that it is trivial that the order of the $\iota$ permutation is
 2 by construction (due to the XOR).
 
-\subsection{Evaluation of the Orders of Composition of Permutations}
+\subsection{Evaluation of the Orders of Composition of Permutations} \label{sec:p:composition}
+
+In this section, we discuss how the above five permutation functions compose,
+and the orders of the resulting compositions. We limit our discussion to $w=1$
+for the interests of exhaustive search: $2^{25}$ is possible on commodity
+hardware, $2^{50}$ would require additional resources. In general, we find that
+these permutations interact non-trivially, resulting in cycles of mixed size.
+We reproduce these results in the table below:
+
+\begin{tabular}{c c c c} \label{tab:p:c:1}
+    Function & Order & Number of Cycle & List of Cycles \\
+\end{tabular}
 
 % TODO Outline
 %   - w=1 evaluation
