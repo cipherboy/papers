@@ -1,0 +1,106 @@
+@inproceedings{Soos:2009:ESS:1575471.1575502,
+     author = {Soos, Mate and Nohl, Karsten and Castelluccia, Claude},
+     title = {Extending SAT Solvers to Cryptographic Problems},
+     booktitle = {Proceedings of the 12th International Conference on Theory and Applications of Satisfiability Testing},
+     series = {SAT '09},
+     year = {2009},
+     isbn = {978-3-642-02776-5},
+     location = {Swansea, UK},
+     pages = {244--257},
+     numpages = {14},
+     note = {\url{https://www.cs.virginia.edu/~kn5f/pdf/Extending_SAT_2009.pdf}},
+     doi = {10.1007/978-3-642-02777-2_24},
+     acmid = {1575502},
+     publisher = {Springer-Verlag},
+     address = {Berlin, Heidelberg},
+}
+
+@misc {CryptoMiniSat5,
+    author = {Mate Soos},
+    title = "CryptoMiniSat SAT Solver",
+    howpublished = {GitHub},
+    year = {2017},
+    url = {https://github.com/msoos/cryptominisat}
+}
+
+@misc {Sat2018,
+    author = {Alexander Scheel},
+    title = "SAT Competition 2018 Submission",
+    howpublished = {GitHub},
+    year = {2018},
+    url = {https://github.com/cipherboy/sat/tree/master/sat-competition-2018}
+}
+
+@techreport{rfc1320,
+    AUTHOR = "R. Rivest and RSA Data Security, Inc.",
+    TITLE = "{The MD4 Message-Digest Algorithm}",
+    HOWPUBLISHED = {Internet Requests for Comments},
+    TYPE="{RFC}",
+    NUMBER=1320,
+    PAGES = {1-20},
+    YEAR = {1992},
+    MONTH = {April},
+    PUBLISHER = "{IETF}",
+    INSTITUTION = "{IETF}",
+    NOTE={\url{https://tools.ietf.org/html/rfc1320}}
+}
+
+
+@Inbook{LogicalAnalysis,
+    author="Jovanovi{\'{c}}, Dejan
+    and Jani{\v{c}}i{\'{c}}, Predrag",
+    editor="Gramlich, Bernhard",
+    title="Logical Analysis of Hash Functions",
+    bookTitle="Frontiers of Combining Systems: 5th International Workshop, FroCoS 2005, Vienna, Austria, September 19-21, 2005. Proceedings",
+    year="2005",
+    publisher="Springer Berlin Heidelberg",
+    address="Berlin, Heidelberg",
+    pages="200--215",
+    abstract="In this paper we report on a novel approach for uniform encoding of hash functions (but also other cryptographic functions) into propositional logic formulae, and reducing cryptanalysis problems to the satisfiability problem. The approach is general, elegant, and does not require any human expertise on the construction of a specific cryptographic function. By using this approach, we developed a technique for generating hard and satisfiable propositional formulae and hard and unsatisfiable propositional formulae. In addition, one can finely tune the hardness of generated formulae. This can be very important for different applications, including testing (complete or incomplete) sat solvers. The uniform logical analysis of cryptographic functions can be used for comparison between different functions and can expose weaknesses of some of them (as shown for md4 in comparison with md5).",
+    isbn="978-3-540-31730-2",
+    doi="10.1007/11559306_11",
+    url="http://csl.sri.com/users/dejan/papers/jovanovic-hashsat-2005.pdf"
+}
+
+@Inbook{Mironov2006,
+    author="Mironov, Ilya
+    and Zhang, Lintao",
+    editor="Biere, Armin
+    and Gomes, Carla P.",
+    title="Applications of SAT Solvers to Cryptanalysis of Hash Functions",
+    bookTitle="Theory and Applications of Satisfiability Testing - SAT 2006: 9th International Conference, Seattle, WA, USA, August 12-15, 2006. Proceedings",
+    year="2006",
+    publisher="Springer Berlin Heidelberg",
+    address="Berlin, Heidelberg",
+    pages="102--115",
+    abstract="Several standard cryptographic hash functions were broken in 2005. Some essential building blocks of these attacks lend themselves well to automation by encoding them as CNF formulas, which are within reach of modern SAT solvers. In this paper we demonstrate effectiveness of this approach. In particular, we are able to generate full collisions for MD4 and MD5 given only the differential path and applying a (minimally modified) off-the-shelf SAT solver. To the best of our knowledge, this is the first example of a SAT-solver-aided cryptanalysis of a non-trivial cryptographic primitive. We expect SAT solvers to find new applications as a validation and testing tool of practicing cryptanalysts.",
+    isbn="978-3-540-37207-3",
+    doi="10.1007/11814948_13",
+    url="https://doi.org/10.1007/11814948_13",
+    note={\url{https://eprint.iacr.org/2006/254.pdf}}
+}
+
+@Inbook{Schlaffer2006,
+    author="Schl{\"a}ffer, Martin
+    and Oswald, Elisabeth",
+    editor="Robshaw, Matthew",
+    title="Searching for Differential Paths in MD4",
+    bookTitle="Fast Software Encryption: 13th International Workshop, FSE 2006, Graz, Austria, March 15-17, 2006, Revised Selected Papers",
+    year="2006",
+    publisher="Springer Berlin Heidelberg",
+    address="Berlin, Heidelberg",
+    pages="242--261",
+    abstract="The ground-breaking results of Wang et al. have attracted a lot of attention to the collision resistance of hash functions. In their articles, Wang et al. give input differences, differential paths and the corresponding conditions that allow to find collisions with a high probability. However, Wang et al. do not explain how these paths were found. The common assumption is that they were found by hand with a great deal of intuition.",
+    isbn="978-3-540-36598-3",
+    doi="10.1007/11799313_16",
+    url="https://doi.org/10.1007/11799313_16",
+    note={\url{https://link.springer.com/content/pdf/10.1007%2F11799313_16.pdf}}
+}
+
+
+@MISC{Keccak3,
+    author = {Bertoni, G. and Daemen, J. and Peeters, M. and Van Assche, G. and Van Keer, R.},
+    title = {The Keccak Reference - Version 3.0},
+    year = {2011},
+    note={\url{https://keccak.team/files/Keccak-reference-3.0.pdf}}
+}
