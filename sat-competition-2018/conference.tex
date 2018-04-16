@@ -44,9 +44,9 @@ cryptanalysis for analyzing the structure of various hash functions. We
 offer as a benchmark a new technique analyzing the security of a hash function
 of the Merkle-D{\aa}mgard construction which are broadly applicable to all such
 constructions and several benchmarks analyzing the various security properties
-of the Keccak hash function. While the latter techniques have not yeilded
+of the Keccak hash function. While the latter techniques have not yielded
 useful cryptanalysis results, they pose as a source of variable scalable
-benchmarks due to several choices of parameters (the bitwidth, $w$ and the
+benchmarks due to several choices of parameters (the bit width, $w$ and the
 number of rounds).
 
 \section{Classical Hash Functions}
@@ -91,13 +91,13 @@ The notion of a differential family is not as useful for Keccak due to
 the interaction between the sponge function and the internal permutation
 functions causing the collision space of families to be entirely different
 between successive rounds. From an algebraic perspective, and to study the
-security margin of the XOF consruct \cite{Keccak3}, it is important to show
+security margin of the XOF construct \cite{Keccak3}, it is important to show
 that the Keccak round functions are bijective and have high permutation order.
 Two of our benchmarks (\texttt{bijection} and \texttt{orders}) model these
 problems in SAT. In general, these instances are easy, but with a few notable
 outliers: for $w \geq 4$, proving the order of $\theta$ is $3w$ is difficult.
 Note that this should simplify to showing that $\forall x, x \neq x$ is UNSAT,
-and thus should be relatively trivial; however $w=4$ produces runtimes in
+and thus should be relatively trivial; however $w=4$ produces run times in
 excess of one hour. Further, anything later involving $\theta$ (such as
 $\rho \circ \theta$, etc.) also becomes difficult for $w\geq4$.
 
@@ -113,13 +113,13 @@ difference $y$. There are a few interesting outliers in this model: for
 $w\geq4$, most round functions cannot be individually analyzed this way.
 Further, while $\pi$ is a permutation of the order of the bits (and thus
 does not change the values of any bits), certain instances in $w=2$
-where $x \neq y$ produce runtimes in excess of an hour. This is surprising
+where $x \neq y$ produce run times in excess of an hour. This is surprising
 as the model is trivially SAT if and only if $x == y$ (and the model merely
 involves changing the orders of variables).
 
 The benchmarks in \texttt{output-margins} consider the effects of the sponge
 function. Since all of the round functions are bijective, if two inputs differ,
-the interal state of Keccak must also differ. However, to produce a collision,
+the internal state of Keccak must also differ. However, to produce a collision,
 only the first $y$ bits of the output must be the same. Thus we can create
 a model for a given number of differences $x, z \leq 25w$, security margin
 $y \leq 25w$, and round functions $f$:
@@ -140,9 +140,9 @@ $w$ or small numbers of rounds (for larger values of $w$). However, care must
 be selected in choosing the base seed, otherwise, there can possibly be
 multiple satisfying seeds. However, for a set of inputs with unique solution,
 these benchmarks can be extended to contain the output from several rounds of
-Keccak. After a threshhold dependent on the margin, these are redundant
+Keccak. After a threshold dependent on the margin, these are redundant
 information and thus test the SAT solvers to work with larger models which
-overfit to the solution.
+over fit to the solution.
 
 \section{Thanks}
 A special thanks to Mate Soos and his CryptoMiniSat solver
