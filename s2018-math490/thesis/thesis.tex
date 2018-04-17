@@ -409,7 +409,9 @@ fully verify this.
 % TODO Outline
 %   - Overview of why it matters
 
-\subsection{Margin Properties} \label{sec:d:margin}
+\subsection{Marginal Properties} \label{sec:d:margin}
+
+
 
 % TODO Outline
 %   - Overview of why it matters - one round
@@ -446,6 +448,13 @@ fully verify this.
 
 \section{Fixed Point Attacks} \label{sec:fixed}
 
+In this section, we introduce two potential attacks against Keccak/SHA-3 using
+fixed points in the underlying round function. However, neither of these
+attacks have been proven possible with current analysis except for small values
+of $w$ and small numbers of rounds. The first is a possible attack using full
+fixed points in the core round function, while the latter describes a category
+of partial fixed points.
+
 % TODO Outline
 %   - Outline subsections
 
@@ -455,7 +464,35 @@ fully verify this.
 %   - Probable due to order analysis
 %   - Impact, attack
 
+One theoretical attack against SHA-3 is by using a fixed point. If there
+existed a state $x$ such that $h(x) = x$, for $h$ the round function, then
+for all additional blocks, $h(x | b) = h(x \oplus b)$. While fixed points can
+and do occur (see 24-rounds in Table \ref{tab:p:c:1}), using a fixed-point
+attack is more subtle in practice: it is unlikely that a fixed point is a valid
+block (that is, $x$ contains a suffix that is $0^{m}$ for the current margin,
+$m$). Thus one must find a series of blocks $b_1$, $b_2$ such that
+$h(b_1) \oplus b_2 = x$; this in turn extends the attack from being
+$h(x | b) = h(x \oplus b)$ to:
+\begin{align*}
+    x = h(h(b_1) \oplus b_2) & \Rightarrow \\
+    h(x | b) = h(b_1 | b_2 | b) & = h(b_1 | h_2 \oplus b) \\
+    & = h(b_1 | h_2 | 0^{25w} | b)
+\end{align*}
+However finding $b_1$, $b_2$ amounts to a preimage attack and is thus unlikely
+to occur.
+
 \subsection{Partial Fixed Points} \label{sec:f:partial}
+
+Another theoretical attack is using a partial fixed point. Suppose there
+exists a block $x$ such that $h(x) = y$ is also a block (that is, $y$ has
+a suffix of $0^{m}$). In this case, the following is a valid collision,
+for all blocks $b$:
+\begin{align*}
+    h(x \oplus b) = h(y | b)
+\end{align*}
+We have verified the existance of these partial fixed points for small
+$w$ and number of rounds. Furthermore, they are more readily found using SAT
+than finding a fixed point is.
 
 % TODO Outline
 %   - More probable
