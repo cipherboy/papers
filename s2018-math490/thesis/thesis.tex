@@ -481,6 +481,13 @@ $h(x | b) = h(x \oplus b)$ to:
 However finding $b_1$, $b_2$ amounts to a preimage attack and is thus unlikely
 to occur.
 
+For $w=1, 2$, we have verified that no fixed points occur which are valid blocks
+for $1 \leq r \leq 24$, where $r$ is the number of rounds, at margins of 4 and
+8 bits.
+
+
+
+
 \subsection{Partial Fixed Points} \label{sec:f:partial}
 
 Another theoretical attack is using a partial fixed point. Suppose there
@@ -493,6 +500,31 @@ for all blocks $b$:
 We have verified the existance of these partial fixed points for small
 $w$ and number of rounds. Furthermore, they are more readily found using SAT
 than finding a fixed point is.
+
+For $w=1$, we reproduce a table of quantities of partial fixed points per round
+below:
+\begin{tabular}{c c c c c} \label{tab:f:p:1}
+    Rounds & Quantity & Input & Output \\
+    1 & 512 & & \\
+    2 & 567 & & \\
+    3 & 527 & & \\
+    4 & 545 & & \\
+    5 & 488 & & \\
+    6 & 533 & & \\
+    7 & 510 & & \\
+\end{tabular}
+Note that the above table is only for an effective margin of 256-bits (4 bits
+when $w=1$). For an effective margin of 512-bits (8 bits), we found no such
+partial fixed points. Further, example inputs and outputs are given as natural
+numbers versus binary strings for compactness.
+
+The following table describes our limits for finding partial fixed points
+across various sizes of $w$, rounds, and whether or not we've been able to
+complete an exhaustive search of all such instances.
+\begin{tabular}{c c c c c} \label{tab:f:p:2}
+    $w$ & Rounds & Exhaustive & Input & Output \\
+\end{tabular}
+
 
 % TODO Outline
 %   - More probable
