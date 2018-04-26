@@ -286,7 +286,7 @@ the expression $3 \times w$.
 Since $\rho$ is a simple permutation of the location of bits, it holds that
 $\rho(a \oplus b) = \rho(a) \oplus \rho(b)$.
 
-It is obvious that the order of the $\rho$ permutation is $w$: this is obvious
+It is obvious that the order of the $\rho$ permutation is $w$: this follows
 from the construction of $\rho$.
 
 \subsubsection{Of $\pi$} \label{sec:p:p}
@@ -297,7 +297,7 @@ from the construction of $\rho$.
 Since $\pi$ is a simple permutation of the location of bits, it holds trivially
 that $\pi(a \oplus b) = \pi(a) \oplus \pi(b)$.
 
-It is obvious that the order of the $\pi$ permutation is $24$: this is obvious
+It is obvious that the order of the $\pi$ permutation is $24$: this follows
 from the construction of $\pi$.
 
 \subsubsection{Of $\chi$} \label{sec:p:c}
@@ -307,7 +307,8 @@ from the construction of $\pi$.
 
 It is non-trivial that the order of the $\chi$ function is a constant 4.
 However, this can be verified through the use of SAT to prove that $\chi^{4}$
-is the identity function. Hence $\chi^{-1} = \chi^{3}$.
+is the identity function. Hence $\chi^{-1} = \chi^{3}$. However, due to the
+construction of $\chi$, XOR does not distribute over it.
 
 \subsubsection{Of $\iota$} \label{sec:p:i}
 
@@ -392,19 +393,26 @@ fully verify this.
 %   - w=1 evaluation
 %   - Evaluation of different orderings of trpci
 
-\subsection{Generalizations of $\theta$ and $\chi$} \label{sec:p:generalizations}
+% \subsection{Generalizations of $\theta$ and $\chi$} \label{sec:p:generalizations}
 
 % TODO Outline
 %   - Evaluation of effect?
 %   - Pending eval?
 
 
-\subsection{Choice of Parameters and Ordering of Composition} \label{sec:p:generalizations}
+% \subsection{Choice of Parameters and Ordering of Composition} \label{sec:p:generalizations}
 % TODO Outline
 %   - Pending evaluation?
 
 
 \section{Marginal and Differential Properties of the Five Round Functions} \label{sec:differentials}
+
+This section studies three approaches to extracting information about the five
+permutations functions using SAT. None of these approaches can directly lead
+to a collision in SHA-3, however, by combining them, possible differential
+trails can be approximated. Sadly for $w \geq 4$, several of these attacks take
+too long to run (even for individual permutation functions) and thus do not
+emit a valid attack for full Keccak.
 
 % TODO Outline
 %   - Overview of why it matters
@@ -440,11 +448,61 @@ fully verify this.
 
 \section{Exhaustive Collision Searches} \label{sec:search}
 
+By modeling the problem with SAT, we were able to recreate the work of prior
+authors (\cite{Homsirikamol2012}, \cite{cryptoeprint:2010:285}). However, like
+previous authors, our results do not scale to useful results. For $w=1$, we
+have exhaustively searched the collision space; the results of this search are
+reproduced below:
+
+\begin{tabular}{c c c} \label{tab:s:1}
+    $w$ & $r$ & Number of collisions \\
+    1 & 1 & 1024 \\
+    1 & 2 & 502 \\
+    1 & 3 & 543 \\
+    1 & 4 & 525 \\
+    1 & 5 & 488 \\
+    1 & 6 & 518 \\
+    1 & 7 & 532 \\
+    1 & 8 & 498 \\
+    1 & 9 & 506 \\
+    1 & 10 & 522 \\
+    1 & 11 & 506 \\
+    1 & 12 & 503 \\
+    1 & 13 & 495 \\
+    1 & 14 & 522 \\
+    1 & 15 & 485 \\
+    1 & 16 & 540 \\
+    1 & 17 & 467 \\
+    1 & 18 & 490 \\
+    2 & 1 & $ > 2^{20}$ \\
+    2 & 2 & $ > 2^{14}$ \\
+    2 & 3 & $ > 74$ \\
+\end{tabular}
+
+Note that the results for $w=2$ are incomplete; the search was terminated
+after one week. Further, all of these used an effective margin of 512-bits.
+In our limited time, we were unable to find any useful patterns in this data.
+
 % TODO Outline
 %   - Importance
 %   - Finding patterns hard
 %   - No obvious connection for how to extend w=1 -> w=2
 %   - Searches limited
+
+\section{Correlation Matrices} \label{sec:correlation}
+
+Another area of study was the resistance of Keccak to correlation attacks.
+That is, given some structured input (in this case, a valid block where the
+remaining bits are all zeros), does SHA-3 emit any useful two bit correlations
+across rounds? Here, we constructed a program to generate matricies of
+correlation for all two-variable boolean functions given some state. We then
+performed Monte-Carlo simulation; for $w=8$ and $r=24$, we found no useful
+correlations under sufficiently large starting states ($>16$ million). Thus,
+Keccak is secure from cross-round first and second order correlations; all
+distinguisher attacks must thus rely on at least third-order correlations. For
+$w=8$, checking all third-order correlations across 24 rounds becomes
+computationally infeasible and thus was not performed, since it is not likely
+to yeild useful results.
 
 \section{Fixed Point Attacks} \label{sec:fixed}
 
@@ -502,29 +560,30 @@ $w$ and number of rounds. Furthermore, they are more readily found using SAT
 than finding a fixed point is.
 
 For $w=1$, we reproduce a table of quantities of partial fixed points per round
-below:
+below for the first 8 rounds:
+
 \begin{tabular}{c c c c c} \label{tab:f:p:1}
     Rounds & Quantity & Input & Output \\
-    1 & 512 & & \\
-    2 & 567 & & \\
-    3 & 527 & & \\
-    4 & 545 & & \\
-    5 & 488 & & \\
-    6 & 533 & & \\
-    7 & 510 & & \\
+    1 & 512 & \texttt{FFFFFFFFFFFFFFFFFFFFFFFFF} & \texttt{TFFFFFFFFFFFFFFFFFFFFFFFF} \\
+    2 & 567 & \texttt{FTFTTTTFFTTTFFTFTFFFFFFFF} & \texttt{TTTFTFFTFTTTFTFFTFFFFFFFF} \\
+    3 & 527 & \texttt{FFTFFFFTFTFFFFFFFFFFFFFFF} & \texttt{TTTFTTTTFTFTFTFTFFFFFFFFF} \\
+    4 & 545 & \texttt{TTTFFTTTFFTTFTTFFFFFFFFFF} & \texttt{FFFTTTTFTTFFFTFTFFFFFFFFF} \\
+    5 & 488 & \texttt{FFFFFFFFTFFFTFFFFFFFFFFFF} & \texttt{TFFTFFTFFFFFFTFFTFFFFFFFF} \\
+    6 & 533 & \texttt{FFTFFFFTTFFFTFFFFFFFFFFFF} & \texttt{TTTFFFFTFFFFTTFFTFFFFFFFF} \\
+    7 & 510 & \texttt{TFFFTTTFTTTTFFTFFFFFFFFFF} & \texttt{FTFFFFFFFTFTTTFTTFFFFFFFF} \\
 \end{tabular}
+
 Note that the above table is only for an effective margin of 256-bits (4 bits
 when $w=1$). For an effective margin of 512-bits (8 bits), we found no such
-partial fixed points. Further, example inputs and outputs are given as natural
-numbers versus binary strings for compactness.
+partial fixed points.
 
-The following table describes our limits for finding partial fixed points
-across various sizes of $w$, rounds, and whether or not we've been able to
-complete an exhaustive search of all such instances.
-\begin{tabular}{c c c c c} \label{tab:f:p:2}
-    $w$ & Rounds & Exhaustive & Input & Output \\
-\end{tabular}
-
+However, brute forcing a partial fixed point for larger values of $w$ and $r$
+quickly grows impossible. A similar technique to the aforementioned
+differential matrices could extend these techniques to larger values of $w$
+and $r$. Instead of building a model to check for a specific number of
+differences, instead build a model to check for a specific number of zeros in
+the inputs and outputs. This could provide a reduction in number of search
+paths for the SAT solver, and allow for more explicit parallelism.
 
 % TODO Outline
 %   - More probable
