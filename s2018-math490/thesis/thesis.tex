@@ -65,7 +65,7 @@ Additional artifacts related to this project can be seen in the
 \href{https://github.com/cipherboy/keccak-attacks}{keccak-attacks} repository.
 
     Within this section are a series of introductions which provide necessary
-background on the topics of cryptography, hash functions, the development of
+background on the topics of cryptographic hash functions, the development of
 Keccak/SHA-3, and its structure. While certain sections can be skipped if the
 reader has the prerequisite knowledge, hopefully all readers find the material
 engaging and useful. Following these introductions, this paper presents the
@@ -74,22 +74,6 @@ evaluation and further work.
 
 % TODO
 % More information about structure of analysis section.
-
-
-\subsection{Introduction on the Topics of Cryptography} \label{sec:i:crypto}
-
-    While there are many applications of pure mathematics, few are as
-demanding and shrouded in secrecy as cryptography. Cryptography exists
-because of the fundamental need of civilizations, governments, and individuals
-to keep secrets secure from devoted adversaries. While modern cryptography
-combines the disciplines of mathematics, computer science, and computer
-engineering, prior to the turn of the 20th century, cryptography lacked much
-of its modern rigor.
-
-    Prior to the late 19th century, cryptography was split into three major
-branches: ciphers, codes, and stenography.
-
-
 
 % TODO Outline
 %    - Historic
@@ -101,12 +85,27 @@ branches: ciphers, codes, and stenography.
 %        - Hash Functions
 %        - Building Protocols
 
-\subsection{Introduction on the Topics of Hash Functions} \label{sec:i:hash}
+\subsection{Introduction on the Topics of Cryptographic Hash Functions} \label{sec:i:hash}
 
-    Within cryptography's collection of algorithms, few are are as useful as
+    While there are many applications of pure mathematics, few are as
+demanding and shrouded in secrecy as cryptography. Cryptography exists
+because of the fundamental need of civilizations, governments, and individuals
+to keep secrets secure from devoted adversaries. While modern cryptography
+combines the disciplines of mathematics, computer science, and computer
+engineering, prior to the turn of the 20th century, cryptography lacked much
+of its modern rigor.
+
+    Within cryptography's collection of algorithms, few are as useful as
 hash functions have proven to be to cryptographers and non-cryptographers
 alike. A hash function maps arbitrary length binary strings to binary strings
-of a fixed length.
+of a fixed length. Because the inputs are of arbitrary size, by the pigeonhole
+principle, there must exist at least one collision. However, to be considered
+cryptographically secure, finding such a collision must be hard (on the order
+of $2^{\frac{b}{2}}$ for $b$ the number of bits in the output).
+
+    Further, a cryptographic hash function must be resistant finding a
+preimage: for a given output value $v$, finding an input $x$ such that
+$f(x) = v$ should be roughly on the order of $2^{b}$.
 
 % TODO Outline
 %   - Properties
