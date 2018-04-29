@@ -172,8 +172,8 @@ In the following section, we detail various mathematical properties of the five
 permutation functions which make up the core round function of Keccak. In most
 cases, we seek to provide mathematical proofs of these properties. In all
 cases, we rely on external code and Boolean Satisfiability for computerized
-proofs of these theorems, in ways independent of the ways proved here. In a
-few cases, we provide references into the existing literature.
+proofs where proofs are not directly provided. We do note the introduction of
+a cleaner form of $\chi^{-1}$ than in existing literature.
 
 % TODO Outline
 %   - Outline following subsections
@@ -373,7 +373,10 @@ Hence $\chi$ has order 4 and $\chi^{-1} = \chi^{3}$. The Keccak reference states
 ``We refer to [20, Section 6.6.2] for an algorithm for computing the inverse of $\chi$.''
 \cite{Keccak3}; this points a reference in J. Daemen's thesis \cite{DaemenThesis}.
 However, given $\chi$, $\chi^{3}$ is easy to compute and thus $\chi^{-1}$ is also
-easy to compute.
+easy to compute. Alternatively, using the above, it is easy to see that:
+\begin{align*}
+    d_1 = & a_1 \oplus (\lnot a_2 \land a_3) \oplus (\lnot a_2 \land \lnot a_4 \land a_5)
+\end{align*}
 
 Lastly, note that XOR does not distribute over $\chi$ due to the
 introduction of the and.
