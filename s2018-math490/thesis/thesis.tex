@@ -243,22 +243,24 @@ $C[x, z] = \oplus_{y = 0}^{4} A[x, y, z]$, we can similarly define $C'[x, z]$
 to be $C'[x, z] = \oplus_{y = 0}^{4} A'[x, y, z]$. Then, we expect the inverse
 of $\theta$ to be of a similar form. This reduces to a linear algebra problem
 over boolean variables. We know that $D'[x, z] = D[x, z]$ in order to recover
-$A[x, y, z]$. Hence we can represent $D[x, z]$ as a series of bits of length
+$A[x, y, z]$. Hence we can represent $D[x, z]$ as strings of length
 $5 \times w$, where bit $i = z' + 5 \times x'$ is $1$ if and only if
 $C[x', z']$ is used in the construction of $D[x, z]$. Further, we can view each
-of the $C'[x, z]$ as being the conjunction of three $C[x', z']$ in $A$, and thus
-can represent these as bit strings where bit $j = z' + 5\times x'$ is 1 if
-and only if $C[x', z']$ is used to construct $C'[x, z]$. (That is,
-since $C'[x, z] = \oplus_{y = 0}^{4} A'[x, y, z]$,
+of the $C'[x, z]$ as being the conjunction of three $C[x', z']$ in $A$; thus
+these are strings where bit $j = z' + 5\times x'$ is 1 if and only if
+$C[x', z']$ is used to construct $C'[x, z]$.
+
+(That is, since $C'[x, z] = \oplus_{y = 0}^{4} A'[x, y, z]$,
 $C'[x, z] = \oplus_{y = 0}^{4} (A[x, y, z] \oplus D[x, z])$ and hence
 $C'[x, z] = \oplus_{y = 0}^{4} (A[x, y, z] \oplus C[x', z'] \oplus C[x'', z''])$,
 and thus $C'[x, z] = C[x, z] \oplus C[x', z'] \oplus C[x'', z'']$, for some
-$x, z, x', z', x'', z''$ based on the definition of $\theta$. Thus,
-giving each $C'[x, z]$ a constant $c_{x,z}$ for whether it is used in constructing
-$D'[x, z]$, we can form a system of linear equations and solve for the
-constants $c_{x, z}$ in each expression. Since there are $5 \times w$ variables
-and $5 \times w$ equations in each equation for $D'[x, z]$, this can be solved
-easily, yielding the inverse of $\theta$.
+$x, z, x', z', x'', z''$ based on the definition of $\theta$).
+
+Thus, giving each $C'[x, z]$ a constant $c_{x,z}$ for whether it is used in
+constructing $D'[x, z]$, we can form a system of linear equations and solve for
+the constants $c_{x, z}$ in each expression. Since there are $5 \times w$
+variables and $5 \times w$ equations in each equation for $D'[x, z]$, this can
+be solved easily, yielding the inverse of $\theta$.
 
 
 Lastly, we have computed the order of the permutation $\theta$ for all $w$.
@@ -663,7 +665,20 @@ paths for the SAT solver, and allow for more explicit parallelism.
 
 \section{Conclusions and Further Work} \label{sec:conclusion}
 
-Overall, Keccak/SHA-3 remains secure to many attacks from SAT solvers.
+Overall, Keccak/SHA-3 remains secure to many attacks from SAT solvers. The
+majority of the techniques discussed here do not scale to the full $w=64$,
+rendering them ineffective for attacking SHA-3 in general. More efficient
+techniques are thus necessary for finding collisions in SHA-3; this likely
+involves finding ways in which structure in small values of $w$ translate to
+structure in larger values of $w$.
+
+Future work includes scaling the partial fixed point attacks via intermediate
+models, evaluating weaknesses in alternate constructions, and improving
+the run time of marginal and differential analysis. However, without
+significant breakthroughs in logical cryptanalysis, most of these attacks are
+unlikely. Further, it is not immediately obvious what effect low permutation
+order has on the possibility of collisions; introducing permutation-based
+cryptanalysis could result in new techniques applicable to SHA-3.
 
 % TODO Outline
 %   - SHA-3 Secure, but introduces new attack vectors
