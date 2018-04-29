@@ -178,7 +178,7 @@ few cases, we provide references into the existing literature.
 % TODO Outline
 %   - Outline following subsections
 
-\subsection{Properties of $\theta$} \label{sec:p:t}
+\subsection{Of $\theta$} \label{sec:p:t}
 
 % TODO Outline
 %   - Theta -> XOR with 11 different values; linear equations?
@@ -305,10 +305,78 @@ from the construction of $\pi$.
 % TODO Outline
 %   - Harder, discussion in literature.
 
-It is non-trivial that the order of the $\chi$ function is a constant 4.
-However, this can be verified through the use of SAT to prove that $\chi^{4}$
-is the identity function. Hence $\chi^{-1} = \chi^{3}$. However, due to the
-construction of $\chi$, XOR does not distribute over it.
+The order of the $\chi$ function is 4, and is independent of the width
+$w$. This is because $\chi$ is independent of both $y$ and $z$ coordinate.
+We will show algebraically that the order of $\chi$ is 4, however, it has also
+been verified with SAT. We first present three basic lemmas without proof:
+
+\begin{lemma} \label{lem:p:c:1}
+\begin{align*}
+    \lnot(a \oplus b) = \lnot a \oplus b
+\end{align*}
+\end{lemma}
+
+\begin{lemma} \label{lem:p:c:2}
+\begin{align*}
+    (a \oplus b) \land (c \oplus d) = (a \land c) \oplus (a \land d) \oplus (b \land c) \oplus (b \land d)
+\end{align*}
+\end{lemma}
+
+\begin{lemma} \label{lem:p:c:3}
+\begin{align*}
+    \lnot(a \oplus b) \land (c \oplus d) = (\lnot a \oplus b) \land (c \oplus d)
+\end{align*}
+\end{lemma}
+
+We define a row of the state cube, $A$ to have elements $a_1$, $a_2$, $a_3$,
+$a_4$, and $a_5$. After applying $\chi$ to this row, we define the resulting
+output row to be $b_1$, $b_2$, $b_3$, $b_4$, $b_5$, where:
+\begin{align*}
+    b_1 & = a_1 \oplus (\lnot a_2 \land a_3) \\
+    b_2 & = a_2 \oplus (\lnot a_3 \land a_4) \\
+    b_3 & = a_3 \oplus (\lnot a_4 \land a_5) \\
+    b_4 & = a_4 \oplus (\lnot a_5 \land a_1) \\
+    b_5 & = a_5 \oplus (\lnot a_1 \land a_2) \\
+\end{align*}
+And similarly for $c_1$ ... $c_5$,  $d_1$ ... $d_5$, $e_1$ ... $e_5$. Thus, to
+show $\chi$ has order 4, it suffices to show that $e_1 = a_1$, (since $\chi$
+has rotational symmetry; if $e_1 = a_1$, then $e_2 = a_2$ ... $e_5 = a_5$).
+
+\begin{lemma} \label{lem:p:c:4}
+\begin{align*}
+    c_1 = & b_1 \oplus (\lnot b_2 \land b_3) \\
+        = & (a_1 \oplus (\lnot a_2 \land a_3)) \oplus (\lnot (a_2 \oplus (\lnot a_3 \land a_4)) \land (a_3 \oplus (\lnot a_4 \land a_5))) \\
+        = & a_1 \oplus (\lnot a_2 \land a_3) \oplus (\lnot a_2 \land a_3) \oplus (\lnot a_2 \land \lnot a_4 \land a_5) \\
+          & \oplus (a_3 \land \lnot a_3 \land a_4) \oplus (a_3 \land a_4 \land \lnot a_4 \land a_5) \text{ (by Lemma \ref{lem:p:c:3} )} \\
+        = & a_1 \oplus (\lnot a_2 \land \lnot a_4 \land a_5) \\
+\end{align*}
+And:
+\begin{align*}
+    c_2 = & a_2 \oplus (\lnot a_3 \land \lnot a_5 \land a_1) \\
+    c_3 = & a_3 \oplus (\lnot a_4 \land \lnot a_1 \land a_2) \\
+    c_4 = & a_4 \oplus (\lnot a_5 \land \lnot a_2 \land a_3) \\
+    c_5 = & a_5 \oplus (\lnot a_1 \land \lnot a_3 \land a_4) \\
+\end{align*}
+\end{lemma}
+
+Thus, to show $e_1 = a_1$:
+\begin{align*}
+    e_1 = & d_1 \oplus (\lnot d_2 \land d_3) \\
+        = & c_1 \oplus (\lnot c_2 \land \lnot c_4 \land c_5) \\
+        = & (a_1 \oplus (\lnot a_2 \land \lnot a_4 \land a_5)) \oplus (\lnot (a_2 \oplus (\lnot a_3 \land \lnot a_5 \land a_1)) \\
+          & \land \lnot (a_4 \oplus (\lnot a_5 \land \lnot a_2 \land a_3)) \\
+          & \land (a_5 \oplus (\lnot a_1 \land \lnot a_3 \land a_4))) \\
+        = & a_1
+\end{align*}
+
+Hence $\chi$ has order 4 and $\chi^{-1} = \chi^{3}$. The Keccak reference states:
+``We refer to [20, Section 6.6.2] for an algorithm for computing the inverse of $\chi$.''
+\cite{Keccak3}; this points a reference in J. Daemen's thesis \cite{DaemenThesis}.
+However, given $\chi$, $\chi^{3}$ is easy to compute and thus $\chi^{-1}$ is also
+easy to compute.
+
+Lastly, note that XOR does not distribute over $\chi$ due to the
+introduction of the and.
 
 \subsubsection{Of $\iota$} \label{sec:p:i}
 
@@ -581,7 +649,7 @@ However, brute forcing a partial fixed point for larger values of $w$ and $r$
 quickly grows impossible. A similar technique to the aforementioned
 differential matrices could extend these techniques to larger values of $w$
 and $r$. Instead of building a model to check for a specific number of
-differences, instead build a model to check for a specific number of zeros in
+differences, build a model to check for a specific number of zeros in
 the inputs and outputs. This could provide a reduction in number of search
 paths for the SAT solver, and allow for more explicit parallelism.
 
@@ -591,6 +659,8 @@ paths for the SAT solver, and allow for more explicit parallelism.
 
 
 \section{Conclusions and Further Work} \label{sec:conclusion}
+
+Overall, Keccak/SHA-3 remains secure to many attacks from SAT solvers.
 
 % TODO Outline
 %   - SHA-3 Secure, but introduces new attack vectors
