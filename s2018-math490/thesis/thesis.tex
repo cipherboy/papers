@@ -36,7 +36,6 @@
 
 \begin{abstract}
     % TODO
-    TODO
 \end{abstract}
 
 \keywords{MATH 490 $|$ Advisor: Dr. Clifford Bergman $|$ SHA-3 $|$ hash\_framework }
@@ -63,6 +62,8 @@ the resulting
 \href{https://github.com/cipherboy/hash\_framework}{hash\_framework} project.
 Additional artifacts related to this project can be seen in the
 \href{https://github.com/cipherboy/keccak-attacks}{keccak-attacks} repository.
+A permanent location for this document is in the
+\href{https://github.com/cipherboy/papers}{papers} repository.
 
     Within this section are a series of introductions which provide necessary
 background on the topics of cryptographic hash functions, the development of
@@ -71,6 +72,11 @@ reader has the prerequisite knowledge, hopefully all readers find the material
 engaging and useful. Following these introductions, this paper presents the
 analysis of the Keccak/SHA-3 hash function before concluding with a final
 evaluation and further work.
+
+    The remaining sections outside of the introductions discuss 1) various
+mathematical properties of the core round functions, 2) exhaustive collision
+searches on small instances, 3) correlation matrices, and 4) fixed point
+attacks.
 
 % TODO
 % More information about structure of analysis section.
@@ -105,23 +111,44 @@ of $2^{\frac{b}{2}}$ for $b$ the number of bits in the output).
 
     Further, a cryptographic hash function must be resistant finding a
 preimage: for a given output value $v$, finding an input $x$ such that
-$f(x) = v$ should be roughly on the order of $2^{b}$.
+$f(x) = v$ should be roughly on the order of $2^{b}$. Given such an attack,
+it is possible to find a collision: choose a random input, compute its hash,
+then use the preimage attack to find a different input for that hash; these two
+inputs form a collision pair. Thus a preimage attack is stronger than a
+collision attack.
+
+    However, if the attacker is allowed to choose only one message (that is,
+the challenger chooses the other), this forms a second preimage attack. More
+formally, for a given fixed message $x$, the attacker seeks a $y \neq x$ such
+that $h(x) = h(y)$. While a collision attack is only valid for some such
+messages, $x$, a preimage attack has to be valid for all such $x$; thus it is
+a stronger attack than collision attacks, but weaker than a preimage attack
+as it presupposes an existing message.
+
+    This independent study focused on a single hash function, Keccak, which
+was chosen by NIST to be the next standardized algorithm, SHA-3 \cite{NIST202}.
+This hash function differs from previously standardized algorithms in two major
+ways: one, it is not based on the Merkel-Damg{\aa}rd construct and is rather
+based on the Sponge construction, and two, the internal round function is not a
+compression function and is instead a permutation. Outside of a few theorems
+done by hand and verifying the lack of low-order correlations, we focused on
+using automated tools to learn more about the structure of SHA-3.
+
+    In the late 1990s, F. Massacci started analyzing cryptographic
+constructions using Boolean Satisfability \cite{CryptoSAT}; however, applying
+this to hash functions is a largely understudied field. E. Homsirikamol tried
+brute forcing collisions in SHA-3 to limited results \cite{Homsirikamol2012},
+and P. Morawiecki performed similar work for preimages \cite{cryptoeprint:2010:285}.
+However, neither contributed useful, general cryptanalysis techniques to scale
+attacks against reduced rounds (and reduced sizes) to larger numbers of rounds.
+Our work begins exploring new techniques and several consequences in the
+following sections.
 
 % TODO Outline
 %   - Properties
 %   - History of Development
 %   - History of Attacks
 %   - Modern Theory and Structure
-
-\subsection{Introduction on the Development of Keccak/SHA-3} \label{sec:i:keccak}
-
-    FIPS 202 \cite{NIST202}.
-
-% TODO Outline
-%    - Authors Background (keccak team)
-%    - Function design goals
-%    - NIST Contest
-%    - NIST standardization controversy? (sources?)
 
 
 \subsection{Introduction to Terminology} \label{sec:i:terminology}
@@ -147,12 +174,99 @@ conjunction with an uppercase letter, $A = s$, and then
 $A[x, y, z] = s[w(5y + x) + z]$. This is in accordance with
 FIPS 202 \cite{NIST202}.
 
-\subsection{Introduction on the Structure of SHA-3} \label{sec:i:structure}
+\subsection{Introduction on the Development of Keccak/SHA-3} \label{sec:i:keccak}
 
-    SHA-3 consists of two parts: a core permutation function, KECCAK-$f$, and
-a domain extender, the KECCAK sponge function. As discussed by the Keccak
-authors, additional security is given by choosing the permutation functions to
-be bijective, though they need not be (the domain need only be $S_{w}$).
+    NIST standardized Keccak as SHA-3 in FIPS 202 \cite{NIST202}; Keccak was
+chosen as the winner of the corresponding hash function design competition
+started in 2009. Designed by the Keccak Team (G. Bertoni, J. Daemen, M.
+Peeters, G. Van Assche, and R. Van Keer \cite{KeccakTeam}), Keccak features a
+novel construction.
+
+    Keccak is built around the concept of a state cube: a 5 by 5 by $w$ cube
+of bits (where $w$ is a power of 2). By increasing $w$, a higher security
+margin can be given, at the expense of increasing the computational intensity.
+However, because internal round operations on this state cube are bijective,
+it can be implemented efficiently in hardware with minimal gate and propagation
+delays. Typically this state is called $A$ when represented as a cube, and $s$
+when represented as a (flat) bit string. There are five major functions which
+compose to form a single round: $\theta$, $\rho$, $\pi$, $\chi$, and $\iota$;
+each maps bijectively over the entire state space (i.e., elements of
+$2^{25w}$).
+
+    $\theta$ is an eleven way XOR and is thus a linear map. For all
+$0 \leq x \leq 4$ and $0 \leq z < w$, define:
+\begin{align*}
+    C[x, z] & := \oplus_{0 \leq y \leq 4} A[x, y, z] \\
+    D[x, z] & := C[(x-1) \text{ mod } 5, z] \oplus C[(x+1) \text{ mod } 5, (z - 1) \text{ mod } w] \\
+\end{align*}
+Then:
+\begin{align*}
+    A'[x, y, z] & := A[x, y, z] \oplus D[x, z]
+\end{align*}
+
+    $\rho$ is a pure permutation function, permuting the locations of bits in
+a lane (the $z$ component) of the state cube. For all
+$0 \leq z < w: A'[0, 0, z] := A[0, 0, z]$. Then let $x, y = (0, 0)$, and for
+$0 \leq t \leq 23$:
+\begin{align*}
+    \forall 0 \leq z < w: A'[x, y, z] & := A[x, y, (z - \frac{(t+1)(t+2)}{2}) \text{ mod } w] \\
+    let x, y & = (y, (2x + 3y) \text{ mod } 5)
+\end{align*}
+
+    $\pi$ is another pure permutation function, permuting locations along the
+face of the cube. For all $0 \leq x \leq 4, 0 \leq y \leq 4, 0 \leq z < w$:
+\begin{align*}
+    A'[x, y, z] := A[(x + 3y) \text{ mod } 5, x, z].
+\end{align*}
+
+    $\chi$ is the only non-linear function and is of degree one (with inverse
+of degree three). For all $0 \leq x \leq 4, 0 \leq y \leq 4, 0 \leq z < w$:
+\begin{align*}
+    A'[x, y, z] := A[x, y, z] \oplus (\lnot A[(x + 1) \text{ mod } 5, y, z] \land A[(x + 2) \text{ mod } 5, y, z]).
+\end{align*}
+
+    $\iota$ is a fixed-value XOR useful for preventing trivial fixed points,
+and is the only function dependent on the current round number. Refer to
+page 16 of FIPS 202 (\cite{NIST202}) for its specification; it is not discussed
+extensively in this paper.
+
+    The sponge construction can be described as follows. Fix $w$ as a power of
+two. To have a security margin of $m$ bits, the output needs to have $m$ bits;
+however, if the attacker has complete control of all $25w$ bits of state,
+they would be able to choose the output easily because Keccak is bijective.
+Thus, restrict the input to $25w - 2m$ bits and set the remaining $2m$ bits to
+zero. To find a preimage for a $m$-bit output, the attacker would have to find
+a $25w - m$ bit suffix such that the preimage of that suffix has $2m$ zeros.
+Similarly, for a collision attack, an attacker has to find two $25w-2m$
+messages such that their hashes have the same prefix of length $m$. Under an
+ideal round permutation, clearly these are non-trivial and hard to find in
+general.
+
+    For a multiple block message the procedure is thus as follows: call the
+composition of 24 rounds to be \texttt{KECCAK-$f$}. Start with $s=0^{25w}$.
+Splitting the message into chunks of $25w-2m$ (and padding according to
+the scheme defined in FIPS 202 \cite{NIST202}), for each block $b$, extend
+$b$ to length $25w$ with zeros, then compute $s = f(s \oplus b)$. From $s$,
+take the top $m$ bits as the output of the hash function.
+
+
+% TODO Outline
+%    - Authors Background (keccak team)
+%    - Function design goals
+%    - NIST Contest
+%    - NIST standardization controversy? (sources?)
+
+
+\subsection{Introduction to the Remaining Sections}
+
+
+
+%\subsection{Introduction on the Structure of SHA-3} \label{sec:i:structure}
+
+%    SHA-3 consists of two parts: a core permutation function, KECCAK-$f$, and
+%a domain extender, the KECCAK sponge function. As discussed by the Keccak
+%uthors, additional security is given by choosing the permutation functions to
+%be bijective, though they need not be (the domain need only be $S_{w}$).
 
 
 % TODO Outline
@@ -477,19 +591,19 @@ fully verify this.
 %   - Pending evaluation?
 
 
-\section{Marginal and Differential Properties of the Five Round Functions} \label{sec:differentials}
+%\section{Marginal and Differential Properties of the Five Round Functions} \label{sec:differentials}
 
-This section studies three approaches to extracting information about the five
-permutations functions using SAT. None of these approaches can directly lead
-to a collision in SHA-3, however, by combining them, possible differential
-trails can be approximated. Sadly for $w \geq 4$, several of these attacks take
-too long to run (even for individual permutation functions) and thus do not
-emit a valid attack for full Keccak.
+%This section studies three approaches to extracting information about the five
+%permutations functions using SAT. None of these approaches can directly lead
+%to a collision in SHA-3, however, by combining them, possible differential
+%trails can be approximated. Sadly for $w \geq 4$, several of these attacks take
+%too long to run (even for individual permutation functions) and thus do not
+%emit a valid attack for full Keccak.
 
 % TODO Outline
 %   - Overview of why it matters
 
-\subsection{Marginal Properties} \label{sec:d:margin}
+%\subsection{Marginal Properties} \label{sec:d:margin}
 
 
 
@@ -498,20 +612,20 @@ emit a valid attack for full Keccak.
 %   - Can see effect of rho in w increasing
 %   - Graphics
 
-\subsection{Differential Properties} \label{sec:d:diff}
+%\subsection{Differential Properties} \label{sec:d:diff}
 
 % TODO Outline
 %   - Graphics
 %   - Impact of importance
 %   - Show composition order impact if any?
 
-\subsection{Input Margin Impact on Differential Properties} \label{sec:d:input}
+%\subsection{Input Margin Impact on Differential Properties} \label{sec:d:input}
 
 % TODO Outline
 %   - Graphics
 %   - Impact and importance
 
-\subsection{Output Margin Impact on Differential Properties} \label{sec:d:output}
+%\subsection{Output Margin Impact on Differential Properties} \label{sec:d:output}
 
 % TODO Outline
 %   - Graphics
@@ -677,7 +791,9 @@ the run time of marginal and differential analysis. However, without
 significant breakthroughs in logical cryptanalysis, most of these attacks are
 unlikely. Further, it is not immediately obvious what effect low permutation
 order has on the possibility of collisions; introducing permutation-based
-cryptanalysis could result in new techniques applicable to SHA-3.
+cryptanalysis could result in new techniques applicable to SHA-3. Additional
+work could include automatic lemmaizing of found constraints and including
+them in future searches.
 
 % TODO Outline
 %   - SHA-3 Secure, but introduces new attack vectors
