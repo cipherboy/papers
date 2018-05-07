@@ -271,27 +271,64 @@ of degree three). For all $0 \leq x \leq 4, 0 \leq y \leq 4, 0 \leq z < w$:
     $\iota$ is a fixed-value XOR useful for preventing trivial fixed points,
 and is the only function dependent on the current round number. Refer to
 page 16 of FIPS 202 (\cite{NIST202}) for its specification; it is not discussed
-extensively in this paper.
+extensively in this paper. It takes an additional parameter, $c$, the current
+round number.
+
+    The a single round of the core round function function, $r$ is defined as
+follows:
+\begin{align*}
+    r(A, c) = \iota(\chi(\pi(\rho(\theta(A)))), c)
+\end{align*}
+And the entire core round function, \texttt{KECCAK-$f$}, is thus:
+\begin{align*}
+    \text{\texttt{KECCAK-$f$}}(A) = r(r( ...  r(A, 0) ... , 22), 23)
+\end{align*}
 
     The sponge construction can be described as follows. Fix $w$ as a power of
-two. To have a security margin of $m$ bits, the output needs to have $m$ bits;
+two in $W$. Then define a state, $s$, as above to be a binary string of length
+$25w$. Fix a security margin $m$ (usually 228, 256, 384, or 512 bits in the
+SHA-3 standard). Define $i_{m} = 25w - 2m$ be the input margin, and
+$o_{m} = 2m$ be the output margin. For a message $M$, assume it is padded
+to a multiple of $i_{m}$ bits according to the scheme in FIPS 202
+(\texttt{pad10*1}). Start with initial state $s_0 = 0^{25w}$. For each block
+$M_{i}$, XOR $M_{i}$ into the first $|M_{i}|$ bits of state $s_i$ and define:
+\begin{align*}
+    s_{i+1} = \text{\texttt{KECCAK-$f$}}(s_{i} \oplus M_{i})
+\end{align*}
+Then if $s_{k}$ is the final state, take the first $m$ bits ($s_{k}[0..m]$)
+as the output digest. Additionally if more than $2m$ bits are required, take
+the first $2m$ bits, then compute $s_{k+1} = \text{\texttt{KECCAK-$f$}}(s_{k})$
+and continue taking at most the first $2m$ bits from $s_{k+1}$, repeating as
+necessary. This is demonstrated in Figure \ref{f:s}.
+
+\begin{figure*}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{figs/Sponge-150.png}
+\caption{Graphical description of the sponge construction. Courtesy of the
+\href{https://keccak.team/images/Sponge-150.png}{Keccak Team}.}
+\label{f:s}
+\end{center}
+\end{figure*}
+
+To have a security margin of $m$ bits, the output needs to have $m$ bits;
 however, if the attacker has complete control of all $25w$ bits of state,
-they would be able to choose the output easily because Keccak is bijective.
-Thus, restrict the input to $25w - 2m$ bits and set the remaining $2m$ bits to
-zero. To find a preimage for a $m$-bit output, the attacker would have to find
-a $25w - m$ bit suffix such that the preimage of that suffix has $2m$ zeros.
-Similarly, for a collision attack, an attacker has to find two $25w-2m$
-messages such that their hashes have the same prefix of length $m$. Under an
-ideal round permutation, clearly these are non-trivial and hard to find in
-general.
+they would be able to choose an output with prefix $m$ easily because
+Keccak is bijective with a known, computable inverse. Thus, by restricting
+the initial state to have a suffix of $2m$ bits of zeros, the attacker must
+not only restrict the output to have the correct prefix, but also the input
+to have the correct suffix. In this way, the authors claim that Keccak/SHA-3
+has collision resistance equal to preimage resistance; finding a collision
+is of equivalent difficulty as finding a preimage, and thus Keccak/SHA-3 is
+more secure than necessary \cite{Keccak3}.
 
-    For a multiple block message the procedure is thus as follows: call the
-composition of 24 rounds to be \texttt{KECCAK-$f$}. Start with $s=0^{25w}$.
-Splitting the message into chunks of $25w-2m$ (and padding according to
-the scheme defined in FIPS 202 \cite{NIST202}), for each block $b$, extend
-$b$ to length $25w$ with zeros, then compute $s = f(s \oplus b)$. From $s$,
-take the top $m$ bits as the output of the hash function.
-
+Further, SHA-3 is secure from trivial multiple-block collisions due to the
+restriction of allowing $i_{m}$-bits of input state to be changed directly
+via a block. Thus, for a multiple-block collision attack to be possible, the
+remaining $25w - i_{m} = 2m$ bits must be the same between the internal state
+of a collision pair, allowing two different blocks $b$ and $b'$ to cancel
+their initial prefix differences. All of these attacks are constrained
+input/output problems and thus reduce to SAT; thus, considerable work
+is required to successfully perform an attack.
 
 % TODO Outline
 %    - Authors Background (keccak team)
@@ -357,12 +394,17 @@ $x \oplus y \neq 0^{25w}$.
 \end{lemma}
 \begin{proof}
 
-This follows from the definition of $\theta$: note that
-$\theta(0^{25w}) = 0^{25w}$. If $a \neq 0^{25w}$, then there
-exists an index set $I_{1}$ such that $\forall i \in I_{1}$, $a[i] = 1$,
-and $\forall j \not\in I_{1}$, $a[j] = 0$. Then $\theta(a) \neq 0^{25w}$,
-which follows from the construction of $\theta$. (Note that each output
-bit of $\theta$ is composed of the XOR of 11 values in a fixed pattern).
+First, note that $\theta(0^{25w}) = 0^{25w}$ due to construction of $\theta$
+having an even number of XORs. Suppose that there existed some other input, x,
+to $\theta$ such that $\theta(x) = 0^{25w}$. Note that, $x$ with odd number of
+1s (that is, $|\{ i : x_{i} = 1 \}| \equiv 1 \text { mod } 2$), $\theta(x)$
+likewise has an odd number of ones due to $\theta$ having an even number of
+XORs. Similarly, for any $x$ with has an even but non-zero number of ones,
+then there exists index $(i, j, k)$ such that $\theta(x)[i, j, k] = 1$. This is
+because, for any pair of indices $(i, j, k)$ and $(i', j', k')$ such that
+$x[i, j, k] = 1 = x[i', j', k']$, there exists an index $(a, b, c)$ such that
+$\theta(x)[a, b, c]$ is dependent on only one of $(i, j, k)$ or $(i', j', k')$,
+by construction of $\theta$. Thus the kernel of $\theta is 0^{25w}$.
 
 \end{proof}
 
@@ -375,8 +417,20 @@ $\forall a, b \in S_{w}$,
 \begin{proof}
 
 This follows from the definition of $\theta$: note that $\theta$ is
-composed entirely of XORs and that XOR is commutative and associative.
-
+composed entirely of XORs and that XOR is commutative and associative. For any
+index $(i, j, k)$, we want to show that
+\begin{align*}
+    \theta(a \oplus b)[i, j, k] = \theta(a)[i, j, k] \oplus \theta(b)[i, j, k]
+\end{align*}
+Note that:
+\begin{align*}
+    \theta(a \oplus b)[i, j, k] & = (a[i, j, k] \oplus b[i, j, k]) \\
+        & \oplus (\bigoplus_{0 \leq y \leq 4} (a[(i - 1) \text{ mod } 5, j, k] \oplus b[(i - 1) \text{ mod } 5, j, k])) \\
+        & \oplus (\bigoplus_{0 \leq y \leq 4} (a[(i + 1) \text{ mod } 5, j, (k - 1) \text{ mod } w] \oplus b[(i + 1) \text{ mod } 5, j, (k - 1) \text{ mod } w])) \\
+        & = (a[i, j, k ] \oplus (\bigoplus_{0 \leq y \leq 4} a[(i - 1) \text{ mod } 5, j, k]) \oplus (\bigoplus_{0 \leq y \leq 4} a[(i + 1) \text{ mod } 5, j, (k - 1) \text{ mod } w])) \\
+        & \oplus (b[i, j, k ] \oplus (\bigoplus_{0 \leq y \leq 4} b[(i - 1) \text{ mod } 5, j, k]) \oplus (\bigoplus_{0 \leq y \leq 4} b[(i + 1) \text{ mod } 5, j, (k - 1) \text{ mod } w])) \\
+        & = \theta(a)[i, j, k] \oplus \theta(b)[i, j, k]
+\end{align*}
 \end{proof}
 
 
@@ -390,34 +444,15 @@ Combining Lemma \ref{lem:p:t:1} and Lemma \ref{lem:p:t:2}, we have that:
 
 and hence $\theta$ is bijective.
 
-
-To construct the inverse of $\theta$, note that
-$A'[x, y, z] = A[x, y, z] \oplus D[x, z]$; hence,
-$A[x, y, z] = A'[x, y, z] \oplus D'[x, z]$ for some $D' = D$. Since $D[x, z]$
-is composed of several $C[x, z]$, where
-$C[x, z] = \bigoplus_{y = 0}^{4} A[x, y, z]$, we can similarly define $C'[x, z]$
-to be $C'[x, z] = \bigoplus_{y = 0}^{4} A'[x, y, z]$. Then, we expect the inverse
-of $\theta$ to be of a similar form. This reduces to a linear algebra problem
-over boolean variables. We know that $D'[x, z] = D[x, z]$ in order to recover
-$A[x, y, z]$. Hence we can represent $D[x, z]$ as strings of length
-$5 \times w$, where bit $i = z' + 5 \times x'$ is $1$ if and only if
-$C[x', z']$ is used in the construction of $D[x, z]$. Further, we can view each
-of the $C'[x, z]$ as being the conjunction of three $C[x', z']$ in $A$; thus
-these are strings where bit $j = z' + 5\times x'$ is 1 if and only if
-$C[x', z']$ is used to construct $C'[x, z]$.
-
-(That is, since $C'[x, z] = \bigoplus_{y = 0}^{4} A'[x, y, z]$,
-$C'[x, z] = \bigoplus_{y = 0}^{4} (A[x, y, z] \oplus D[x, z])$ and hence
-$C'[x, z] = \bigoplus_{y = 0}^{4} (A[x, y, z] \oplus C[x', z'] \oplus C[x'', z''])$,
-and thus $C'[x, z] = C[x, z] \oplus C[x', z'] \oplus C[x'', z'']$, for some
-$x, z, x', z', x'', z''$ based on the definition of $\theta$).
-
-Thus, giving each $C'[x, z]$ a constant $c_{x,z}$ for whether it is used in
-constructing $D'[x, z]$, we can form a system of linear equations and solve for
-the constants $c_{x, z}$ in each expression. Since there are $5 \times w$
-variables and $5 \times w$ equations in each equation for $D'[x, z]$, this can
-be solved easily, yielding the inverse of $\theta$.
-
+To construct the inverse of $\theta$, note that since $\theta$ is a linear map,
+there exists a matrix $M$ such that $\theta(x) = Mx$, when $x$ is treated as a
+column vector of bits. $M$ is described by a square matrix of size $25w$ by
+$25w$, where for a given row $i$:
+\begin{align*}
+    M_{i, j} = 1 \iff \theta(x)[i] \text{ depends on } x[j]
+\end{align*}
+Since we know that $\theta$ is invertible, $M$ must be invertible and thus
+$M^{-1}$ describes the inverse of $\theta$.
 
 Lastly, we have computed the order of the permutation $\theta$ for all $w$.
 We reproduce them here without proof; they were found by randomized search, and
