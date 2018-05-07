@@ -35,7 +35,13 @@
 % Keywords are not mandatory, but authors are strongly encouraged to provide them. If provided, please include two to five keywords, separated by the pipe symbol, e.g:
 
 \begin{abstract}
-    % TODO
+    In this paper, we discuss new techniques for the cryptanalysis of
+    Keccak/SHA-3, though none of the resulting attacks scale to full versions
+    of the hash function. We show an explicit construction for the inverses of
+    the core round functions, the permutation orders of the round functions,
+    and an attack which exploits low-order cycles. Further, we introduce new
+    logical cryptanalysis techniques and show the existence of partial fixed
+    points to produce 2-1 block collisions.
 \end{abstract}
 
 \keywords{MATH 490 $|$ Advisor: Dr. Clifford Bergman $|$ SHA-3 $|$ hash\_framework }
@@ -57,9 +63,10 @@
     This paper presents the work of the author towards the completion of the
 requirements for the MATH 490 Independent Study course under Dr. Clifford
 Bergman at Iowa State University of Science and Technology. This work was an
-extension of the author's Honors Project under Dr. Eric Bergman and utilized
+extension of the author's Honors Project under Dr. Eric Davis and utilized
 the resulting
-\href{https://github.com/cipherboy/hash\_framework}{hash\_framework} project.
+\href{https://github.com/cipherboy/hash\_framework}{hash\_framework} project
+(viewable under the \texttt{cipherboy} account on GitHub.com).
 Additional artifacts related to this project can be seen in the
 \href{https://github.com/cipherboy/keccak-attacks}{keccak-attacks} repository.
 A permanent location for this document is in the
@@ -104,14 +111,15 @@ of its modern rigor.
     Within cryptography's collection of algorithms, few are as useful as
 hash functions have proven to be to cryptographers and non-cryptographers
 alike. A hash function maps arbitrary length binary strings to binary strings
-of a fixed length. Because the inputs are of arbitrary size, by the pigeonhole
-principle, there must exist at least one collision. However, to be considered
-cryptographically secure, finding such a collision must be hard (on the order
-of $2^{\frac{b}{2}}$ for $b$ the number of bits in the output).
+of a fixed length; typically we denote such a function $h$. Because the inputs
+are of arbitrary size, by the pigeonhole principle, there must exist at least
+one collision: two blocks $x \neq y$ such that $h(x) = h(y)$. However, to be
+considered cryptographically secure, finding such a collision must be hard
+(on the order of $2^{\frac{b}{2}}$ for $b$ the number of bits in the output).
 
     Further, a cryptographic hash function must be resistant finding a
 preimage: for a given output value $v$, finding an input $x$ such that
-$f(x) = v$ should be roughly on the order of $2^{b}$. Given such an attack,
+$h(x) = v$ should be roughly on the order of $2^{b}$. Given such an attack,
 it is possible to find a collision: choose a random input, compute its hash,
 then use the preimage attack to find a different input for that hash; these two
 inputs form a collision pair. Thus a preimage attack is stronger than a
@@ -124,6 +132,41 @@ that $h(x) = h(y)$. While a collision attack is only valid for some such
 messages, $x$, a preimage attack has to be valid for all such $x$; thus it is
 a stronger attack than collision attacks, but weaker than a preimage attack
 as it presupposes an existing message.
+
+\subsection{Introduction on the Usages of Hash Functions}
+
+    Studying the integrity of hash function is important because hash functions
+are a fundamental building block of both cryptographic and non-cryptographic
+systems. While a body of literature developed around attacking the previous
+hash functions (of MD4, MD5, SHA-1 and SHA-2), many of these attacks do not
+directly translate to Keccak/SHA-3 because its construction differs
+substantially. Further, many of these attacks started only as generic attacks
+with low utility, and only with substantial work, were they translated to
+highly specialized attacks on specific use cases. Below is a discussion of
+various places where cryptographic hash functions are used, and what types of
+attacks they are most susceptible to.
+
+    The most common use case for hash functions are in signatures. Often times
+the cryptography underlying asymmetric signatures (where one party can sign a
+message and any party can verify that the signature and message is authentic)
+can only sign fixed length messages, often only in the thousands of bytes.
+However, longer data frequently must be signed. Thus, most implementations of
+signature schemes use a cryptographically secure hash function and sign the
+digest instead of the actual message. This can be seen in PGP, TLS, and PKI.
+Often, these implementations are most vulnerable to a second preimage attack,
+as one message is already provided. However, when the attacker has control
+over both messages, a collision attack will suffice.
+
+    Another common use case for hash functions are in message integrity
+verification. In this case, a hash of the message is sent along side of the
+message to ensure that the message hasn't been tampered with. While often this
+signature should be signed, it is frequently used in cases where the
+authenticity of the hash isn't questioned. This includes verifying contents of
+files on disk or in version control systems such as Git. In both of these
+cases, second preimage and collision attacks are the most useful for an
+attacker.
+
+\subsection{Introduction on the Scope of the Independent Study}
 
     This independent study focused on a single hash function, Keccak, which
 was chosen by NIST to be the next standardized algorithm, SHA-3 \cite{NIST202}.
@@ -196,7 +239,7 @@ $2^{25w}$).
     $\theta$ is an eleven way XOR and is thus a linear map. For all
 $0 \leq x \leq 4$ and $0 \leq z < w$, define:
 \begin{align*}
-    C[x, z] & := \oplus_{0 \leq y \leq 4} A[x, y, z] \\
+    C[x, z] & := \bigoplus_{0 \leq y \leq 4} A[x, y, z] \\
     D[x, z] & := C[(x-1) \text{ mod } 5, z] \oplus C[(x+1) \text{ mod } 5, (z - 1) \text{ mod } w] \\
 \end{align*}
 Then:
@@ -206,11 +249,11 @@ Then:
 
     $\rho$ is a pure permutation function, permuting the locations of bits in
 a lane (the $z$ component) of the state cube. For all
-$0 \leq z < w: A'[0, 0, z] := A[0, 0, z]$. Then let $x, y = (0, 0)$, and for
+$0 \leq z < w: A'[0, 0, z] := A[0, 0, z]$. Then let $(x, y) = (1, 0)$, and for
 $0 \leq t \leq 23$:
 \begin{align*}
     \forall 0 \leq z < w: A'[x, y, z] & := A[x, y, (z - \frac{(t+1)(t+2)}{2}) \text{ mod } w] \\
-    let x, y & = (y, (2x + 3y) \text{ mod } 5)
+    \text{ let } (x, y) & = (y, (2x + 3y) \text{ mod } 5)
 \end{align*}
 
     $\pi$ is another pure permutation function, permuting locations along the
@@ -219,7 +262,7 @@ face of the cube. For all $0 \leq x \leq 4, 0 \leq y \leq 4, 0 \leq z < w$:
     A'[x, y, z] := A[(x + 3y) \text{ mod } 5, x, z].
 \end{align*}
 
-    $\chi$ is the only non-linear function and is of degree one (with inverse
+    $\chi$ is the only non-linear function and is of degree two (with inverse
 of degree three). For all $0 \leq x \leq 4, 0 \leq y \leq 4, 0 \leq z < w$:
 \begin{align*}
     A'[x, y, z] := A[x, y, z] \oplus (\lnot A[(x + 1) \text{ mod } 5, y, z] \land A[(x + 2) \text{ mod } 5, y, z]).
@@ -352,8 +395,8 @@ To construct the inverse of $\theta$, note that
 $A'[x, y, z] = A[x, y, z] \oplus D[x, z]$; hence,
 $A[x, y, z] = A'[x, y, z] \oplus D'[x, z]$ for some $D' = D$. Since $D[x, z]$
 is composed of several $C[x, z]$, where
-$C[x, z] = \oplus_{y = 0}^{4} A[x, y, z]$, we can similarly define $C'[x, z]$
-to be $C'[x, z] = \oplus_{y = 0}^{4} A'[x, y, z]$. Then, we expect the inverse
+$C[x, z] = \bigoplus_{y = 0}^{4} A[x, y, z]$, we can similarly define $C'[x, z]$
+to be $C'[x, z] = \bigoplus_{y = 0}^{4} A'[x, y, z]$. Then, we expect the inverse
 of $\theta$ to be of a similar form. This reduces to a linear algebra problem
 over boolean variables. We know that $D'[x, z] = D[x, z]$ in order to recover
 $A[x, y, z]$. Hence we can represent $D[x, z]$ as strings of length
@@ -363,9 +406,9 @@ of the $C'[x, z]$ as being the conjunction of three $C[x', z']$ in $A$; thus
 these are strings where bit $j = z' + 5\times x'$ is 1 if and only if
 $C[x', z']$ is used to construct $C'[x, z]$.
 
-(That is, since $C'[x, z] = \oplus_{y = 0}^{4} A'[x, y, z]$,
-$C'[x, z] = \oplus_{y = 0}^{4} (A[x, y, z] \oplus D[x, z])$ and hence
-$C'[x, z] = \oplus_{y = 0}^{4} (A[x, y, z] \oplus C[x', z'] \oplus C[x'', z''])$,
+(That is, since $C'[x, z] = \bigoplus_{y = 0}^{4} A'[x, y, z]$,
+$C'[x, z] = \bigoplus_{y = 0}^{4} (A[x, y, z] \oplus D[x, z])$ and hence
+$C'[x, z] = \bigoplus_{y = 0}^{4} (A[x, y, z] \oplus C[x', z'] \oplus C[x'', z''])$,
 and thus $C'[x, z] = C[x, z] \oplus C[x', z'] \oplus C[x'', z'']$, for some
 $x, z, x', z', x'', z''$ based on the definition of $\theta$).
 
