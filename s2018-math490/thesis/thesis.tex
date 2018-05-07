@@ -397,14 +397,19 @@ $x \oplus y \neq 0^{25w}$.
 First, note that $\theta(0^{25w}) = 0^{25w}$ due to construction of $\theta$
 having an even number of XORs. Suppose that there existed some other input, x,
 to $\theta$ such that $\theta(x) = 0^{25w}$. Note that, $x$ with odd number of
-1s (that is, $|\{ i : x_{i} = 1 \}| \equiv 1 \text { mod } 2$), $\theta(x)$
+$1$s (that is, $|\{ i : x_{i} = 1 \}| \equiv 1 \text { mod } 2$), $\theta(x)$
 likewise has an odd number of ones due to $\theta$ having an even number of
 XORs. Similarly, for any $x$ with has an even but non-zero number of ones,
 then there exists index $(i, j, k)$ such that $\theta(x)[i, j, k] = 1$. This is
 because, for any pair of indices $(i, j, k)$ and $(i', j', k')$ such that
 $x[i, j, k] = 1 = x[i', j', k']$, there exists an index $(a, b, c)$ such that
 $\theta(x)[a, b, c]$ is dependent on only one of $(i, j, k)$ or $(i', j', k')$,
-by construction of $\theta$. Thus the kernel of $\theta is 0^{25w}$.
+by construction of $\theta$. Thus the kernel of $\theta is 0^{25w}$. (This is
+also extensible to an odd-sized subset of a even-sized set of ones; that is,
+for any four indices for which $x[i] = 1$, there exists a subset of either
+one or three indices for which the other indices don't appear, up to a set of
+size 10. Since this odd subset exists, then there are an odd number of $1$s,
+and hence the output has at least one $1$ in it, hence $\theta(x) \neq 0^{25w}$).
 
 \end{proof}
 
